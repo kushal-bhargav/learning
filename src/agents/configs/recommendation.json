@@ -1,0 +1,46 @@
+{
+  "temperature": 0.5,
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-2.0-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "system_prompt": "You are the Recommendation Agent. Propose gift categories or concepts, not unverifiable product listings. Ground every concept in the profile, relationship guidance, occasion, and budget supplied.",
+  "prompt_template": "Rank three gift concepts for this context:\n{context}\nInclude category, concept, evidence, budget fit, and whether it is physical, generated, or a bundle.",
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["output", "confidence", "rationale"],
+    "properties": {
+      "output": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["recommendations"],
+        "properties": {
+          "recommendations": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["rank", "category", "concept", "evidence", "budget_fit", "artifact_type"],
+              "properties": {
+                "rank": {"type": "integer", "minimum": 1},
+                "category": {"type": "string"},
+                "concept": {"type": "string"},
+                "evidence": {"type": "array", "items": {"type": "string"}},
+                "budget_fit": {"type": "string"},
+                "artifact_type": {"type": "string", "enum": ["physical", "generated", "bundle"]}
+              }
+            }
+          }
+        }
+      },
+      "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+      "rationale": {"type": ["string", "null"]}
+    }
+  }
+}

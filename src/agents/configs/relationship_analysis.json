@@ -1,0 +1,76 @@
+{
+    "temperature":  0.3,
+    "models":  {
+                   "ollama":  "llama3.2:latest",
+                   "azure_openai":  "gpt-4o-mini",
+                   "openai":  "gpt-4o-mini",
+                   "gemini":  "gemini-2.0-flash",
+                   "claude":  "claude-3-5-haiku-latest"
+               },
+    "system_prompt":  "You are the Relationship Analysis Agent. Assess only the supplied relationship and memories. The closeness_score uses a 1-5 scale where 5 is highest. Respect that stated score, avoid over-intimacy, never infer spending history or hidden feelings, and use an empty risk_flags list when evidence supports no specific risk.",
+    "prompt_template":  "Analyze this relationship context:`n{context}`nReturn closeness_assessment as exactly one of: low, moderate, close, very close. Keep it faithful to the 1-5 scale. Return suitable tone/formality, only evidence-backed risk flags, and a conservative default agency slider from 0 to 1.",
+    "output_schema":  {
+                          "type":  "object",
+                          "additionalProperties":  false,
+                          "required":  [
+                                           "output",
+                                           "confidence",
+                                           "rationale"
+                                       ],
+                          "properties":  {
+                                             "output":  {
+                                                            "type":  "object",
+                                                            "additionalProperties":  false,
+                                                            "required":  [
+                                                                             "closeness_assessment",
+                                                                             "tone_guidance",
+                                                                             "formality",
+                                                                             "risk_flags",
+                                                                             "agency_slider_default"
+                                                                         ],
+                                                            "properties":  {
+                                                                               "closeness_assessment":  {
+                                                                                                            "type":  "string",
+                                                                                                            "enum":  [
+                                                                                                                         "low",
+                                                                                                                         "moderate",
+                                                                                                                         "close",
+                                                                                                                         "very close"
+                                                                                                                     ]
+                                                                                                        },
+                                                                               "tone_guidance":  {
+                                                                                                     "type":  "string"
+                                                                                                 },
+                                                                               "formality":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                               "risk_flags":  {
+                                                                                                  "type":  "array",
+                                                                                                  "items":  {
+                                                                                                                "type":  "string"
+                                                                                                            }
+                                                                                              },
+                                                                               "agency_slider_default":  {
+                                                                                                             "type":  "number",
+                                                                                                             "minimum":  0,
+                                                                                                             "maximum":  1
+                                                                                                         }
+                                                                           }
+                                                        },
+                                             "confidence":  {
+                                                                "type":  [
+                                                                             "number",
+                                                                             "null"
+                                                                         ],
+                                                                "minimum":  0,
+                                                                "maximum":  1
+                                                            },
+                                             "rationale":  {
+                                                               "type":  [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                           }
+                                         }
+                      }
+}

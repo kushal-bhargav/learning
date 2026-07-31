@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "persona_id": "close-coworkers",
+  "label": "Close coworkers",
+  "synthetic": true,
+  "people": [
+    {"id": "person-priya", "display_name": "Priya Nair", "role": "giver"},
+    {"id": "person-theo", "display_name": "Theo Martin", "role": "recipient"}
+  ],
+  "relationships": [
+    {"id": "relationship-priya-theo", "person_a": "person-priya", "person_b": "person-theo", "type": "colleague", "closeness_score": 3}
+  ],
+  "occasions": [
+    {"id": "occasion-theo-promotion-2026", "name": "Theo's promotion", "date": "2026-08-03", "budget_hint": "USD 25-45", "formality": "professional"}
+  ],
+  "events": [
+    {"id": "event-launch-night", "date": "2025-11-07", "type": "project-milestone", "participants": ["person-priya", "person-theo"]},
+    {"id": "event-team-hike", "date": "2026-04-18", "type": "team-outing", "participants": ["person-priya", "person-theo"]}
+  ],
+  "memories": [
+    {"id": "memory-launch-whiteboard", "modality": "photo", "content": "A chaotic whiteboard covered in arrows, with Theo's tiny drawing of a rocket in the corner.", "embedding": [0.69, 0.21, 0.57, 0.74, 0.16, 0.48, 0.38, 0.81], "embedding_source": "synthetic_fixture", "timestamp": "2025-11-07T23:15:00Z", "event_id": "event-launch-night", "person_ids": ["person-priya", "person-theo"], "emotion_tag": "gratitude"},
+    {"id": "memory-coffee-fix", "modality": "text", "content": "Theo arrived with coffee and found the configuration typo that had blocked the launch rehearsal.", "embedding": [0.36, 0.76, 0.42, 0.25, 0.88, 0.53, 0.14, 0.67], "embedding_source": "synthetic_fixture", "timestamp": "2025-11-07T06:50:00Z", "event_id": "event-launch-night", "person_ids": ["person-theo"], "emotion_tag": "gratitude"},
+    {"id": "memory-hike-shortcut", "modality": "audio-caption", "content": "Their team followed Theo's 'shortcut' and reached the picnic spot twenty minutes late but laughing.", "embedding": [0.47, 0.63, 0.29, 0.84, 0.33, 0.71, 0.55, 0.18], "embedding_source": "synthetic_fixture", "timestamp": "2026-04-18T12:10:00Z", "event_id": "event-team-hike", "person_ids": ["person-priya", "person-theo"], "emotion_tag": "humor"}
+  ],
+  "preferences": [
+    {"id": "preference-theo-food", "person_id": "person-theo", "category": "food", "value": "medium-roast coffee", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-theo-hobby", "person_id": "person-theo", "category": "hobby", "value": "day hiking", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-theo-style", "person_id": "person-theo", "category": "style", "value": "clean line art with subtle humor", "confidence": 0.66, "source": "inferred"},
+    {"id": "preference-theo-tone", "person_id": "person-theo", "category": "communication", "value": "warm but workplace-appropriate", "confidence": 0.82, "source": "inferred"}
+  ]
+}

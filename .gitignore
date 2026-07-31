@@ -1,0 +1,18 @@
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.test-tmp/
+
+# Local datasets and derived model inputs; retain hand-authored fixtures.
+data/*
+!data/fixtures/
+!data/fixtures/**
+
+# Model weights and training artifacts.
+*.pt
+*.pth
+*.ckpt
+experiments/checkpoints/
+
+experiments/.cache/

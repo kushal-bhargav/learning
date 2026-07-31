@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "persona_id": "adult-siblings",
+  "label": "Adult siblings",
+  "synthetic": true,
+  "people": [
+    {"id": "person-samir", "display_name": "Samir Patel", "role": "giver"},
+    {"id": "person-asha", "display_name": "Asha Patel", "role": "recipient"}
+  ],
+  "relationships": [
+    {"id": "relationship-samir-asha", "person_a": "person-samir", "person_b": "person-asha", "type": "sibling", "closeness_score": 4}
+  ],
+  "occasions": [
+    {"id": "occasion-asha-housewarming-2026", "name": "Asha's housewarming", "date": "2026-10-24", "budget_hint": "USD 50-90", "formality": "casual"}
+  ],
+  "events": [
+    {"id": "event-monsoon-kites", "date": "2008-07-19", "type": "childhood-memory", "participants": ["person-samir", "person-asha"]},
+    {"id": "event-apartment-painting", "date": "2026-06-28", "type": "shared-project", "participants": ["person-samir", "person-asha"]}
+  ],
+  "memories": [
+    {"id": "memory-rooftop-kite", "modality": "photo", "content": "A faded family photo of Samir and Asha holding a homemade orange kite on the rooftop after rain.", "embedding": [0.58, 0.84, 0.34, 0.17, 0.76, 0.45, 0.62, 0.29], "embedding_source": "synthetic_fixture", "timestamp": "2008-07-19T15:40:00Z", "event_id": "event-monsoon-kites", "person_ids": ["person-samir", "person-asha"], "emotion_tag": "nostalgia"},
+    {"id": "memory-green-wall", "modality": "text", "content": "They painted one apartment wall sage green, stepped back, and agreed it finally felt like Asha's home.", "embedding": [0.72, 0.32, 0.65, 0.49, 0.27, 0.81, 0.43, 0.56], "embedding_source": "synthetic_fixture", "timestamp": "2026-06-28T18:25:00Z", "event_id": "event-apartment-painting", "person_ids": ["person-samir", "person-asha"], "emotion_tag": "comfort"},
+    {"id": "memory-paint-disaster", "modality": "audio-caption", "content": "Asha laughed that Samir had painted more of his shirt than the wall.", "embedding": [0.26, 0.55, 0.79, 0.38, 0.64, 0.23, 0.86, 0.41], "embedding_source": "synthetic_fixture", "timestamp": "2026-06-28T14:05:00Z", "event_id": "event-apartment-painting", "person_ids": ["person-samir", "person-asha"], "emotion_tag": "humor"}
+  ],
+  "preferences": [
+    {"id": "preference-asha-color", "person_id": "person-asha", "category": "color", "value": "sage green", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-asha-hobby", "person_id": "person-asha", "category": "hobby", "value": "indoor gardening", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-asha-style", "person_id": "person-asha", "category": "style", "value": "botanical block prints", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-asha-motif", "person_id": "person-asha", "category": "motif", "value": "kite shapes", "confidence": 0.61, "source": "inferred"}
+  ]
+}

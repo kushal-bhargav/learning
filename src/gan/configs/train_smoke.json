@@ -1,0 +1,33 @@
+{
+    "base_config":  "src/gan/configs/train.json",
+    "model_overrides":  {
+                            "resolution":  16,
+                            "z_dim":  64,
+                            "condition_dim":  64,
+                            "w_dim":  64,
+                            "mapping_layers":  2,
+                            "channel_base":  256,
+                            "channel_max":  64
+                        },
+    "seed":  2026,
+    "batch_size":  4,
+    "max_steps":  200,
+    "r1_interval":  4,
+    "clip_interval":  50,
+    "ema_decay":  0.99,
+    "log_interval":  20,
+    "metric_interval":  200,
+    "checkpoint_interval":  200,
+    "sample_interval":  200,
+    "metric_num_samples":  4,
+    "fid_feature":  64,
+    "kid_subset_size":  4,
+    "max_train_images":  8,
+    "max_validation_images":  4,
+    "early_stopping":  {
+                           "enabled":  false,
+                           "fid_patience_evaluations":  2,
+                           "fid_min_delta":  0.0
+                       },
+    "metric_backend":  "clip"
+}

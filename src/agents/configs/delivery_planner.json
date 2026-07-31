@@ -1,0 +1,6 @@
+{
+  "digital_lead_days": 0,
+  "physical_lead_days": 7,
+  "default_channel": "digital card",
+  "physical_channel": "simulated standard shipping"
+}

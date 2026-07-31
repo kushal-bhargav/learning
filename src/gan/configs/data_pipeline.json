@@ -1,0 +1,98 @@
+﻿{
+  "sources": [
+    {
+      "provider": "art_institute_chicago",
+      "name": "Art Institute of Chicago Open Access Collection",
+      "api_base_url": "https://api.artic.edu/api/v1",
+      "queries": [
+        "postcard",
+        "greeting card",
+        "illustration",
+        "decorative print",
+        "floral print",
+        "pattern"
+      ],
+      "require_public_domain": true,
+      "max_images": 1500,
+      "pages_per_query": 20,
+      "page_size": 100,
+      "max_candidates_per_query": 2000,
+      "request_timeout_seconds": 30,
+      "user_agent": "GMGI-research-data-pipeline/0.2",
+      "download_delay_seconds": 0.25,
+      "reuse_existing_raw": true,
+      "min_width": 256,
+      "min_height": 256
+    },
+    {
+      "provider": "met_museum",
+      "name": "The Met Open Access Collection",
+      "api_base_url": "https://collectionapi.metmuseum.org/public/collection/v1",
+      "queries": [
+        "postcard",
+        "greeting card",
+        "illustration",
+        "decorative print",
+        "floral"
+      ],
+      "require_public_domain": true,
+      "max_images": 1500,
+      "max_candidates_per_query": 3000,
+      "request_timeout_seconds": 30,
+      "user_agent": "GMGI-research-data-pipeline/0.2",
+      "download_delay_seconds": 0.25,
+      "reuse_existing_raw": true,
+      "min_width": 256,
+      "min_height": 256
+    }
+  ],
+  "paths": {
+    "raw_dir": "data/gan/raw",
+    "processed_dir": "data/gan/processed",
+    "metadata_path": "data/gan/metadata.jsonl",
+    "embeddings_path": "data/gan/clip_embeddings.npy",
+    "rejections_path": "data/gan/rejections.jsonl",
+    "contact_sheet_path": "experiments/sample_clustered_images.jpg",
+    "run_report_path": "experiments/data_pipeline_run.json",
+    "data_card_path": "experiments/DATA_CARD.md"
+  },
+  "quality_gates": {
+    "minimum_records": 100
+  },
+  "preprocessing": {
+    "resolution": 256,
+    "format": "PNG",
+    "crop": "center_square",
+    "centering": [0.5, 0.5],
+    "resample": "LANCZOS"
+  },
+  "clip": {
+    "model_name": "ViT-B-32",
+    "pretrained": "openai",
+    "device": "auto",
+    "batch_size": 64
+  },
+  "clustering": {
+    "clusters": 6,
+    "seed": 2026,
+    "max_iterations": 100,
+    "emotion_prompts": {
+      "joy": "a joyful celebratory illustration suitable for a happy gift",
+      "nostalgia": "a nostalgic sentimental illustration suitable for a memory gift",
+      "gratitude": "a warm illustration expressing gratitude and appreciation",
+      "humor": "a playful humorous illustration suitable for a funny gift",
+      "comfort": "a calm comforting illustration suitable for emotional support",
+      "other": "a decorative illustration with a neutral mood"
+    }
+  },
+  "split": {
+    "validation_fraction": 0.1,
+    "seed": 2026
+  },
+  "preview": {
+    "sample_count": 48,
+    "columns": 6,
+    "thumbnail_size": 160,
+    "label_height": 58
+  }
+}

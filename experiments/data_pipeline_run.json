@@ -1,0 +1,19 @@
+{
+  "created_at": "2026-07-06T11:10:04.131652+00:00",
+  "source": "Art Institute of Chicago Open Access Collection",
+  "records": 24,
+  "train_records": 20,
+  "validation_records": 4,
+  "resolution": 256,
+  "clip_model": "ViT-B-32:openai",
+  "clusters": 6,
+  "cluster_emotion_map": {
+    "0": "nostalgia",
+    "1": "joy",
+    "2": "nostalgia",
+    "3": "joy",
+    "4": "joy",
+    "5": "joy"
+  },
+  "training_started": false
+}

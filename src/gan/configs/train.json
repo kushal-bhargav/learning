@@ -1,0 +1,54 @@
+{
+    "model_config":  "src/gan/configs/model.json",
+    "model_overrides":  {
+
+                        },
+    "metadata_path":  "data/gan/metadata.jsonl",
+    "embeddings_path":  "data/gan/clip_embeddings.npy",
+    "experiments_dir":  "experiments",
+    "seed":  2026,
+    "device":  "auto",
+    "mixed_precision":  true,
+    "batch_size":  16,
+    "num_workers":  0,
+    "max_steps":  100000,
+    "learning_rate_g":  0.0025,
+    "learning_rate_d":  0.0025,
+    "adam_betas":  [
+                       0.0,
+                       0.99
+                   ],
+    "r1_interval":  16,
+    "clip_interval":  1,
+    "ema_decay":  0.999,
+    "log_interval":  50,
+    "metric_interval":  1000,
+    "checkpoint_interval":  1000,
+    "sample_interval":  1000,
+    "metric_num_samples":  256,
+    "fid_feature":  2048,
+    "kid_subset_size":  50,
+    "max_train_images":  null,
+    "max_validation_images":  null,
+    "early_stopping":  {
+                           "enabled":  true,
+                           "fid_patience_evaluations":  10,
+                           "fid_min_delta":  0.5
+                       },
+    "clip":  {
+                 "model_name":  "ViT-B-32",
+                 "pretrained":  "openai"
+             },
+    "emotion_vocabulary":  [
+                               "joy",
+                               "nostalgia",
+                               "gratitude",
+                               "humor",
+                               "comfort",
+                               "other"
+                           ],
+    "unlabeled_relationship_policy":  "zero_vector",
+    "unlabeled_occasion_policy":  "zero_vector",
+    "torch_home":  "experiments/.cache/torch",
+    "metric_backend":  "inception"
+}

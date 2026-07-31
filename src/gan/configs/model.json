@@ -1,0 +1,31 @@
+{
+  "resolution": 256,
+  "image_channels": 3,
+  "z_dim": 512,
+  "context_dim": 512,
+  "relationship_dim": 8,
+  "emotion_dim": 6,
+  "occasion_dim": 8,
+  "condition_dim": 512,
+  "w_dim": 512,
+  "mapping_layers": 8,
+  "channel_base": 16384,
+  "channel_max": 512,
+  "r1_gamma": 0.8,
+  "path_length_weight": 2.0,
+  "path_length_interval": 4,
+  "path_length_decay": 0.01,
+  "clip_consistency_weight": 0.1,
+  "ada_target": 0.6,
+  "ada_interval": 4,
+  "ada_kimg": 500,
+  "augmentation": {
+    "xflip": true,
+    "integer_translation": true,
+    "brightness": true,
+    "contrast": true,
+    "max_translation_fraction": 0.125,
+    "brightness_std": 0.2,
+    "contrast_std": 0.5
+  }
+}

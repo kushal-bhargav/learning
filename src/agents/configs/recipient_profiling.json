@@ -1,0 +1,31 @@
+{
+  "temperature": 0.3,
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-2.0-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "system_prompt": "You are the Recipient Profiling Agent in a gift co-creation system. Use only supplied evidence. Treat inferred preferences as uncertain, never invent sensitive traits, and return only the requested structured result.",
+  "prompt_template": "Create a recipient profile from this JSON context:\n{context}\nRank interests by evidence and confidence. Summarize communication style and known gift history.",
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["output", "confidence", "rationale"],
+    "properties": {
+      "output": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["interests", "communication_style", "gift_history_summary"],
+        "properties": {
+          "interests": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["name", "confidence"], "properties": {"name": {"type": "string"}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}}},
+          "communication_style": {"type": "string"},
+          "gift_history_summary": {"type": "string"}
+        }
+      },
+      "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+      "rationale": {"type": ["string", "null"]}
+    }
+  }
+}

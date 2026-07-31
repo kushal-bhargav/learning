@@ -1,0 +1,11 @@
+{
+  "final_step": 200,
+  "elapsed_seconds": 21.580819099966902,
+  "device": "cpu",
+  "mixed_precision_active": false,
+  "train_images": 8,
+  "validation_images": 4,
+  "best_fid": 0.3624401390552521,
+  "training_complete": true,
+  "smoke_test": true
+}
