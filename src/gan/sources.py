@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from itertools import zip_longest
 from pathlib import Path
 from typing import Any, Iterable, Protocol
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -115,7 +116,11 @@ class ArtInstituteChicagoSource:
                     "page": page,
                     "fields": fields,
                 }
-                result = fetch_json(f"{base}/artworks/search?{urlencode(params)}", timeout=timeout, user_agent=user_agent)
+                try:
+                    result = fetch_json(f"{base}/artworks/search?{urlencode(params)}", timeout=timeout, user_agent=user_agent)
+                except (HTTPError, URLError, TimeoutError, OSError) as error:
+                    reject(rejections, self.name, f"{query}:page:{page}", "search_failed", error=str(error))
+                    continue
                 iiif_url = result["config"]["iiif_url"].rstrip("/")
                 website_url = result["config"]["website_url"].rstrip("/")
                 for metadata in result.get("data", []):
@@ -196,10 +201,15 @@ class MetMuseumSource:
         reuse_existing = bool(source_config.get("reuse_existing_raw", True))
         min_width = int(source_config.get("min_width", 0))
         min_height = int(source_config.get("min_height", 0))
+        rejections: list[dict[str, Any]] = []
         per_query_ids: list[list[int]] = []
         for query in source_config["queries"]:
             params = {"hasImages": "true", "q": query}
-            result = fetch_json(f"{base}/search?{urlencode(params)}", timeout=timeout, user_agent=user_agent)
+            try:
+                result = fetch_json(f"{base}/search?{urlencode(params)}", timeout=timeout, user_agent=user_agent)
+            except (HTTPError, URLError, TimeoutError, OSError) as error:
+                reject(rejections, self.name, query, "search_failed", error=str(error))
+                continue
             per_query_ids.append([int(value) for value in (result.get("objectIDs") or [])[: int(source_config.get("max_candidates_per_query", 200))]])
         object_ids: list[int] = []
         seen: set[int] = set()
@@ -210,7 +220,6 @@ class MetMuseumSource:
                     object_ids.append(object_id)
 
         records: list[dict[str, Any]] = []
-        rejections: list[dict[str, Any]] = []
         for object_id in object_ids:
             if len(records) >= max_images:
                 break
@@ -292,7 +301,11 @@ def acquire_images(config: dict[str, Any]) -> tuple[list[dict[str, Any]], list[d
         source = SOURCES.get(provider)
         if source is None:
             raise ValueError(f"Unsupported data source provider: {provider!r}")
-        source_records, source_rejections = source.acquire(source_config, config["paths"])
+        try:
+            source_records, source_rejections = source.acquire(source_config, config["paths"])
+        except (HTTPError, URLError, TimeoutError, OSError) as error:
+            reject(rejections, provider, "source", "source_acquisition_failed", error=str(error))
+            continue
         rejections.extend(source_rejections)
         for record in source_records:
             if record["id"] in seen_ids:
