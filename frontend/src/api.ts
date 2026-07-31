@@ -72,8 +72,9 @@ const API_BASE = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').repl
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers ?? {}) },
     ...options,
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true', ...(options.headers ?? {}) },
   });
   if (!response.ok) {
     let detail = `${response.status} ${response.statusText}`;
@@ -142,5 +143,3 @@ export const api = {
     return request(`/sessions/${sessionId}/feedback`, { method: 'POST', body: JSON.stringify(payload) });
   },
 };
-
-
