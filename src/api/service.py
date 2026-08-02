@@ -1,6 +1,8 @@
 ﻿from __future__ import annotations
 
+import hashlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -75,7 +77,7 @@ def _agency_bucket(value: float) -> str:
 class ConsoleSession:
     orchestrator: AgentOrchestrator
     fixture: dict[str, Any]
-    fixture_path: Path
+    fixture_path: Path | None
     agency_slider: float
     seed: int
     budget_hint: str | None = None
@@ -103,17 +105,25 @@ class AgencyConsoleService:
         self._encoder = ContextEncoder()
 
     def list_personas(self) -> list[dict[str, Any]]:
-        personas = []
-        for persona_id, path in _fixture_paths(self.fixture_root).items():
-            data = _load_json(path)
-            personas.append(
-                {
-                    "persona_id": persona_id,
-                    "label": data.get("label", persona_id),
-                    "synthetic": data.get("synthetic", True),
-                    "occasions": data.get("occasions", []),
-                }
-            )
+        personas: list[dict[str, Any]] = [
+            {
+                "persona_id": "custom-live",
+                "label": "Create a live gifting context",
+                "synthetic": False,
+                "occasions": [],
+            }
+        ]
+        if os.getenv("GMGI_INCLUDE_SYNTHETIC_FIXTURES") == "1":
+            for persona_id, path in _fixture_paths(self.fixture_root).items():
+                data = _load_json(path)
+                personas.append(
+                    {
+                        "persona_id": persona_id,
+                        "label": data.get("label", persona_id),
+                        "synthetic": data.get("synthetic", True),
+                        "occasions": data.get("occasions", []),
+                    }
+                )
         return personas
 
     def create_session(
@@ -124,12 +134,19 @@ class AgencyConsoleService:
         budget_hint: str | None = None,
         agency_slider: float | None = None,
         seed: int = 2026,
+        custom_profile: Mapping[str, Any] | None = None,
     ) -> GiftSession:
-        fixtures = _fixture_paths(self.fixture_root)
-        if persona_id not in fixtures:
-            raise KeyError(f"Unknown fixture persona: {persona_id}")
-        fixture_path = fixtures[persona_id]
-        fixture = _load_json(fixture_path)
+        if custom_profile is not None or persona_id == "custom-live":
+            fixture_path = None
+            fixture = self._custom_fixture(custom_profile or {})
+            persona_id = fixture["persona_id"]
+            occasion_id = fixture["occasions"][0]["id"]
+        else:
+            fixtures = _fixture_paths(self.fixture_root)
+            if persona_id not in fixtures:
+                raise KeyError(f"Unknown fixture persona: {persona_id}")
+            fixture_path = fixtures[persona_id]
+            fixture = _load_json(fixture_path)
         giver = self._person(fixture, "giver")
         recipient = self._person(fixture, "recipient")
         occasion = self._occasion(fixture, occasion_id)
@@ -359,6 +376,120 @@ class AgencyConsoleService:
         config.update(overrides)
         return agent.run({"session": console.orchestrator.session, "stage_config": config})
 
+    def _context_embedding(self, console: ConsoleSession, recipient_id: str, occasion_id: str) -> np.ndarray:
+        if console.fixture_path is not None:
+            graph = load_fixture(console.fixture_path)
+            return graph.context_embedding(recipient_id, occasion_id)
+        vectors = []
+        for memory in console.fixture.get("memories", []):
+            if "embedding" in memory:
+                vectors.append(np.asarray(memory["embedding"], dtype=np.float32))
+        for preference in console.fixture.get("preferences", []):
+            if "embedding" in preference:
+                vectors.append(np.asarray(preference["embedding"], dtype=np.float32))
+        if not vectors:
+            seed_text = json.dumps(console.fixture, sort_keys=True)
+            vectors.append(self._hash_embedding(seed_text))
+        return np.mean(np.stack(vectors), axis=0, dtype=np.float32)
+
+    def _custom_fixture(self, profile: Mapping[str, Any]) -> dict[str, Any]:
+        giver_name = str(profile.get("giver_name") or "Gift giver").strip()
+        recipient_name = str(profile.get("recipient_name") or "Gift recipient").strip()
+        relationship_type = str(profile.get("relationship_type") or "other").strip() or "other"
+        closeness_score = float(profile.get("closeness_score", 3))
+        occasion_name = str(profile.get("occasion_name") or "Gift occasion").strip()
+        occasion_date = str(profile.get("occasion_date") or "2026-12-31").strip()
+        budget_hint = str(profile.get("budget_hint") or "Flexible").strip()
+        formality = str(profile.get("formality") or "casual").strip() or "casual"
+        raw_memories = profile.get("memories") or []
+        if isinstance(raw_memories, str):
+            raw_memories = [line.strip() for line in raw_memories.splitlines() if line.strip()]
+        raw_preferences = profile.get("preferences") or []
+        if isinstance(raw_preferences, str):
+            raw_preferences = [item.strip() for item in raw_preferences.split(",") if item.strip()]
+        suffix = uuid4().hex[:8]
+        giver_id = f"person-giver-{suffix}"
+        recipient_id = f"person-recipient-{suffix}"
+        occasion_id = f"occasion-live-{suffix}"
+        event_id = f"event-live-{suffix}"
+        memories = [
+            {
+                "id": f"memory-live-{suffix}-{index + 1}",
+                "modality": "text",
+                "content": str(content),
+                "embedding": self._hash_embedding(str(content)).tolist(),
+                "embedding_source": "hash_text_runtime",
+                "timestamp": f"{occasion_date}T00:00:00Z",
+                "event_id": event_id,
+                "person_ids": [giver_id, recipient_id],
+                "emotion_tag": self._emotion_from_text(str(content)),
+            }
+            for index, content in enumerate(raw_memories[:8])
+        ]
+        preferences = [
+            {
+                "id": f"preference-live-{suffix}-{index + 1}",
+                "person_id": recipient_id,
+                "category": "stated",
+                "value": str(value),
+                "confidence": 1.0,
+                "source": "user_provided",
+                "embedding": self._hash_embedding(str(value)).tolist(),
+            }
+            for index, value in enumerate(raw_preferences[:12])
+        ]
+        return {
+            "schema_version": "1.0",
+            "persona_id": f"live-{suffix}",
+            "label": f"{giver_name} to {recipient_name}",
+            "synthetic": False,
+            "people": [
+                {"id": giver_id, "display_name": giver_name, "role": "giver"},
+                {"id": recipient_id, "display_name": recipient_name, "role": "recipient"},
+            ],
+            "relationships": [
+                {
+                    "id": f"relationship-live-{suffix}",
+                    "person_a": giver_id,
+                    "person_b": recipient_id,
+                    "type": relationship_type,
+                    "closeness_score": max(1.0, min(5.0, closeness_score)),
+                }
+            ],
+            "occasions": [
+                {
+                    "id": occasion_id,
+                    "name": occasion_name,
+                    "date": occasion_date,
+                    "budget_hint": budget_hint,
+                    "formality": formality,
+                }
+            ],
+            "events": [
+                {"id": event_id, "date": occasion_date, "type": "user-provided-context", "participants": [giver_id, recipient_id]}
+            ],
+            "memories": memories,
+            "preferences": preferences,
+        }
+
+    @staticmethod
+    def _hash_embedding(text: str, dimensions: int = 8) -> np.ndarray:
+        digest = hashlib.sha256(text.encode("utf-8")).digest()
+        values = np.frombuffer(digest[:dimensions], dtype=np.uint8).astype(np.float32)
+        return values / 127.5 - 1.0
+
+    @staticmethod
+    def _emotion_from_text(text: str) -> str:
+        lowered = text.lower()
+        if any(word in lowered for word in ("funny", "laugh", "joke", "silly")):
+            return "humor"
+        if any(word in lowered for word in ("miss", "remember", "old", "first")):
+            return "nostalgia"
+        if any(word in lowered for word in ("thank", "grateful", "appreciate")):
+            return "gratitude"
+        if any(word in lowered for word in ("calm", "hard", "support", "comfort")):
+            return "comfort"
+        return "joy"
     def _creative(self) -> CreativeGenerationAgent:
         if self._creative_agent is None:
             self._creative_agent = CreativeGenerationAgent.from_checkpoint(str(self.checkpoint_path))
@@ -477,4 +608,3 @@ class AgencyConsoleService:
             "confidence": 0.9,
             "rationale": "Uses supplied memory ids and keeps the message original and concise.",
         }
-

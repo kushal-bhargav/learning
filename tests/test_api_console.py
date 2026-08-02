@@ -110,3 +110,31 @@ def test_regenerate_keeps_stage_pending_with_new_proposal() -> None:
     assert regenerated["stage_log"][-1]["stage"] == "recipient_profiling"
     assert regenerated["stage_log"][-1]["status"] == "pending"
 
+
+
+def test_live_persona_default_and_custom_session_creation() -> None:
+    client = _client()
+    personas = client.get("/personas").json()
+    assert personas == [{"persona_id": "custom-live", "label": "Create a live gifting context", "synthetic": False, "occasions": []}]
+
+    created = client.post(
+        "/sessions",
+        json={
+            "agency_slider": 0.4,
+            "seed": 2026,
+            "custom_profile": {
+                "giver_name": "Asha",
+                "recipient_name": "Mira",
+                "relationship_type": "friend",
+                "closeness_score": 4,
+                "occasion_name": "Birthday",
+                "occasion_date": "2026-12-18",
+                "budget_hint": "USD 80",
+                "formality": "casual",
+                "preferences": ["ceramics", "green", "quiet mornings"],
+                "memories": ["We got lost finding a tiny tea shop.", "She notices beautiful doors."],
+            },
+        },
+    ).json()
+    assert created["session_id"].startswith("live-")
+    assert created["next_stage"] == "recipient_profiling"

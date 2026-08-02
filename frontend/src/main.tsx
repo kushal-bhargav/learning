@@ -9,12 +9,12 @@ type Screen = 'setup' | 'console' | 'ledger' | 'feedback' | 'replay';
 const REPLAY_ONLY = new URLSearchParams(window.location.search).has('replay') || window.location.hash === '#replay';
 
 const STAGES: Array<{ id: StageName; title: string; system: string; promise: string }> = [
-  { id: 'recipient_profiling', title: 'Recipient Profiling', system: 'LLM agent', promise: 'What do we know about the recipient?' },
-  { id: 'relationship_analysis', title: 'Relationship Analysis', system: 'LLM agent', promise: 'How should the gift sound and feel?' },
-  { id: 'recommendation', title: 'Gift Recommendation', system: 'LLM agent', promise: 'Which gift direction should we pursue?' },
-  { id: 'creative_generation', title: 'Creative Generation', system: 'MemoryGAN', promise: 'How much creative agency should the model have?' },
-  { id: 'greeting_story', title: 'Greeting + Story', system: 'LLM agent', promise: 'What message travels with the gift?' },
-  { id: 'delivery_planner', title: 'Delivery Planner', system: 'Rule-based stub', promise: 'How would this be delivered in the demo?' },
+  { id: 'recipient_profiling', title: 'Recipient Profiling', system: 'Ollama · Instructor', promise: 'What do we know about the recipient?' },
+  { id: 'relationship_analysis', title: 'Relationship Analysis', system: 'Ollama · smolagents', promise: 'How should the gift sound and feel?' },
+  { id: 'recommendation', title: 'Gift Recommendation', system: 'Ollama · smolagents', promise: 'Which gift direction should we pursue?' },
+  { id: 'creative_generation', title: 'Creative Generation', system: 'MemoryGAN live inference', promise: 'How much creative agency should the model have?' },
+  { id: 'greeting_story', title: 'Greeting + Story', system: 'Ollama chat', promise: 'What message travels with the gift?' },
+  { id: 'delivery_planner', title: 'Delivery Planner', system: 'Simulated logistics', promise: 'How would this be delivered in the demo?' },
 ];
 
 const ACTION_LABELS: Record<string, string> = {
@@ -113,49 +113,139 @@ function App() {
 }
 
 function SessionSetup({ personas, onCreate }: { personas: PersonaSummary[]; onCreate: (payload: Parameters<typeof api.createSession>[0]) => void }) {
-  const [personaId, setPersonaId] = useState('long-distance-partners');
-  const selected = personas.find((persona) => persona.persona_id === personaId) ?? personas[0];
-  const [occasionId, setOccasionId] = useState<string>('');
+  const templates = personas.filter((persona) => persona.persona_id !== 'custom-live');
+  const [templateId, setTemplateId] = useState('');
+  const [giverName, setGiverName] = useState('');
+  const [recipientName, setRecipientName] = useState('');
+  const [relationshipType, setRelationshipType] = useState('friend');
+  const [closeness, setCloseness] = useState(3);
+  const [occasionName, setOccasionName] = useState('Birthday');
+  const [occasionDate, setOccasionDate] = useState('2026-12-18');
+  const [formality, setFormality] = useState('casual');
   const [budget, setBudget] = useState('USD 60-100');
+  const [preferences, setPreferences] = useState('');
+  const [memories, setMemories] = useState('');
   const [agency, setAgency] = useState(0.5);
   const [seed, setSeed] = useState(2026);
 
-  useEffect(() => {
+  function applyTemplate(personaId: string) {
+    setTemplateId(personaId);
+    const selected = templates.find((persona) => persona.persona_id === personaId);
+    const occasion = selected?.occasions[0];
     if (selected) {
-      setPersonaId(selected.persona_id);
-      setOccasionId(String(selected.occasions[0]?.id ?? ''));
-      setBudget(String(selected.occasions[0]?.budget_hint ?? ''));
+      setRecipientName(selected.label);
+      setOccasionName(String(occasion?.name ?? occasionName));
+      setOccasionDate(String(occasion?.date ?? occasionDate));
+      setBudget(String(occasion?.budget_hint ?? budget));
+      setFormality(String(occasion?.formality ?? formality));
     }
-  }, [selected?.persona_id]);
+  }
+
+  function submit() {
+    onCreate({
+      persona_id: 'custom-live',
+      agency_slider: agency,
+      seed,
+      custom_profile: {
+        giver_name: giverName || 'Gift giver',
+        recipient_name: recipientName || 'Gift recipient',
+        relationship_type: relationshipType,
+        closeness_score: closeness,
+        occasion_name: occasionName || 'Gift occasion',
+        occasion_date: occasionDate || '2026-12-18',
+        budget_hint: budget || 'Flexible',
+        formality,
+        preferences: preferences.split(',').map((item) => item.trim()).filter(Boolean),
+        memories: memories.split('\n').map((item) => item.trim()).filter(Boolean),
+      },
+    });
+  }
 
   return (
     <main className="setup-grid">
       <section className="warm-card setup-card">
         <p className="eyebrow">1 · Session Setup</p>
-        <h2>Pick a synthetic story to begin.</h2>
-        <p className="muted">Fixtures are pre-seeded for demo and study use: no live personal data collection, no awkward “please upload your life” moment at the poster.</p>
+        <h2>Describe the gift moment.</h2>
+        <p className="muted">Enter the real context you want the agents to reason over. The app keeps the run local to this backend session and shows every AI proposal before it can affect the ledger.</p>
+
+        {templates.length > 0 && (
+          <label>
+            Optional template prefill
+            <select value={templateId} onChange={(event) => applyTemplate(event.target.value)}>
+              <option value="">Start from blank</option>
+              {templates.map((persona) => (
+                <option key={persona.persona_id} value={persona.persona_id}>{persona.label}</option>
+              ))}
+            </select>
+          </label>
+        )}
+
+        <div className="form-pair">
+          <label>
+            Your name
+            <input value={giverName} onChange={(event) => setGiverName(event.target.value)} placeholder="Asha" />
+          </label>
+          <label>
+            Recipient name
+            <input value={recipientName} onChange={(event) => setRecipientName(event.target.value)} placeholder="Mira" />
+          </label>
+        </div>
+
+        <div className="form-pair">
+          <label>
+            Relationship
+            <select value={relationshipType} onChange={(event) => setRelationshipType(event.target.value)}>
+              <option value="partner">Partner</option>
+              <option value="parent-child">Parent / child</option>
+              <option value="sibling">Sibling</option>
+              <option value="friend">Friend</option>
+              <option value="colleague">Colleague</option>
+              <option value="extended-family">Extended family</option>
+              <option value="mentor">Mentor</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label>
+            Closeness · {closeness.toFixed(1)} / 5
+            <input type="range" min="1" max="5" step="0.5" value={closeness} onChange={(event) => setCloseness(Number(event.target.value))} />
+          </label>
+        </div>
+
+        <div className="form-pair">
+          <label>
+            Occasion
+            <input value={occasionName} onChange={(event) => setOccasionName(event.target.value)} placeholder="Birthday, graduation, promotion" />
+          </label>
+          <label>
+            Occasion date
+            <input type="date" value={occasionDate} onChange={(event) => setOccasionDate(event.target.value)} />
+          </label>
+        </div>
+
+        <div className="form-pair">
+          <label>
+            Budget hint
+            <input value={budget} onChange={(event) => setBudget(event.target.value)} placeholder="USD 60-100" />
+          </label>
+          <label>
+            Formality
+            <select value={formality} onChange={(event) => setFormality(event.target.value)}>
+              <option value="casual">Casual</option>
+              <option value="semi-formal">Semi-formal</option>
+              <option value="professional">Professional</option>
+              <option value="ceremonial">Ceremonial</option>
+            </select>
+          </label>
+        </div>
 
         <label>
-          Persona
-          <select value={personaId} onChange={(event) => setPersonaId(event.target.value)}>
-            {personas.map((persona) => (
-              <option key={persona.persona_id} value={persona.persona_id}>{persona.label}</option>
-            ))}
-          </select>
+          Recipient preferences, comma-separated
+          <input value={preferences} onChange={(event) => setPreferences(event.target.value)} placeholder="ceramics, quiet mornings, green, handwritten notes" />
         </label>
 
         <label>
-          Occasion
-          <select value={occasionId} onChange={(event) => setOccasionId(event.target.value)}>
-            {(selected?.occasions ?? []).map((occasion) => (
-              <option key={occasion.id} value={occasion.id}>{occasion.name ?? occasion.id}</option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Budget hint
-          <input value={budget} onChange={(event) => setBudget(event.target.value)} placeholder="USD 60-100" />
+          Memory notes, one per line
+          <textarea value={memories} onChange={(event) => setMemories(event.target.value)} rows={5} placeholder={'They once got lost finding a tiny tea shop.\nThey always send photos of interesting doors.'} />
         </label>
 
         <label>
@@ -168,21 +258,20 @@ function SessionSetup({ personas, onCreate }: { personas: PersonaSummary[]; onCr
           <input type="number" value={seed} onChange={(event) => setSeed(Number(event.target.value))} />
         </label>
 
-        <button className="primary" onClick={() => onCreate({ persona_id: personaId, occasion_id: occasionId, budget_hint: budget, agency_slider: agency, seed })}>
+        <button className="primary" onClick={submit}>
           Begin Agency Console
         </button>
       </section>
 
-      <aside className="memory-board">
-        <div className="photo-note">Lisbon tram laughter</div>
-        <div className="text-note">“Same moon, different window.”</div>
-        <div className="photo-note yellow">Mustard yellow · urban sketching</div>
-        <p>Demo memory snippets are intentionally small, synthetic, and legible.</p>
+      <aside className="memory-board live-board">
+        <div className="photo-note">Your shared moments</div>
+        <div className="text-note">Preferences, tone, budget</div>
+        <div className="photo-note yellow">Live agent reasoning</div>
+        <p>The console turns your entered context into profile, relationship, recommendation, image, message, and feedback stages.</p>
       </aside>
     </main>
   );
 }
-
 function Console({ session, onUpdate, goLedger }: { session: GiftSessionResponse; onUpdate: (label: string, task: () => Promise<GiftSessionResponse>) => void; goLedger: () => void }) {
   const lastEntry = session.stage_log.length ? session.stage_log[session.stage_log.length - 1] : null;
   const pending = lastEntry?.status === 'pending' ? lastEntry : null;
@@ -548,6 +637,3 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 );
-
-
-

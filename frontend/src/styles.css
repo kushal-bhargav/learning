@@ -213,6 +213,17 @@ input[type="range"] {
   accent-color: #c05b43;
 }
 
+
+.form-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.live-board .photo-note,
+.live-board .text-note {
+  min-height: 118px;
+}
 .memory-board {
   min-height: 560px;
   position: relative;
@@ -538,7 +549,7 @@ pre, .human-edit {
 }
 
 @media (max-width: 900px) {
-  .hero, .setup-grid, .console-layout {
+  .hero, .setup-grid, .console-layout, .form-pair {
     grid-template-columns: 1fr;
   }
 

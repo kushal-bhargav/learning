@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -11,13 +12,39 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .service import AgencyConsoleService
 
+def _cors_origin_regex() -> str | None:
+    return os.environ.get("GMGI_CORS_ORIGIN_REGEX")
+
+
+def _cors_origins() -> list[str]:
+    raw = os.environ.get("GMGI_CORS_ORIGINS")
+    if raw:
+        return [origin.strip() for origin in raw.split(",") if origin.strip()]
+    return ["http://localhost:5173", "http://127.0.0.1:5173"]
+
+
+
+class LiveProfileRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    giver_name: str = Field(min_length=1)
+    recipient_name: str = Field(min_length=1)
+    relationship_type: str = Field(default="other")
+    closeness_score: float = Field(default=3, ge=1, le=5)
+    occasion_name: str = Field(min_length=1)
+    occasion_date: str = Field(min_length=1)
+    budget_hint: str = Field(default="Flexible")
+    formality: str = Field(default="casual")
+    memories: list[str] = Field(default_factory=list)
+    preferences: list[str] = Field(default_factory=list)
 
 class SessionCreateRequest(BaseModel):
-    persona_id: str = Field(default="long-distance-partners")
+    persona_id: str = Field(default="custom-live")
     occasion_id: str | None = None
     budget_hint: str | None = None
     agency_slider: float | None = Field(default=None, ge=0, le=1)
     seed: int = 2026
+    custom_profile: LiveProfileRequest | None = None
 
 
 class StageProposeRequest(BaseModel):
@@ -52,7 +79,8 @@ def create_app(service: AgencyConsoleService | None = None) -> FastAPI:
     console_service = service or AgencyConsoleService()
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+        allow_origins=_cors_origins(),
+        allow_origin_regex=_cors_origin_regex(),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -210,5 +238,3 @@ def _require_pending_stage(api: AgencyConsoleService, session_id: str, stage: st
 
 
 app = create_app()
-
-

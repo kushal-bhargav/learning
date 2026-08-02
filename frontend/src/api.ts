@@ -68,7 +68,11 @@ export interface FeedbackResponse {
   bandit_counts: Record<string, number>;
 }
 
-const API_BASE = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
+const explicitApiBase = import.meta.env.VITE_API_BASE;
+const localBackend = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+  ? 'http://127.0.0.1:8000'
+  : '';
+const API_BASE = (explicitApiBase ?? localBackend).replace(/\/$/, '');
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
