@@ -97,3 +97,47 @@ def test_prompt_and_temperature_live_in_config_files() -> None:
         assert isinstance(config["temperature"], float)
         assert "{context}" in config["prompt_template"]
         assert set(config["models"]) == {"ollama", "azure_openai", "openai", "gemini", "claude"}
+
+from src.agents.gift_intent_reasoning import GiftIntentReasoningAgent
+from src.agents.multi_agent_planning import MultiAgentPlanningAgent
+
+
+def test_gift_intent_agent_heuristic_extracts_structured_intent(session: GiftSession) -> None:
+    result = GiftIntentReasoningAgent().run(
+        {
+            "session": session,
+            "stage_config": {
+                "method": "heuristic",
+                "recipient_profile": {"interests": [{"name": "ceramics", "confidence": 0.9}]},
+                "relationship_guidance": {"tone_guidance": "warm and playful", "formality": "casual"},
+                "relationship": {"type": "friend", "closeness_score": 4},
+                "occasion": {"name": "Birthday", "date": "2026-09-18", "budget_hint": "USD 60-100", "formality": "casual"},
+                "preferences": [{"value": "tea", "confidence": 1.0}],
+                "memories": [{"content": "We laughed at a tiny tea shop."}],
+            },
+        }
+    )
+    assert result["stage"] == "gift_intent_reasoning"
+    assert result["output"]["goal"]["gift_purpose"] == "celebrate relationship milestone"
+    assert result["output"]["constraints"]["budget_hint"] == "USD 60-100"
+    assert result["output"]["preferences"]
+
+
+def test_multi_agent_planner_outputs_bounded_executable_plan(session: GiftSession) -> None:
+    result = MultiAgentPlanningAgent().run(
+        {
+            "session": session,
+            "stage_config": {
+                "method": "rule_constrained",
+                "user_request": "Create a birthday gift",
+                "intent": {"intent_summary": "Create a personal birthday gift", "clarifying_needs": []},
+                "memory_signals": {"memory_count": 2, "preference_count": 3},
+            },
+        }
+    )
+    plan = result["output"]
+    assert result["stage"] == "multi_agent_planning"
+    assert "recommendation" in plan["agent_sequence"]
+    assert "creative_generation" in plan["agent_sequence"]
+    assert plan["fallback_plan"]["type"] == "current_staged_orchestration"
+    assert all("agent" in step for step in plan["subtasks"])

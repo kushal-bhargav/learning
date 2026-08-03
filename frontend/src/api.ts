@@ -5,6 +5,8 @@ export type Actor = 'agent' | 'human';
 export type StageName =
   | 'recipient_profiling'
   | 'relationship_analysis'
+  | 'gift_intent_reasoning'
+  | 'multi_agent_planning'
   | 'recommendation'
   | 'creative_generation'
   | 'greeting_story'

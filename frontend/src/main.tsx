@@ -11,6 +11,8 @@ const REPLAY_ONLY = new URLSearchParams(window.location.search).has('replay') ||
 const STAGES: Array<{ id: StageName; title: string; system: string; promise: string }> = [
   { id: 'recipient_profiling', title: 'Recipient Profiling', system: 'Ollama · Instructor', promise: 'What do we know about the recipient?' },
   { id: 'relationship_analysis', title: 'Relationship Analysis', system: 'Ollama · smolagents', promise: 'How should the gift sound and feel?' },
+  { id: 'gift_intent_reasoning', title: 'Gift Intent Reasoning', system: 'Hybrid intent layer', promise: 'What is the gift trying to accomplish?' },
+  { id: 'multi_agent_planning', title: 'Multi-Agent Planning', system: 'Bounded planner', promise: 'How should the agents solve this request?' },
   { id: 'recommendation', title: 'Gift Recommendation', system: 'Ollama · smolagents', promise: 'Which gift direction should we pursue?' },
   { id: 'creative_generation', title: 'Creative Generation', system: 'MemoryGAN live inference', promise: 'How much creative agency should the model have?' },
   { id: 'greeting_story', title: 'Greeting + Story', system: 'Ollama chat', promise: 'What message travels with the gift?' },

@@ -14,10 +14,12 @@ from src.agents import (
     AgentOrchestrator,
     CreativeGenerationAgent,
     DeliveryPlannerAgent,
+    GiftIntentReasoningAgent,
     GiftSession,
     GreetingStoryAgent,
     HumanAction,
     LLMProvider,
+    MultiAgentPlanningAgent,
     RecipientProfilingAgent,
     RecommendationAgent,
     RelationshipAnalysisAgent,
@@ -30,6 +32,8 @@ from src.rl import BanditAction, ContextEncoder, LinUCBBandit, log_session, rewa
 STAGES = (
     "recipient_profiling",
     "relationship_analysis",
+    "gift_intent_reasoning",
+    "multi_agent_planning",
     "recommendation",
     "creative_generation",
     "greeting_story",
@@ -332,11 +336,35 @@ class AgencyConsoleService:
         elif stage == "relationship_analysis":
             agent = RelationshipAnalysisAgent(DemoStructuredLLM(self._relationship_response(fixture)))
             config = {"relationship": relationship, "memories": fixture.get("memories", []), "occasion": occasion}
+        elif stage == "gift_intent_reasoning":
+            agent = GiftIntentReasoningAgent(DemoStructuredLLM(self._intent_response(fixture, occasion)))
+            config = {
+                "recipient_profile": self._safe_effective(console, "recipient_profiling"),
+                "relationship_guidance": self._safe_effective(console, "relationship_analysis"),
+                "relationship": relationship,
+                "occasion": occasion,
+                "memories": fixture.get("memories", []),
+                "preferences": fixture.get("preferences", []),
+                "budget_hint": occasion.get("budget_hint"),
+            }
+        elif stage == "multi_agent_planning":
+            intent = self._safe_effective(console, "gift_intent_reasoning") or self._intent_response(fixture, occasion)["output"]
+            agent = MultiAgentPlanningAgent(DemoStructuredLLM(self._planning_response(fixture, intent)))
+            config = {
+                "user_request": f"Create a gift for {recipient.get('display_name', 'the recipient')} for {occasion.get('name', 'the occasion')}",
+                "recipient_profile": self._safe_effective(console, "recipient_profiling"),
+                "relationship_guidance": self._safe_effective(console, "relationship_analysis"),
+                "intent": intent,
+                "memory_signals": {"memory_count": len(fixture.get("memories", [])), "preference_count": len(fixture.get("preferences", []))},
+                "available_agents": list(STAGES),
+            }
         elif stage == "recommendation":
             agent = RecommendationAgent(DemoStructuredLLM(self._recommendation_response(fixture)))
             config = {
                 "recipient_profile": self._safe_effective(console, "recipient_profiling"),
                 "relationship_guidance": self._safe_effective(console, "relationship_analysis"),
+                "gift_intent": self._safe_effective(console, "gift_intent_reasoning"),
+                "execution_plan": self._safe_effective(console, "multi_agent_planning"),
                 "occasion": occasion,
                 "preferences": fixture.get("preferences", []),
             }
@@ -591,6 +619,79 @@ class AgencyConsoleService:
             "rationale": "Maps the fixture closeness score and occasion formality into conservative guidance.",
         }
 
+    @staticmethod
+    def _intent_response(fixture: Mapping[str, Any], occasion: Mapping[str, Any] | None = None) -> dict[str, Any]:
+        occasion = dict(occasion or (fixture.get("occasions", [{}])[0]))
+        preferences = fixture.get("preferences", [])
+        memories = fixture.get("memories", [])
+        preference_items = [
+            {"value": pref.get("value"), "confidence": pref.get("confidence", 0.8), "source": pref.get("source", "fixture")}
+            for pref in preferences[:5]
+        ]
+        output = {
+            "intent_summary": f"Create a personalized gift for {occasion.get('name', 'the occasion')} with a {occasion.get('formality', 'casual')} tone.",
+            "occasion": {
+                "name": occasion.get("name", "unspecified"),
+                "date": occasion.get("date"),
+                "formality": occasion.get("formality", "casual"),
+                "urgency": "date-specified" if occasion.get("date") else "unknown",
+            },
+            "goal": {
+                "gift_purpose": "create a meaningful personalized gift",
+                "emotional_objective": "warm connection through memory-grounded personalization" if memories else "thoughtful personalization",
+                "personalization_depth": "high" if memories else "medium",
+                "social_tone": occasion.get("formality", "casual"),
+            },
+            "constraints": {
+                "budget_hint": occasion.get("budget_hint", "Flexible"),
+                "budget_sensitivity": "medium",
+                "delivery_constraints": ["simulated delivery only"],
+                "timing": "date-specified" if occasion.get("date") else "unknown",
+            },
+            "preferences": [item for item in preference_items if item.get("value")],
+            "open_questions": [],
+            "clarifying_needs": [],
+        }
+        return {
+            "output": output,
+            "confidence": 0.86,
+            "rationale": "Deterministic demo intent derived from occasion, relationship context, memories, and stated preferences.",
+        }
+
+    @staticmethod
+    def _planning_response(fixture: Mapping[str, Any], intent: Mapping[str, Any]) -> dict[str, Any]:
+        sequence = list(STAGES)
+        output = {
+            "task_goal": str(intent.get("intent_summary") or "Create a personalized gift workflow"),
+            "subtasks": [
+                {"id": f"step_{index + 1}", "agent": agent, "action": "run_stage", "requires_human_review": True}
+                for index, agent in enumerate(sequence)
+            ],
+            "agent_sequence": sequence,
+            "dependencies": [
+                {"after": sequence[index - 1], "before": sequence[index], "type": "stage_output"}
+                for index in range(1, len(sequence))
+            ],
+            "expected_outputs": [
+                {"agent": agent, "output": "structured stage output"}
+                for agent in sequence
+            ],
+            "stop_conditions": [
+                "human action is required for each proposal unless delegate is selected",
+                "fallback to current staged orchestration if planner output is invalid",
+                "delivery remains simulated only",
+            ],
+            "fallback_plan": {
+                "type": "current_staged_orchestration",
+                "agent_sequence": sequence,
+                "reason": "Bounded default used by the existing Agency Console.",
+            },
+        }
+        return {
+            "output": output,
+            "confidence": 0.84,
+            "rationale": "Deterministic demo planner decomposes the GMGI workflow into bounded auditable stages.",
+        }
     @staticmethod
     def _recommendation_response(fixture: Mapping[str, Any]) -> dict[str, Any]:
         preferences = [pref["value"] for pref in fixture.get("preferences", [])]

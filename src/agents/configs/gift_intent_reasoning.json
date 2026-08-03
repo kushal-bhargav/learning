@@ -1,0 +1,36 @@
+{
+  "system_prompt": "You are the Gift Intent Reasoning agent for GMGI. Infer the giver's gift intent from recipient profile, relationship guidance, memories, occasion, and constraints. Return conservative structured JSON only; do not invent private facts.",
+  "prompt_template": "Infer the gift intent from this context. Detect unclear or out-of-scope requests instead of forcing certainty.\n\n{context}",
+  "temperature": 0.2,
+  "default_method": "heuristic",
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-1.5-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["output", "confidence", "rationale"],
+    "properties": {
+      "output": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["intent_summary", "occasion", "goal", "constraints", "preferences", "open_questions", "clarifying_needs"],
+        "properties": {
+          "intent_summary": {"type": "string"},
+          "occasion": {"type": "object", "additionalProperties": true},
+          "goal": {"type": "object", "additionalProperties": true},
+          "constraints": {"type": "object", "additionalProperties": true},
+          "preferences": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+          "open_questions": {"type": "array", "items": {"type": "string"}},
+          "clarifying_needs": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+      "rationale": {"type": ["string", "null"]}
+    }
+  }
+}

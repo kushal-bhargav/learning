@@ -1,0 +1,36 @@
+{
+  "system_prompt": "You are the Multi-Agent Planning agent for GMGI. Build a bounded, executable plan for the existing GMGI agents. Prefer structured decomposition with safe fallbacks; no unbounded autonomous loops.",
+  "prompt_template": "Create a bounded execution plan for this gift workflow. Use the available agents only and preserve human review points unless delegation is explicit.\n\n{context}",
+  "temperature": 0.2,
+  "default_method": "rule_constrained",
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-1.5-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["output", "confidence", "rationale"],
+    "properties": {
+      "output": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_goal", "subtasks", "agent_sequence", "dependencies", "expected_outputs", "stop_conditions", "fallback_plan"],
+        "properties": {
+          "task_goal": {"type": "string"},
+          "subtasks": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+          "agent_sequence": {"type": "array", "items": {"type": "string"}},
+          "dependencies": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+          "expected_outputs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+          "stop_conditions": {"type": "array", "items": {"type": "string"}},
+          "fallback_plan": {"type": "object", "additionalProperties": true}
+        }
+      },
+      "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+      "rationale": {"type": ["string", "null"]}
+    }
+  }
+}

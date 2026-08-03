@@ -138,3 +138,28 @@ def test_live_persona_default_and_custom_session_creation() -> None:
     ).json()
     assert created["session_id"].startswith("live-")
     assert created["next_stage"] == "recipient_profiling"
+
+def test_live_occasion_names_are_normalized_for_gan() -> None:
+    service = AgencyConsoleService()
+    assert service._gan_occasion("Birthday dinner") == "birthday"
+    assert service._gan_occasion("new home celebration") == "housewarming"
+    assert service._gan_occasion("custom ritual") == "other"
+
+from src.api.service import STAGES
+
+
+def test_new_intent_and_planning_stages_are_in_default_orchestration() -> None:
+    client = _client()
+    created = client.post("/sessions", json={"persona_id": "long-distance-partners", "agency_slider": 0.25}).json()
+    assert created["next_stage"] == "recipient_profiling"
+    assert "gift_intent_reasoning" in STAGES
+    assert "multi_agent_planning" in STAGES
+    assert STAGES.index("relationship_analysis") < STAGES.index("gift_intent_reasoning") < STAGES.index("multi_agent_planning") < STAGES.index("recommendation")
+
+    session_id = created["session_id"]
+    for stage in ("recipient_profiling", "relationship_analysis", "gift_intent_reasoning", "multi_agent_planning"):
+        proposed = client.post(f"/sessions/{session_id}/stages/{stage}/propose", json={}).json()
+        assert proposed["stage_log"][-1]["stage"] == stage
+        accepted = client.post(f"/sessions/{session_id}/stages/{stage}/accept").json()
+        assert accepted["next_stage"] != stage
+    assert accepted["next_stage"] == "recommendation"

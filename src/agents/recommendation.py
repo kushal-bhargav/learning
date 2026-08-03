@@ -34,6 +34,8 @@ class RecommendationAgent(StructuredAgent):
         return {
             "recipient_profile": config["recipient_profile"],
             "relationship_guidance": config["relationship_guidance"],
+            "gift_intent": config.get("gift_intent", {}),
+            "execution_plan": config.get("execution_plan", {}),
             "occasion": config["occasion"],
             "preferences": config.get("preferences", []),
             "budget": config.get("budget", config["occasion"].get("budget_hint")),
