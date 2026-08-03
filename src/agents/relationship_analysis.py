@@ -47,6 +47,8 @@ class RelationshipAnalysisAgent(StructuredAgent):
         try:
             return self._run_with_smolagents(agent_input)
         except Exception:
+            if os.getenv("GMGI_FORCE_OLLAMA_AGENTS") == "1" and os.getenv("GMGI_ALLOW_AGENT_FALLBACK") != "1":
+                raise
             return super().run(agent_input)
 
     def _run_with_smolagents(self, agent_input: AgentInput) -> AgentOutput:

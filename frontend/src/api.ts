@@ -57,6 +57,18 @@ export interface GiftSessionResponse {
   ledger: LedgerSummary;
 }
 
+export interface LiveProfilePayload {
+  giver_name: string;
+  recipient_name: string;
+  relationship_type: string;
+  closeness_score: number;
+  occasion_name: string;
+  occasion_date: string;
+  budget_hint: string;
+  formality: string;
+  preferences: string[];
+  memories: string[];
+}
 export interface FeedbackResponse {
   session_id: string;
   reward: number;
@@ -108,6 +120,7 @@ export const api = {
     budget_hint?: string | null;
     agency_slider?: number | null;
     seed?: number;
+    custom_profile?: LiveProfilePayload | null;
   }): Promise<GiftSessionResponse> {
     return request('/sessions', { method: 'POST', body: JSON.stringify(payload) });
   },

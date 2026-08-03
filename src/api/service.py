@@ -342,8 +342,7 @@ class AgencyConsoleService:
             }
         elif stage == "creative_generation":
             agent = self._creative()
-            graph = load_fixture(console.fixture_path)
-            context = _padded(graph.context_embedding(recipient["id"], occasion["id"]), agent.gan.config.context_dim)
+            context = _padded(self._context_embedding(console, recipient["id"], occasion["id"]), agent.gan.config.context_dim)
             memory = fixture.get("memories", [{}])[0]
             agency_slider = float(overrides.get("agency_slider", console.agency_slider))
             console.agency_slider = agency_slider
@@ -351,7 +350,7 @@ class AgencyConsoleService:
                 "context_embedding": context,
                 "relationship_type": relationship.get("type", "other"),
                 "emotion_tag": memory.get("emotion_tag", "joy"),
-                "occasion": occasion.get("name", "birthday"),
+                "occasion": self._gan_occasion(occasion.get("name", "other")),
                 "agency_slider": agency_slider,
                 "human_style_ref": _padded(memory.get("embedding", context), agent.gan.config.context_dim),
                 "seed": int(overrides.get("seed", console.seed)),
@@ -473,6 +472,22 @@ class AgencyConsoleService:
         }
 
     @staticmethod
+    def _gan_occasion(value: object) -> str:
+        text = str(value or "").strip().lower()
+        aliases = {
+            "birthday": ("birthday", "bday", "birth day"),
+            "anniversary": ("anniversary",),
+            "graduation": ("graduation", "graduate", "commencement"),
+            "housewarming": ("housewarming", "house warming", "new home"),
+            "promotion": ("promotion", "promoted"),
+            "holiday": ("holiday", "christmas", "diwali", "eid", "hanukkah", "new year"),
+            "thank-you": ("thank-you", "thank you", "thanks", "gratitude"),
+        }
+        for canonical, needles in aliases.items():
+            if any(needle in text for needle in needles):
+                return canonical
+        return "other"
+    @staticmethod
     def _hash_embedding(text: str, dimensions: int = 8) -> np.ndarray:
         digest = hashlib.sha256(text.encode("utf-8")).digest()
         values = np.frombuffer(digest[:dimensions], dtype=np.uint8).astype(np.float32)
@@ -492,8 +507,27 @@ class AgencyConsoleService:
         return "joy"
     def _creative(self) -> CreativeGenerationAgent:
         if self._creative_agent is None:
-            self._creative_agent = CreativeGenerationAgent.from_checkpoint(str(self.checkpoint_path))
+            self._creative_agent = CreativeGenerationAgent.from_checkpoint(str(self._resolve_checkpoint_path()))
         return self._creative_agent
+
+    def _resolve_checkpoint_path(self) -> Path:
+        explicit = os.getenv("GMGI_GAN_CHECKPOINT")
+        if explicit:
+            path = Path(explicit)
+            if path.exists():
+                return path
+            raise FileNotFoundError(f"GMGI_GAN_CHECKPOINT does not exist: {path}")
+        if self.checkpoint_path.exists():
+            return self.checkpoint_path
+        candidates = sorted(
+            Path("experiments").glob("run-*/checkpoint-*.pt"),
+            key=lambda path: (path.parent.name, path.name),
+        )
+        if candidates:
+            return candidates[-1]
+        raise FileNotFoundError(
+            "No GAN checkpoint found. Run `python -m src.gan.train --config src/gan/configs/train_smoke.json` first."
+        )
 
     def _load_or_create_bandit(self, action: BanditAction) -> LinUCBBandit:
         if self.bandit_state_path.exists():
