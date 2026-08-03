@@ -64,9 +64,10 @@ class HTTPStructuredLLM:
     def _ollama(
         self, system: str, user: str, schema: dict[str, Any], temperature: float, model: str
     ) -> dict[str, Any]:
-        host = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
+        host = os.getenv("GMGI_OLLAMA_HOST") or os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
+        host = host.rstrip("/")
         payload = {
-            "model": os.getenv("OLLAMA_MODEL", model),
+            "model": os.getenv("GMGI_OLLAMA_MODEL") or os.getenv("OLLAMA_MODEL", model),
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},

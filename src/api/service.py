@@ -330,14 +330,15 @@ class AgencyConsoleService:
         occasion = self._occasion(fixture, console.orchestrator.session.occasion_id)
         if console.budget_hint:
             occasion = {**occasion, "budget_hint": console.budget_hint}
+        demo_agents = os.getenv("GMGI_USE_DEMO_AGENT_RESPONSES", "0") == "1"
         if stage == "recipient_profiling":
-            agent = RecipientProfilingAgent(DemoStructuredLLM(self._recipient_response(fixture)))
+            agent = RecipientProfilingAgent(DemoStructuredLLM(self._recipient_response(fixture)) if demo_agents else None)
             config = {"person": recipient, "preferences": fixture.get("preferences", []), "raw_notes": [m["content"] for m in fixture.get("memories", [])]}
         elif stage == "relationship_analysis":
-            agent = RelationshipAnalysisAgent(DemoStructuredLLM(self._relationship_response(fixture)))
+            agent = RelationshipAnalysisAgent(DemoStructuredLLM(self._relationship_response(fixture)) if demo_agents else None)
             config = {"relationship": relationship, "memories": fixture.get("memories", []), "occasion": occasion}
         elif stage == "gift_intent_reasoning":
-            agent = GiftIntentReasoningAgent(DemoStructuredLLM(self._intent_response(fixture, occasion)))
+            agent = GiftIntentReasoningAgent(DemoStructuredLLM(self._intent_response(fixture, occasion)) if demo_agents else None)
             config = {
                 "recipient_profile": self._safe_effective(console, "recipient_profiling"),
                 "relationship_guidance": self._safe_effective(console, "relationship_analysis"),
@@ -346,10 +347,11 @@ class AgencyConsoleService:
                 "memories": fixture.get("memories", []),
                 "preferences": fixture.get("preferences", []),
                 "budget_hint": occasion.get("budget_hint"),
+                "method": os.getenv("GMGI_INTENT_METHOD", "heuristic"),
             }
         elif stage == "multi_agent_planning":
             intent = self._safe_effective(console, "gift_intent_reasoning") or self._intent_response(fixture, occasion)["output"]
-            agent = MultiAgentPlanningAgent(DemoStructuredLLM(self._planning_response(fixture, intent)))
+            agent = MultiAgentPlanningAgent(DemoStructuredLLM(self._planning_response(fixture, intent)) if demo_agents else None)
             config = {
                 "user_request": f"Create a gift for {recipient.get('display_name', 'the recipient')} for {occasion.get('name', 'the occasion')}",
                 "recipient_profile": self._safe_effective(console, "recipient_profiling"),
@@ -357,9 +359,10 @@ class AgencyConsoleService:
                 "intent": intent,
                 "memory_signals": {"memory_count": len(fixture.get("memories", [])), "preference_count": len(fixture.get("preferences", []))},
                 "available_agents": list(STAGES),
+                "method": os.getenv("GMGI_PLANNING_METHOD", "rule_constrained"),
             }
         elif stage == "recommendation":
-            agent = RecommendationAgent(DemoStructuredLLM(self._recommendation_response(fixture)))
+            agent = RecommendationAgent(DemoStructuredLLM(self._recommendation_response(fixture)) if demo_agents else None)
             config = {
                 "recipient_profile": self._safe_effective(console, "recipient_profiling"),
                 "relationship_guidance": self._safe_effective(console, "relationship_analysis"),
@@ -386,7 +389,7 @@ class AgencyConsoleService:
                 "filename": f"{console.orchestrator.session.session_id}-{agency_slider:.2f}.png",
             }
         elif stage == "greeting_story":
-            agent = GreetingStoryAgent(DemoStructuredLLM(self._greeting_response(fixture)))
+            agent = GreetingStoryAgent(DemoStructuredLLM(self._greeting_response(fixture)) if demo_agents else None)
             config = {
                 "relationship_guidance": self._safe_effective(console, "relationship_analysis"),
                 "occasion": occasion,
@@ -539,23 +542,57 @@ class AgencyConsoleService:
         return self._creative_agent
 
     def _resolve_checkpoint_path(self) -> Path:
+        require_full = os.getenv("GMGI_REQUIRE_FULL_GAN_CHECKPOINT", "0") == "1"
         explicit = os.getenv("GMGI_GAN_CHECKPOINT")
         if explicit:
             path = Path(explicit)
-            if path.exists():
-                return path
-            raise FileNotFoundError(f"GMGI_GAN_CHECKPOINT does not exist: {path}")
+            if not path.exists():
+                raise FileNotFoundError(f"GMGI_GAN_CHECKPOINT does not exist: {path}")
+            if require_full:
+                self._require_full_checkpoint(path)
+            return path
+        candidates = []
         if self.checkpoint_path.exists():
-            return self.checkpoint_path
-        candidates = sorted(
-            Path("experiments").glob("run-*/checkpoint-*.pt"),
-            key=lambda path: (path.parent.name, path.name),
+            candidates.append(self.checkpoint_path)
+        candidates.extend(
+            sorted(
+                Path("experiments").glob("run-*/checkpoint-*.pt"),
+                key=lambda path: (path.parent.name, path.name),
+            )
         )
-        if candidates:
-            return candidates[-1]
+        for candidate in reversed(candidates):
+            if require_full:
+                try:
+                    self._require_full_checkpoint(candidate)
+                except ValueError:
+                    continue
+            return candidate
+        if require_full:
+            raise FileNotFoundError(
+                "No full GAN checkpoint found. Train with `python -m src.gan.train --config src/gan/configs/train.json` "
+                "or set GMGI_GAN_CHECKPOINT to a full 256px checkpoint. Smoke checkpoints are rejected."
+            )
         raise FileNotFoundError(
-            "No GAN checkpoint found. Run `python -m src.gan.train --config src/gan/configs/train_smoke.json` first."
+            "No GAN checkpoint found. Train with `python -m src.gan.train --config src/gan/configs/train.json` "
+            "or set GMGI_GAN_CHECKPOINT."
         )
+
+    @staticmethod
+    def _require_full_checkpoint(path: Path) -> None:
+        import torch
+
+        checkpoint = torch.load(path, map_location="cpu", weights_only=False)
+        model_config = checkpoint.get("model_config", {}) if isinstance(checkpoint, dict) else {}
+        training_config = checkpoint.get("training_config", {}) if isinstance(checkpoint, dict) else {}
+        resolution = int(model_config.get("resolution", 0) or 0)
+        max_steps = int(training_config.get("max_steps", 0) or 0)
+        metric_backend = str(training_config.get("metric_backend", ""))
+        base_config = str(training_config.get("base_config", ""))
+        if resolution < 256 or max_steps < 1000 or metric_backend == "clip" or "train_smoke" in base_config:
+            raise ValueError(
+                f"Checkpoint {path} looks like a smoke/pilot checkpoint "
+                f"(resolution={resolution}, max_steps={max_steps}, metric_backend={metric_backend!r})."
+            )
 
     def _load_or_create_bandit(self, action: BanditAction) -> LinUCBBandit:
         if self.bandit_state_path.exists():

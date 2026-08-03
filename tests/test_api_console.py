@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +42,9 @@ class _FakeCreativeAgent:
 
 
 def _client() -> TestClient:
+    os.environ["GMGI_USE_DEMO_AGENT_RESPONSES"] = "1"
+    os.environ["GMGI_ALLOW_AGENT_FALLBACK"] = "1"
+    os.environ.pop("GMGI_FORCE_OLLAMA_AGENTS", None)
     root = Path("experiments/test-api")
     root.mkdir(parents=True, exist_ok=True)
     service = AgencyConsoleService(
