@@ -18,6 +18,11 @@ from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from torchvision.utils import save_image
 
+try:
+    from tqdm.auto import tqdm
+except ImportError:  # pragma: no cover - tqdm is optional at runtime.
+    tqdm = None
+
 from .models import (
     ADAAugment,
     ADAController,
@@ -47,6 +52,24 @@ def resolve_device(requested: str) -> torch.device:
     if requested == "auto":
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return torch.device(requested)
+
+
+def device_report(device: torch.device, amp_enabled: bool) -> dict[str, Any]:
+    report: dict[str, Any] = {
+        "cuda_available": torch.cuda.is_available(),
+        "resolved_device": str(device),
+        "mixed_precision_active": amp_enabled,
+    }
+    if device.type == "cuda":
+        index = device.index if device.index is not None else torch.cuda.current_device()
+        props = torch.cuda.get_device_properties(index)
+        report.update({
+            "cuda_device_index": index,
+            "cuda_device_name": torch.cuda.get_device_name(index),
+            "cuda_capability": f"{props.major}.{props.minor}",
+            "cuda_total_memory_gb": round(props.total_memory / (1024 ** 3), 2),
+        })
+    return report
 
 
 def seed_everything(seed: int) -> None:
@@ -334,6 +357,7 @@ def train(config_path: str | Path) -> Path:
     (run_dir / "config.json").write_text(
         json.dumps(resolved_config, indent=2), encoding="utf-8"
     )
+    print(json.dumps({"event": "training_start", **device_report(device, amp_enabled)}, indent=2), flush=True)
 
     train_dataset = GANDataset(
         config["metadata_path"], config["embeddings_path"], "train", model_config,
@@ -351,6 +375,14 @@ def train(config_path: str | Path) -> Path:
     train_loader = DataLoader(train_dataset, shuffle=True, drop_last=False, **loader_kwargs)
     validation_loader = DataLoader(validation_dataset, shuffle=False, **loader_kwargs)
     batches = infinite_batches(train_loader)
+    print(json.dumps({
+        "event": "dataset_ready",
+        "train_images": len(train_dataset),
+        "validation_images": len(validation_dataset),
+        "batch_size": int(config["batch_size"]),
+        "max_steps": int(config["max_steps"]),
+        "run_dir": run_dir.as_posix(),
+    }, indent=2), flush=True)
 
     generator = Generator(model_config).to(device)
     generator_ema = copy.deepcopy(generator).eval().requires_grad_(False)
@@ -387,7 +419,14 @@ def train(config_path: str | Path) -> Path:
     stale_evaluations = 0
     final_step = 0
 
-    for step in range(1, int(config["max_steps"]) + 1):
+    max_steps = int(config["max_steps"])
+    progress_iterable = range(1, max_steps + 1)
+    progress = None
+    if tqdm is not None and os.getenv("GMGI_DISABLE_TQDM") != "1":
+        progress = tqdm(progress_iterable, total=max_steps, desc="MemoryGAN training", unit="step", dynamic_ncols=True)
+        progress_iterable = progress
+
+    for step in progress_iterable:
         final_step = step
         batch = next(batches)
         real, context, relationship, emotion, occasion = move_batch(batch, device)
@@ -461,6 +500,12 @@ def train(config_path: str | Path) -> Path:
             with log_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record) + "\n")
             print(json.dumps(record), flush=True)
+            if progress is not None:
+                progress.set_postfix({
+                    "g": f"{record['g_loss']:.3f}",
+                    "d": f"{record['d_loss']:.3f}",
+                    "ada": f"{record['ada_probability']:.3f}",
+                })
 
         should_measure = step % int(config["metric_interval"]) == 0 or step == int(config["max_steps"])
         if should_measure:
@@ -473,6 +518,8 @@ def train(config_path: str | Path) -> Path:
             with metrics_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(metrics) + "\n")
             print(json.dumps(metrics), flush=True)
+            if progress is not None:
+                progress.write(json.dumps({"event": "metrics", **metrics}))
             early = config["early_stopping"]
             if metrics["fid"] < best_fid - float(early["fid_min_delta"]):
                 best_fid = metrics["fid"]
@@ -480,6 +527,8 @@ def train(config_path: str | Path) -> Path:
             else:
                 stale_evaluations += 1
             if early["enabled"] and stale_evaluations >= int(early["fid_patience_evaluations"]):
+                if progress is not None:
+                    progress.write("Early stopping: FID did not improve enough.")
                 break
 
         if step % int(config["sample_interval"]) == 0 or step == int(config["max_steps"]):
@@ -490,6 +539,9 @@ def train(config_path: str | Path) -> Path:
                 discriminator, optimizer_g, optimizer_d, augmenter, mean_path_length,
                 model_config, resolved_config,
             )
+
+    if progress is not None:
+        progress.close()
 
     summary = {
         "final_step": final_step,

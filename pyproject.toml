@@ -24,6 +24,7 @@ dependencies = [
     "torch",
     "torch-fidelity",
     "torchmetrics[image]",
+    "tqdm",
     "uvicorn[standard]",
 ]
 
@@ -38,4 +39,3 @@ include = ["src*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
