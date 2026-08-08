@@ -9,7 +9,7 @@ import re
 import time
 from dataclasses import asdict, replace
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterator, Sequence
 
 import numpy as np
 import torch
@@ -186,6 +186,28 @@ def clip_image_features(images: Tensor, clip_model: torch.nn.Module) -> Tensor:
     return torch.nn.functional.normalize(clip_model.encode_image((images - mean) / std), dim=1)
 
 
+def cached_clip_consistency_loss(
+    generated_images: Tensor,
+    descriptions: Sequence[str],
+    clip_model: torch.nn.Module,
+    tokenizer: Any,
+    text_feature_cache: dict[str, Tensor],
+) -> Tensor:
+    if len(descriptions) != generated_images.shape[0]:
+        raise ValueError("one conditioning description is required per image")
+    device = generated_images.device
+    missing = [description for description in dict.fromkeys(descriptions) if description not in text_feature_cache]
+    if missing:
+        with torch.no_grad():
+            tokens = tokenizer(missing).to(device)
+            features = torch.nn.functional.normalize(clip_model.encode_text(tokens), dim=1).detach()
+        for description, feature in zip(missing, features):
+            text_feature_cache[description] = feature
+    image_features = clip_image_features(generated_images, clip_model)
+    text_features = torch.stack([text_feature_cache[description].to(device) for description in descriptions])
+    return (1 - (image_features * text_features).sum(dim=1)).mean()
+
+
 def frechet_distance(features_real: Tensor, features_fake: Tensor) -> Tensor:
     real = features_real.double()
     fake = features_fake.double()
@@ -347,8 +369,15 @@ def train(config_path: str | Path) -> Path:
     torch_home = Path(config["torch_home"])
     torch_home.mkdir(parents=True, exist_ok=True)
     os.environ["TORCH_HOME"] = str(torch_home.resolve())
+    clip_interval = int(config.get("clip_interval", 16))
+    if clip_interval < 1:
+        raise ValueError("clip_interval must be >= 1")
+    metric_interval = int(config.get("metric_interval", 0))
+    metrics_enabled = bool(config.get("metrics_enabled", True)) and metric_interval > 0
     resolved_config = {
         **config,
+        "clip_interval": clip_interval,
+        "metrics_enabled": metrics_enabled,
         "model": asdict(model_config),
         "resolved_device": str(device),
         "mixed_precision_active": amp_enabled,
@@ -381,6 +410,11 @@ def train(config_path: str | Path) -> Path:
         "validation_images": len(validation_dataset),
         "batch_size": int(config["batch_size"]),
         "max_steps": int(config["max_steps"]),
+        "clip_interval": clip_interval,
+        "metrics_enabled": metrics_enabled,
+        "metric_interval": metric_interval,
+        "num_workers": int(config["num_workers"]),
+        "pin_memory": device.type == "cuda",
         "run_dir": run_dir.as_posix(),
     }, indent=2), flush=True)
 
@@ -402,9 +436,16 @@ def train(config_path: str | Path) -> Path:
 
     clip_model = None
     clip_tokenizer = None
+    clip_text_feature_cache: dict[str, Tensor] = {}
     if model_config.clip_consistency_weight > 0:
         import open_clip
 
+        print(json.dumps({
+            "event": "loading_clip_model",
+            "model_name": config["clip"]["model_name"],
+            "pretrained": config["clip"]["pretrained"],
+            "clip_interval": clip_interval,
+        }), flush=True)
         clip_model, _, _ = open_clip.create_model_and_transforms(
             config["clip"]["model_name"], pretrained=config["clip"]["pretrained"], device=device
         )
@@ -475,12 +516,12 @@ def train(config_path: str | Path) -> Path:
                 )
                 g_loss = g_loss + model_config.path_length_weight * model_config.path_length_interval * path_loss
             clip_loss = torch.zeros((), device=device)
-            if step % int(config["clip_interval"]) == 0:
+            if model_config.clip_consistency_weight > 0 and step % clip_interval == 0:
                 assert clip_model is not None and clip_tokenizer is not None
-                clip_loss = clip_consistency_loss(
-                    fake, list(batch["description"]), clip_model, clip_tokenizer
+                clip_loss = cached_clip_consistency_loss(
+                    fake, list(batch["description"]), clip_model, clip_tokenizer, clip_text_feature_cache
                 )
-                g_loss = g_loss + model_config.clip_consistency_weight * int(config["clip_interval"]) * clip_loss
+                g_loss = g_loss + model_config.clip_consistency_weight * clip_interval * clip_loss
         scaler_g.scale(g_loss).backward()
         scaler_g.step(optimizer_g)
         scaler_g.update()
@@ -507,13 +548,17 @@ def train(config_path: str | Path) -> Path:
                     "ada": f"{record['ada_probability']:.3f}",
                 })
 
-        should_measure = step % int(config["metric_interval"]) == 0 or step == int(config["max_steps"])
+        should_measure = metrics_enabled and (step % metric_interval == 0 or step == int(config["max_steps"]))
         if should_measure:
             save_checkpoint(
                 run_dir / f"checkpoint-{step:06d}.pt", step, generator, generator_ema,
                 discriminator, optimizer_g, optimizer_d, augmenter, mean_path_length,
                 model_config, resolved_config,
             )
+            if progress is not None:
+                progress.write(json.dumps({"event": "metric_evaluation_start", "step": step, "backend": config["metric_backend"]}))
+            else:
+                print(json.dumps({"event": "metric_evaluation_start", "step": step, "backend": config["metric_backend"]}), flush=True)
             metrics = {"step": step, **evaluate_metrics(generator_ema, validation_loader, config, model_config, device, clip_model)}
             with metrics_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(metrics) + "\n")
