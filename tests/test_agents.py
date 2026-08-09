@@ -30,6 +30,13 @@ class FakeStructuredLLM:
         return self.response
 
 
+class FailingStructuredLLM:
+    provider = LLMProvider.OLLAMA
+
+    def generate(self, **kwargs: Any) -> dict[str, Any]:
+        raise RuntimeError("model returned unusable structure")
+
+
 @pytest.fixture
 def session() -> GiftSession:
     return GiftSession(
@@ -175,3 +182,49 @@ def test_multi_agent_planner_outputs_bounded_executable_plan(session: GiftSessio
     assert "creative_generation" in plan["agent_sequence"]
     assert plan["fallback_plan"]["type"] == "current_staged_orchestration"
     assert all("agent" in step for step in plan["subtasks"])
+
+
+def test_intent_and_planning_repair_llm_failures_in_strict_mode(
+    monkeypatch: pytest.MonkeyPatch,
+    session: GiftSession,
+) -> None:
+    monkeypatch.setenv("GMGI_FORCE_OLLAMA_AGENTS", "1")
+    monkeypatch.setenv("GMGI_ALLOW_AGENT_FALLBACK", "0")
+    monkeypatch.setenv("GMGI_ALLOW_INTENT_REPAIR", "1")
+    monkeypatch.setenv("GMGI_ALLOW_PLANNING_REPAIR", "1")
+
+    intent = GiftIntentReasoningAgent(FailingStructuredLLM()).run(
+        {
+            "session": session,
+            "stage_config": {
+                "method": "llm_structured",
+                "recipient_profile": {"interests": [{"name": "tea", "confidence": 0.9}]},
+                "relationship_guidance": {"tone_guidance": "warm", "formality": "casual"},
+                "relationship": {"type": "friend", "closeness_score": 4},
+                "occasion": {"name": "Birthday", "date": "2026-12-18", "budget_hint": "USD 60-100"},
+                "preferences": [{"value": "tea", "confidence": 1.0}],
+                "memories": ["We found a tiny tea shop."],
+            },
+        }
+    )
+    assert intent["output"]["intent_summary"]
+    assert "repaired with deterministic intent extractor" in intent["rationale"]
+
+    plan = MultiAgentPlanningAgent(FailingStructuredLLM()).run(
+        {
+            "session": session,
+            "stage_config": {
+                "method": "llm_structured",
+                "intent": intent["output"],
+                "available_agents": [
+                    "recipient_profiling",
+                    "relationship_analysis",
+                    "gift_intent_reasoning",
+                    "multi_agent_planning",
+                    "recommendation",
+                ],
+            },
+        }
+    )
+    assert "recommendation" in plan["output"]["agent_sequence"]
+    assert "repaired with bounded rule planner" in plan["rationale"]

@@ -42,7 +42,13 @@ class MultiAgentPlanningAgent(StructuredAgent):
             return self._run_rule_planner(agent_input, method=method)
         try:
             return super().run(agent_input)
-        except Exception:
+        except Exception as exc:
+            if os.getenv("GMGI_ALLOW_PLANNING_REPAIR", "1") == "1":
+                result = self._run_rule_planner(agent_input, method="plan_repair")
+                rationale = result.get("rationale")
+                note = f"llm_structured planning failed; repaired with bounded rule planner; original_error={type(exc).__name__}"
+                result["rationale"] = f"{note}; {rationale}" if rationale else note
+                return result
             if os.getenv("GMGI_FORCE_OLLAMA_AGENTS") == "1" and os.getenv("GMGI_ALLOW_AGENT_FALLBACK") != "1":
                 raise
             return self._run_rule_planner(agent_input, method="fallback_fixed_pipeline")

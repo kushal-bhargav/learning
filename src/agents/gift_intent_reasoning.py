@@ -36,7 +36,13 @@ class GiftIntentReasoningAgent(StructuredAgent):
             return self._run_heuristic(agent_input, method=method)
         try:
             return super().run(agent_input)
-        except Exception:
+        except Exception as exc:
+            if os.getenv("GMGI_ALLOW_INTENT_REPAIR", "1") == "1":
+                result = self._run_heuristic(agent_input, method="classifier_hybrid")
+                rationale = result.get("rationale")
+                note = f"llm_structured intent failed; repaired with deterministic intent extractor; original_error={type(exc).__name__}"
+                result["rationale"] = f"{note}; {rationale}" if rationale else note
+                return result
             if os.getenv("GMGI_FORCE_OLLAMA_AGENTS") == "1" and os.getenv("GMGI_ALLOW_AGENT_FALLBACK") != "1":
                 raise
             return self._run_heuristic(agent_input, method="fallback_heuristic")

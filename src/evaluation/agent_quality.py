@@ -47,8 +47,10 @@ def run_agent_quality_eval(
     os.environ["GMGI_USE_DEMO_AGENT_RESPONSES"] = "0"
     os.environ["GMGI_ALLOW_AGENT_FALLBACK"] = "0"
     os.environ["GMGI_FORCE_OLLAMA_AGENTS"] = "1"
-    os.environ["GMGI_INTENT_METHOD"] = "llm_structured"
-    os.environ["GMGI_PLANNING_METHOD"] = "llm_structured"
+    os.environ.setdefault("GMGI_INTENT_METHOD", "classifier_hybrid")
+    os.environ.setdefault("GMGI_PLANNING_METHOD", "rule_constrained")
+    os.environ.setdefault("GMGI_ALLOW_INTENT_REPAIR", "1")
+    os.environ.setdefault("GMGI_ALLOW_PLANNING_REPAIR", "1")
     os.environ["GMGI_CREATIVE_BACKEND"] = creative_backend
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -106,6 +108,7 @@ def _run_case(case: ExperimentCase, output_dir: Path, *, include_creative: bool,
             "memories": memories,
             "preferences": preferences,
             "budget_hint": occasion.get("budget_hint"),
+            "method": os.getenv("GMGI_INTENT_METHOD", "classifier_hybrid"),
         },
     )
     outputs["gift_intent_reasoning"] = intent_result["output"]
@@ -122,6 +125,7 @@ def _run_case(case: ExperimentCase, output_dir: Path, *, include_creative: bool,
             "intent": outputs["gift_intent_reasoning"],
             "memory_signals": {"memory_count": len(memories), "preference_count": len(preferences)},
             "available_agents": list(STAGES),
+            "method": os.getenv("GMGI_PLANNING_METHOD", "rule_constrained"),
         },
     )
     outputs["multi_agent_planning"] = planning_result["output"]
