@@ -98,7 +98,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     let detail = `${response.status} ${response.statusText}`;
     try {
       const body = await response.json();
-      detail = body.detail ?? detail;
+      const bodyDetail = body.detail ?? detail;
+      detail = typeof bodyDetail === 'string' ? bodyDetail : JSON.stringify(bodyDetail);
     } catch {
       // Keep the HTTP text fallback.
     }

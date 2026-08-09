@@ -47,9 +47,9 @@ class RecommendationAgent(StructuredAgent):
             return super().run(agent_input)
         try:
             return self._run_with_smolagents(agent_input)
-        except Exception:
+        except Exception as exc:
             if os.getenv("GMGI_FORCE_OLLAMA_AGENTS") == "1" and os.getenv("GMGI_ALLOW_AGENT_FALLBACK") != "1":
-                raise
+                return self._run_with_schema_json(agent_input, exc)
             return super().run(agent_input)
 
     def _run_with_smolagents(self, agent_input: AgentInput) -> AgentOutput:
@@ -114,7 +114,17 @@ class RecommendationAgent(StructuredAgent):
             validate(instance=payload, schema=self.config["output_schema"])
         except ValidationError as exc:
             raise ValueError(f"{self.stage} returned invalid structured output: {exc.message}") from exc
-        return AgentOutput(stage=self.stage, output=payload["output"], confidence=payload["confidence"], rationale=payload["rationale"])
+        output = dict(payload["output"])
+        output.setdefault("prompt_version", self.prompt_version_id)
+        output.setdefault("skills_used", list(self.config.get("skills", [])))
+        return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
+
+    def _run_with_schema_json(self, agent_input: AgentInput, original_error: Exception) -> AgentOutput:
+        result = super().run(agent_input)
+        rationale = result.get("rationale")
+        note = f"smolagents tool-calling failed; used schema-validated Ollama JSON path; original_error={type(original_error).__name__}"
+        result["rationale"] = f"{note}; {rationale}" if rationale else note
+        return result
 
 
 

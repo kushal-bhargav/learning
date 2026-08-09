@@ -150,6 +150,29 @@ def test_live_occasion_names_are_normalized_for_gan() -> None:
     assert service._gan_occasion("new home celebration") == "housewarming"
     assert service._gan_occasion("custom ritual") == "other"
 
+
+def test_stage_agent_failures_return_structured_error_detail(monkeypatch) -> None:
+    root = Path("experiments/test-api")
+    root.mkdir(parents=True, exist_ok=True)
+    service = AgencyConsoleService(
+        generated_dir=root / "generated",
+        bandit_log_path=root / "bandit_log.jsonl",
+        bandit_state_path=root / "bandit_state.json",
+    )
+    client = TestClient(create_app(service))
+    session_id = client.post("/sessions", json={"persona_id": "long-distance-partners"}).json()["session_id"]
+
+    def fail_propose(*args, **kwargs):
+        raise TypeError("tool wrapper failed")
+
+    monkeypatch.setattr(service, "propose", fail_propose)
+    response = client.post(f"/sessions/{session_id}/stages/relationship_analysis/propose", json={})
+    assert response.status_code == 502
+    detail = response.json()["detail"]
+    assert detail["stage"] == "relationship_analysis"
+    assert detail["error_type"] == "TypeError"
+    assert detail["message"] == "tool wrapper failed"
+
 from src.api.service import STAGES
 
 

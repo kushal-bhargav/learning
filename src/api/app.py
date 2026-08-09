@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Any, Mapping
@@ -12,6 +13,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from .service import AgencyConsoleService
+
+logger = logging.getLogger(__name__)
 
 def _cors_origin_regex() -> str | None:
     return os.environ.get("GMGI_CORS_ORIGIN_REGEX")
@@ -145,6 +148,9 @@ def create_app(service: AgencyConsoleService | None = None) -> FastAPI:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         except (RuntimeError, ValueError) as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.exception("Stage proposal failed for session=%s stage=%s", session_id, stage)
+            raise HTTPException(status_code=502, detail=_stage_error_detail(stage, exc)) from exc
         return _session_response(api, session_id)
 
     @app.post("/sessions/{session_id}/stages/{stage}/accept")
@@ -182,6 +188,9 @@ def create_app(service: AgencyConsoleService | None = None) -> FastAPI:
             api.regenerate(session_id, stage=stage, overrides=(request or RegenerateRequest()).overrides)
         except (RuntimeError, ValueError) as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.exception("Regenerate failed for session=%s stage=%s", session_id, stage)
+            raise HTTPException(status_code=502, detail=_stage_error_detail(stage, exc)) from exc
         return _session_response(api, session_id)
 
     @app.post("/sessions/{session_id}/stages/{stage}/delegate")
@@ -191,6 +200,9 @@ def create_app(service: AgencyConsoleService | None = None) -> FastAPI:
             api.delegate(session_id)
         except (RuntimeError, ValueError) as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
+        except Exception as exc:
+            logger.exception("Delegate failed for session=%s stage=%s", session_id, stage)
+            raise HTTPException(status_code=502, detail=_stage_error_detail(stage, exc)) from exc
         return _session_response(api, session_id)
 
     @app.get("/sessions/{session_id}/ledger")
@@ -252,6 +264,14 @@ def _require_pending_stage(api: AgencyConsoleService, session_id: str, stage: st
         raise HTTPException(status_code=409, detail="There is no pending agent proposal")
     if session.stage_log[-1].stage != stage:
         raise HTTPException(status_code=409, detail="Action does not match the pending stage")
+
+
+def _stage_error_detail(stage: str, exc: Exception) -> dict[str, str]:
+    return {
+        "stage": stage,
+        "error_type": type(exc).__name__,
+        "message": str(exc) or repr(exc),
+    }
 
 
 app = create_app()

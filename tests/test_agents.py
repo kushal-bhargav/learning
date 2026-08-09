@@ -74,6 +74,36 @@ def test_structured_agents_follow_common_contract(
     assert result["rationale"]
 
 
+def test_smolagents_agents_use_real_schema_path_when_tool_wrapper_fails(
+    monkeypatch: pytest.MonkeyPatch,
+    session: GiftSession,
+) -> None:
+    monkeypatch.setenv("GMGI_FORCE_OLLAMA_AGENTS", "1")
+    monkeypatch.setenv("GMGI_ALLOW_AGENT_FALLBACK", "0")
+    monkeypatch.setattr(
+        RelationshipAnalysisAgent,
+        "_run_with_smolagents",
+        lambda *_: (_ for _ in ()).throw(RuntimeError("tool wrapper failed")),
+    )
+    response = {
+        "output": {
+            "closeness_assessment": "close",
+            "tone_guidance": "warm",
+            "formality": "casual",
+            "risk_flags": [],
+            "agency_slider_default": 0.5,
+        },
+        "confidence": 0.9,
+        "rationale": "Schema path used supplied relationship evidence.",
+    }
+    result = RelationshipAnalysisAgent(FakeStructuredLLM(response)).run(
+        {"session": session, "stage_config": {"relationship": {"type": "friend", "closeness_score": 4}, "memories": []}}
+    )
+    assert result["stage"] == "relationship_analysis"
+    assert result["output"]["closeness_assessment"] == "close"
+    assert "schema-validated Ollama JSON path" in result["rationale"]
+
+
 def test_delivery_planner_is_simulated_and_deterministic(session: GiftSession) -> None:
     result = DeliveryPlannerAgent().run({"session": session, "stage_config": {"artifact_type": "physical", "occasion": {"date": "2026-09-18"}}})
     assert result["output"]["status"] == "simulated"
