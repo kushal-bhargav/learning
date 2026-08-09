@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Mapping
+from urllib.request import urlopen
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -90,8 +91,24 @@ def create_app(service: AgencyConsoleService | None = None) -> FastAPI:
         return console_service
 
     @app.get("/health")
-    def health() -> dict[str, str]:
-        return {"status": "ok"}
+    def health() -> dict[str, Any]:
+        ollama_host = os.getenv("GMGI_OLLAMA_HOST") or os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
+        ollama_ready = False
+        ollama_error = None
+        try:
+            with urlopen(ollama_host.rstrip("/") + "/api/tags", timeout=2) as response:
+                ollama_ready = response.status == 200
+        except Exception as exc:
+            ollama_error = str(exc)
+        return {
+            "status": "ok" if ollama_ready else "degraded",
+            "ollama_ready": ollama_ready,
+            "ollama_host": ollama_host,
+            "ollama_error": ollama_error,
+            "demo_responses": os.getenv("GMGI_USE_DEMO_AGENT_RESPONSES", "0") == "1",
+            "agent_fallback": os.getenv("GMGI_ALLOW_AGENT_FALLBACK", "0") == "1",
+            "creative_backend": os.getenv("GMGI_CREATIVE_BACKEND", "diffusers"),
+        }
 
     @app.get("/personas")
     def list_personas(api: AgencyConsoleService = Depends(get_service)) -> list[dict[str, Any]]:
