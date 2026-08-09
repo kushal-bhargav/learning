@@ -11,19 +11,19 @@ from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
 
 
-class _Interest(BaseModel):
+class Interest(BaseModel):
     name: str
     confidence: float = Field(ge=0, le=1)
 
 
-class _RecipientProfileOutput(BaseModel):
-    interests: list[_Interest]
+class RecipientProfileOutput(BaseModel):
+    interests: list[Interest]
     communication_style: str
     gift_history_summary: str
 
 
-class _RecipientProfileResponse(BaseModel):
-    output: _RecipientProfileOutput
+class RecipientProfileResponse(BaseModel):
+    output: RecipientProfileOutput
     confidence: float | None = Field(default=None, ge=0, le=1)
     rationale: str | None = None
 
@@ -52,7 +52,7 @@ class RecipientProfilingAgent(StructuredAgent):
             return self._run_with_instructor(agent_input)
         except Exception:
             if os.getenv("GMGI_FORCE_OLLAMA_AGENTS") == "1" and os.getenv("GMGI_ALLOW_AGENT_FALLBACK") != "1":
-                raise
+                return self._run_with_schema_json(agent_input)
             return super().run(agent_input)
 
     def _run_with_instructor(self, agent_input: AgentInput) -> AgentOutput:
@@ -62,6 +62,11 @@ class RecipientProfilingAgent(StructuredAgent):
         stage_config = agent_input.get("stage_config", {})
         context = self.build_context(agent_input)
         prompt = self.config["prompt_template"].format(context=json.dumps(context, ensure_ascii=False, indent=2))
+        prompt += (
+            "\n\nReturn JSON with this exact top-level shape and no class-name wrapper keys:\n"
+            '{"output":{"interests":[{"name":"...","confidence":0.0}],"communication_style":"...","gift_history_summary":"..."},"confidence":0.0,"rationale":"..."}\n'
+            "Each interests item must contain name and confidence directly. Do not emit Interest, _Interest, RecipientProfileOutput, or _RecipientProfileResponse keys."
+        )
         model = str(stage_config.get("model") or os.getenv("GMGI_RECIPIENT_MODEL") or os.getenv("GMGI_OLLAMA_MODEL") or self.config["models"]["ollama"])
         temperature = float(stage_config.get("temperature", self.config["temperature"]))
         client = instructor.from_openai(
@@ -78,7 +83,7 @@ class RecipientProfilingAgent(StructuredAgent):
                 {"role": "system", "content": self._system_prompt(agent_input)},
                 {"role": "user", "content": prompt},
             ],
-            response_model=_RecipientProfileResponse,
+            response_model=RecipientProfileResponse,
             temperature=temperature,
         )
         payload = result.model_dump()
@@ -86,7 +91,17 @@ class RecipientProfilingAgent(StructuredAgent):
             validate(instance=payload, schema=self.config["output_schema"])
         except ValidationError as exc:
             raise ValueError(f"{self.stage} returned invalid structured output: {exc.message}") from exc
-        return AgentOutput(stage=self.stage, output=payload["output"], confidence=payload["confidence"], rationale=payload["rationale"])
+        output = dict(payload["output"])
+        output.setdefault("prompt_version", self.prompt_version_id)
+        output.setdefault("skills_used", list(self.config.get("skills", [])))
+        return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
+
+    def _run_with_schema_json(self, agent_input: AgentInput) -> AgentOutput:
+        result = super().run(agent_input)
+        rationale = result.get("rationale")
+        note = "instructor validation failed; used schema-validated Ollama JSON path"
+        result["rationale"] = f"{note}; {rationale}" if rationale else note
+        return result
 
 
 

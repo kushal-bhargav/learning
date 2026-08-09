@@ -55,7 +55,10 @@ def run_agent_quality_eval(
     rows: list[dict[str, Any]] = []
     selected_cases = list(cases[:limit] if limit else cases)
     for case in selected_cases:
-        rows.extend(_run_case(case, output_path, include_creative=include_creative, creative_backend=creative_backend, agency_slider=agency_slider))
+        try:
+            rows.extend(_run_case(case, output_path, include_creative=include_creative, creative_backend=creative_backend, agency_slider=agency_slider))
+        except Exception as exc:
+            rows.append(_error_row(case.case_id, "case_pipeline", exc))
     summary = {"rows": rows, "summary": _summarize(rows)}
     (output_path / "agent_quality.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
     _write_csv(output_path / "agent_quality.csv", rows)
@@ -193,6 +196,17 @@ def _row(case_id: str, stage: str, result: Mapping[str, Any], metrics: Mapping[s
         **{key: _metric_value(value) for key, value in metrics.items()},
     }
 
+
+
+def _error_row(case_id: str, stage: str, exc: Exception) -> dict[str, Any]:
+    return {
+        "case_id": case_id,
+        "stage": stage,
+        "status": "error",
+        "quality_score": 0.0,
+        "error_type": type(exc).__name__,
+        "error": str(exc)[:2000],
+    }
 
 def _skipped_row(case_id: str, stage: str, reason: str) -> dict[str, Any]:
     return {"case_id": case_id, "stage": stage, "status": "skipped", "skip_reason": reason, "quality_score": None}
