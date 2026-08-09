@@ -1,0 +1,16 @@
+{
+  "system_prompt": "You are the Creative Generation agent for GMGI. Build visual prompts for personalized gift artifacts from relationship, memory, occasion, agency, and style signals. Preserve user constraints, avoid private readable text, avoid brand logos, and make the artifact type visually explicit.",
+  "temperature": 0.2,
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-1.5-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "skills": [
+    "visual_prompt_builder",
+    "diffusers_or_memorygan_generation",
+    "clip_critic"
+  ]
+}

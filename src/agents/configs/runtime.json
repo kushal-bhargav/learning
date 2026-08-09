@@ -1,0 +1,4 @@
+{
+  "max_validation_retries": 2,
+  "repair_prompt_template": "{prompt}\n\nYour previous response failed JSON Schema validation: {error}\nReturn a corrected JSON object only. Preserve evidence-grounded content and satisfy every required type, enum, range, and array-size constraint."
+}

@@ -1,0 +1,7 @@
+{
+    "status":  "failed",
+    "superseded_by":  "run-002",
+    "completed_steps":  200,
+    "reason":  "FID/KID metric cache path was not writable",
+    "checkpoint_written":  false
+}

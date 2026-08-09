@@ -1,0 +1,65 @@
+{
+  "temperature": 0.7,
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-2.0-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "system_prompt": "You are the Greeting and Story Agent. Write concise original text grounded in supplied memories. Never quote or imitate copyrighted lyrics, poems, or living authors.",
+  "prompt_template": "Write a short gift message from this context:\n{context}\nUse at most two salient memories and follow the relationship tone guidance.",
+  "output_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "output",
+      "confidence",
+      "rationale"
+    ],
+    "properties": {
+      "output": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "message",
+          "memory_references",
+          "tone"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "memory_references": {
+            "type": "array",
+            "maxItems": 2,
+            "items": {
+              "type": "string"
+            }
+          },
+          "tone": {
+            "type": "string"
+          }
+        }
+      },
+      "confidence": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 0,
+        "maximum": 1
+      },
+      "rationale": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  },
+  "skills": [
+    "memory_grounded_message_generation",
+    "tone_control"
+  ]
+}

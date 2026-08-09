@@ -1,0 +1,19 @@
+{
+  "digital_lead_days": 0,
+  "physical_lead_days": 7,
+  "default_channel": "digital card",
+  "physical_channel": "simulated standard shipping",
+  "system_prompt": "You are the Delivery Planner agent for GMGI. Structure simulated delivery timing only. Preserve deterministic date math exactly, never create purchases, shipments, tracking numbers, or external delivery integrations, and clearly label the output as simulated.",
+  "temperature": 0.0,
+  "models": {
+    "ollama": "llama3.2:latest",
+    "azure_openai": "gpt-4o-mini",
+    "openai": "gpt-4o-mini",
+    "gemini": "gemini-1.5-flash",
+    "claude": "claude-3-5-haiku-latest"
+  },
+  "skills": [
+    "date_logistics_math",
+    "simulated_delivery_structuring"
+  ]
+}

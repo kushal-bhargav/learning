@@ -1,0 +1,169 @@
+{
+  "session_id": "fixture-long-distance-partners-2026",
+  "giver_id": "person-maya",
+  "recipient_id": "person-jordan",
+  "occasion_id": "occasion-jordan-birthday-2026",
+  "stage_log": [
+    {
+      "stage": "recipient_profiling",
+      "proposed_by": "agent",
+      "output": {
+        "interests": [
+          {
+            "name": "urban sketching",
+            "confidence": 1.0
+          },
+          {
+            "name": "travel-poster illustration",
+            "confidence": 0.72
+          },
+          {
+            "name": "mustard yellow",
+            "confidence": 1.0
+          }
+        ],
+        "communication_style": "Warm, playful, and memory-rich.",
+        "gift_history_summary": "No prior gift history was supplied."
+      },
+      "human_action": null,
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.072122Z",
+      "status": "pending"
+    },
+    {
+      "stage": "recipient_profiling",
+      "proposed_by": "human",
+      "output": {
+        "interests": [
+          {
+            "name": "urban sketching",
+            "confidence": 1.0
+          },
+          {
+            "name": "travel-poster illustration",
+            "confidence": 0.72
+          },
+          {
+            "name": "mustard yellow",
+            "confidence": 1.0
+          }
+        ],
+        "communication_style": "Warm, playful, and memory-rich.",
+        "gift_history_summary": "No prior gift history was supplied."
+      },
+      "human_action": "delegate",
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.072122Z",
+      "status": "completed"
+    },
+    {
+      "stage": "relationship_analysis",
+      "proposed_by": "agent",
+      "output": {
+        "closeness_assessment": "very close",
+        "tone_guidance": "Affectionate and playful without inventing private details.",
+        "formality": "casual",
+        "risk_flags": [],
+        "agency_slider_default": 0.5
+      },
+      "human_action": "delegate",
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.086205Z",
+      "status": "completed"
+    },
+    {
+      "stage": "recommendation",
+      "proposed_by": "agent",
+      "output": {
+        "recommendations": [
+          {
+            "rank": 1,
+            "category": "personalized art",
+            "concept": "A mustard-yellow Lisbon travel-poster birthday card featuring a tram and shared-window motif.",
+            "evidence": [
+              "urban sketching",
+              "mustard yellow",
+              "Lisbon tram memory"
+            ],
+            "budget_fit": "Digital generation fits the stated budget.",
+            "artifact_type": "generated"
+          },
+          {
+            "rank": 2,
+            "category": "sketching",
+            "concept": "A compact urban-sketching travel kit.",
+            "evidence": [
+              "urban sketching"
+            ],
+            "budget_fit": "Can be sourced within USD 60-100.",
+            "artifact_type": "physical"
+          },
+          {
+            "rank": 3,
+            "category": "shared experience",
+            "concept": "A remote dinner-and-drawing birthday bundle.",
+            "evidence": [
+              "video dinner memory",
+              "urban sketching"
+            ],
+            "budget_fit": "Flexible within the stated budget.",
+            "artifact_type": "bundle"
+          }
+        ]
+      },
+      "human_action": "delegate",
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.105857Z",
+      "status": "completed"
+    },
+    {
+      "stage": "creative_generation",
+      "proposed_by": "agent",
+      "output": {
+        "artifact_path": "experiments/generated/fixture-long-distance-partners-2026.png",
+        "artifact_type": "generated",
+        "media_type": "image/png",
+        "width": 16,
+        "height": 16,
+        "agency_slider": 0.5,
+        "seed": 2026
+      },
+      "human_action": "delegate",
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.419928Z",
+      "status": "completed"
+    },
+    {
+      "stage": "greeting_story",
+      "proposed_by": "agent",
+      "output": {
+        "message": "Happy birthday, Jordan. From Lisbon's yellow tram to our wonderfully mismatched video dinners, every shared detour feels like home. Here's to the next view we sketch together.",
+        "memory_references": [
+          "memory-lisbon-tram",
+          "memory-video-dinner"
+        ],
+        "tone": "warm and playful"
+      },
+      "human_action": "delegate",
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.431115Z",
+      "status": "completed"
+    },
+    {
+      "stage": "delivery_planner",
+      "proposed_by": "agent",
+      "output": {
+        "mode": "digital",
+        "channel": "digital card",
+        "planned_send_date": "2026-09-18",
+        "occasion_date": "2026-09-18",
+        "status": "simulated",
+        "disclaimer": "No shipment, purchase, or external delivery was created."
+      },
+      "human_action": "delegate",
+      "human_edit": null,
+      "timestamp": "2026-07-06T19:09:55.432123Z",
+      "status": "completed"
+    }
+  ]
+}

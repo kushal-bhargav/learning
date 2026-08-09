@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "persona_id": "parent-teen",
+  "label": "Parent and teenager",
+  "synthetic": true,
+  "people": [
+    {"id": "person-elena", "display_name": "Elena Ruiz", "role": "giver"},
+    {"id": "person-lucas", "display_name": "Lucas Ruiz", "role": "recipient"}
+  ],
+  "relationships": [
+    {"id": "relationship-elena-lucas", "person_a": "person-elena", "person_b": "person-lucas", "type": "parent-child", "closeness_score": 4}
+  ],
+  "occasions": [
+    {"id": "occasion-lucas-graduation-2026", "name": "Lucas's secondary-school graduation", "date": "2026-06-12", "budget_hint": "USD 40-80", "formality": "semi-formal"}
+  ],
+  "events": [
+    {"id": "event-robotics-final", "date": "2026-03-21", "type": "competition", "participants": ["person-elena", "person-lucas"]},
+    {"id": "event-bike-repair", "date": "2025-08-09", "type": "shared-project", "participants": ["person-elena", "person-lucas"]}
+  ],
+  "memories": [
+    {"id": "memory-robotics-cheer", "modality": "photo", "content": "Lucas holding a small robotics trophy while Elena cheers from behind the team banner.", "embedding": [0.77, 0.39, 0.12, 0.66, 0.51, 0.24, 0.89, 0.33], "embedding_source": "synthetic_fixture", "timestamp": "2026-03-21T16:45:00Z", "event_id": "event-robotics-final", "person_ids": ["person-elena", "person-lucas"], "emotion_tag": "gratitude"},
+    {"id": "memory-bike-chain", "modality": "text", "content": "They spent a rainy afternoon restoring an old bicycle and finally got the chain to run quietly.", "embedding": [0.31, 0.58, 0.46, 0.79, 0.22, 0.64, 0.17, 0.85], "embedding_source": "synthetic_fixture", "timestamp": "2025-08-09T14:30:00Z", "event_id": "event-bike-repair", "person_ids": ["person-elena", "person-lucas"], "emotion_tag": "comfort"},
+    {"id": "memory-late-night-debug", "modality": "audio-caption", "content": "Lucas joked that every robot works perfectly until a parent enters the room.", "embedding": [0.52, 0.27, 0.83, 0.18, 0.69, 0.43, 0.34, 0.72], "embedding_source": "synthetic_fixture", "timestamp": "2026-03-20T22:05:00Z", "event_id": "event-robotics-final", "person_ids": ["person-lucas"], "emotion_tag": "humor"}
+  ],
+  "preferences": [
+    {"id": "preference-lucas-hobby", "person_id": "person-lucas", "category": "hobby", "value": "robotics and electronics", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-lucas-color", "person_id": "person-lucas", "category": "color", "value": "electric blue", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-lucas-style", "person_id": "person-lucas", "category": "style", "value": "minimal geometric graphics", "confidence": 0.78, "source": "inferred"},
+    {"id": "preference-lucas-avoid", "person_id": "person-lucas", "category": "gift-constraint", "value": "avoid sentimental public messages", "confidence": 1.0, "source": "stated"}
+  ]
+}

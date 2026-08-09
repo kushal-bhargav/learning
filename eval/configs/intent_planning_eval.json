@@ -1,0 +1,60 @@
+{
+  "output_dir": "experiments/intent_planning_eval",
+  "run_overall": true,
+  "intent_variants": [
+    {"name": "rule_based_baseline", "method": "heuristic"},
+    {"name": "abstain_capable", "method": "abstain"},
+    {"name": "few_shot_structured", "method": "few_shot"}
+  ],
+  "planning_variants": [
+    {"name": "fixed_stage_baseline", "method": "fixed_pipeline"},
+    {"name": "rule_constrained", "method": "rule_constrained"},
+    {"name": "task_decomposition", "method": "task_decomposition"}
+  ],
+  "cases": [
+    {
+      "case_id": "birthday-close-friend",
+      "custom_profile": {
+        "giver_name": "Asha",
+        "recipient_name": "Mira",
+        "relationship_type": "friend",
+        "closeness_score": 4,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-12-18",
+        "budget_hint": "USD 60-100",
+        "formality": "casual",
+        "preferences": ["ceramics", "tea", "green"],
+        "memories": ["We found a tiny tea shop after getting lost."]
+      },
+      "expected_intent": {
+        "occasion_name": "Birthday",
+        "constraints": ["budget_hint", "delivery_constraints"]
+      },
+      "expected_plan": {
+        "agent_sequence": ["recipient_profiling", "relationship_analysis", "gift_intent_reasoning", "multi_agent_planning", "recommendation", "creative_generation", "greeting_story", "delivery_planner"]
+      }
+    },
+    {
+      "case_id": "ambiguous-colleague",
+      "custom_profile": {
+        "giver_name": "Sam",
+        "recipient_name": "Theo",
+        "relationship_type": "colleague",
+        "closeness_score": 2.5,
+        "occasion_name": "Thank you",
+        "occasion_date": "2026-09-10",
+        "budget_hint": "USD 25-45",
+        "formality": "professional",
+        "preferences": [],
+        "memories": ["They helped finish a hard launch week."]
+      },
+      "expected_intent": {
+        "occasion_name": "Thank you",
+        "constraints": ["budget_hint", "delivery_constraints", "recipient_preferences"]
+      },
+      "expected_plan": {
+        "agent_sequence": ["recipient_profiling", "relationship_analysis", "gift_intent_reasoning", "multi_agent_planning", "recommendation", "creative_generation", "greeting_story", "delivery_planner"]
+      }
+    }
+  ]
+}

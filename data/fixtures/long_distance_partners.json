@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "persona_id": "long-distance-partners",
+  "label": "Long-distance partners",
+  "synthetic": true,
+  "people": [
+    {"id": "person-maya", "display_name": "Maya Chen", "role": "giver"},
+    {"id": "person-jordan", "display_name": "Jordan Ellis", "role": "recipient"}
+  ],
+  "relationships": [
+    {"id": "relationship-maya-jordan", "person_a": "person-maya", "person_b": "person-jordan", "type": "partner", "closeness_score": 5}
+  ],
+  "occasions": [
+    {"id": "occasion-jordan-birthday-2026", "name": "Jordan's birthday", "date": "2026-09-18", "budget_hint": "USD 60-100", "formality": "casual"}
+  ],
+  "events": [
+    {"id": "event-lisbon-trip", "date": "2025-06-14", "type": "vacation", "participants": ["person-maya", "person-jordan"]},
+    {"id": "event-first-video-dinner", "date": "2026-01-30", "type": "shared-ritual", "participants": ["person-maya", "person-jordan"]}
+  ],
+  "memories": [
+    {"id": "memory-lisbon-tram", "modality": "photo", "content": "Maya and Jordan laughing beside a yellow tram after getting pleasantly lost in Lisbon.", "embedding": [0.82, 0.14, 0.61, 0.09, 0.73, 0.31, 0.48, 0.26], "embedding_source": "synthetic_fixture", "timestamp": "2025-06-14T17:20:00Z", "event_id": "event-lisbon-trip", "person_ids": ["person-maya", "person-jordan"], "emotion_tag": "joy"},
+    {"id": "memory-video-dinner", "modality": "text", "content": "They cooked the same mushroom pasta over video and compared their dramatically different results.", "embedding": [0.44, 0.71, 0.28, 0.56, 0.19, 0.87, 0.35, 0.63], "embedding_source": "synthetic_fixture", "timestamp": "2026-01-30T19:00:00Z", "event_id": "event-first-video-dinner", "person_ids": ["person-maya", "person-jordan"], "emotion_tag": "humor"},
+    {"id": "memory-station-goodbye", "modality": "audio-caption", "content": "Jordan said, 'Same moon, different window,' before Maya's train departed.", "embedding": [0.23, 0.68, 0.75, 0.41, 0.52, 0.16, 0.84, 0.37], "embedding_source": "synthetic_fixture", "timestamp": "2025-06-20T08:10:00Z", "event_id": "event-lisbon-trip", "person_ids": ["person-jordan"], "emotion_tag": "nostalgia"}
+  ],
+  "preferences": [
+    {"id": "preference-jordan-color", "person_id": "person-jordan", "category": "color", "value": "mustard yellow", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-jordan-hobby", "person_id": "person-jordan", "category": "hobby", "value": "urban sketching", "confidence": 1.0, "source": "stated"},
+    {"id": "preference-jordan-style", "person_id": "person-jordan", "category": "style", "value": "travel-poster illustration", "confidence": 0.72, "source": "inferred"}
+  ]
+}
