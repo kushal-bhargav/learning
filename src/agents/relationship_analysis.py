@@ -10,6 +10,7 @@ from jsonschema import ValidationError, validate
 
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 
 def _extract_json(value: Any) -> dict[str, Any]:
@@ -97,7 +98,7 @@ class RelationshipAnalysisAgent(StructuredAgent):
             raise ValueError(f"{self.stage} returned invalid structured output: {exc.message}") from exc
         output = dict(payload["output"])
         output.setdefault("prompt_version", self.prompt_version_id)
-        output.setdefault("skills_used", list(self.config.get("skills", [])))
+        add_skill_metadata(output, self.config)
         return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
 
     def _run_with_schema_json(self, agent_input: AgentInput, original_error: Exception) -> AgentOutput:

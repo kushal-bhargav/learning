@@ -9,6 +9,7 @@ from typing import Any
 from pydantic import BaseModel
 
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 
 class _DeliveryPlanOutput(BaseModel):
@@ -60,7 +61,7 @@ class DeliveryPlannerAgent:
     def run(self, agent_input: AgentInput) -> AgentOutput:
         stage_config = agent_input["stage_config"]
         deterministic_output, lead_days = _planned_delivery_fields(stage_config, self.config)
-        deterministic_output["skills_used"] = ["date_logistics_math"]
+        add_skill_metadata(deterministic_output, self.config, active=["date_logistics_math", "simulated_delivery_structuring"])
         deterministic_output["prompt_version"] = self.prompt_version_id
         try:
             return self._run_with_instructor(stage_config, deterministic_output, lead_days)

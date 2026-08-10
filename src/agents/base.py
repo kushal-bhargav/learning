@@ -10,6 +10,7 @@ from jsonschema import ValidationError, validate
 
 from .llm import StructuredLLM, create_llm
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 CONFIG_DIR = Path(__file__).with_name("configs")
 
@@ -52,7 +53,7 @@ class StructuredAgent(ABC):
         rationale = result["rationale"]
         output = dict(result["output"])
         output.setdefault("prompt_version", self.prompt_version_id)
-        output.setdefault("skills_used", list(self.config.get("skills", [])))
+        add_skill_metadata(output, self.config)
         if self.prompt_version_id != "static":
             prefix = f"prompt_version={self.prompt_version_id}"
             rationale = f"{prefix}; {rationale}" if rationale else prefix

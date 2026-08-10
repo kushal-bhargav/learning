@@ -217,11 +217,13 @@ def creative_metrics(output: Mapping[str, Any], expected: Mapping[str, Any], age
         )
         if value
     )
+    usable_artifact = exists and image_valid and not fake_marker and practical_resolution
     return [
         _bool_score("artifact_file_exists", exists, {"artifact_path": str(path)}, weight=2.0),
         _bool_score("artifact_not_marked_fake", not fake_marker, {"artifact_path": str(path)}, weight=2.0),
         _bool_score("image_file_header_valid", image_valid, {"artifact_path": str(path)}),
         _bool_score("image_resolution_practical", practical_resolution, {"width": width, "height": height}, weight=2.0),
+        _bool_score("visual_artifact_usable", usable_artifact, {"exists": exists, "image_valid": image_valid, "fake_marker": fake_marker, "width": width, "height": height}, weight=4.0),
         _bool_score("agency_slider_valid", _between(output.get("agency_slider"), 0, 1), {"agency_slider": output.get("agency_slider")}),
         _bool_score("conditioning_prompt_visible", bool(prompt_text.strip()) or bool(output.get("artifact_type")), {"prompt_text": prompt_text}),
     ]

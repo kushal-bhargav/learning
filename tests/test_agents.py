@@ -54,6 +54,8 @@ def test_recipient_agent_uses_fixture_context_and_config(session: GiftSession) -
     result = RecipientProfilingAgent(llm).run({"session": session, "stage_config": {"person": data["people"][1], "preferences": data["preferences"], "raw_notes": [memory["content"] for memory in data["memories"]]}})
     assert result["stage"] == "recipient_profiling"
     assert result["output"]["communication_style"] == "warm"
+    assert result["output"]["skills_declared"] == ["structured_recipient_extraction", "preference_signal_parser"]
+    assert result["output"]["skills_used"] == result["output"]["skills_declared"]
     assert llm.calls[0]["temperature"] == 0.3
     assert llm.calls[0]["schema"]["type"] == "object"
 
@@ -78,6 +80,8 @@ def test_structured_agents_follow_common_contract(
     )
     assert result["stage"] == stage
     assert isinstance(result["output"], dict)
+    assert result["output"]["skills_declared"]
+    assert result["output"]["skills_used"]
     assert result["rationale"]
 
 
@@ -130,6 +134,8 @@ def test_recipient_profile_repairs_when_local_model_returns_invalid_shape(
         }
     )
     assert result["output"]["interests"][0]["name"] == "tea"
+    assert result["output"]["skills_declared"] == ["structured_recipient_extraction", "preference_signal_parser"]
+    assert result["output"]["skills_used"] == ["structured_recipient_extraction", "preference_signal_parser"]
     assert "preference_signal_parser" in result["rationale"]
 
 
@@ -139,6 +145,7 @@ def test_delivery_planner_is_simulated_and_deterministic(session: GiftSession) -
     assert result["output"]["planned_send_date"] == "2026-09-11"
     assert "No shipment" in result["output"]["disclaimer"]
     assert "date_logistics_math" in result["output"]["skills_used"]
+    assert result["output"]["skills_declared"] == ["date_logistics_math", "simulated_delivery_structuring"]
     assert result["output"]["prompt_version"] == "static"
 
 
@@ -184,6 +191,8 @@ def test_gift_intent_agent_heuristic_extracts_structured_intent(session: GiftSes
     assert result["output"]["preferences"]
     assert result["output"]["goal"]["recommended_artifact_type"] == "greeting_card"
     assert result["output"]["visual_generation"]["artifact_type"] == "greeting_card"
+    assert result["output"]["skills_declared"] == ["intent_classification", "constraint_extraction", "visual_artifact_mapping"]
+    assert result["output"]["skills_used"] == result["output"]["skills_declared"]
 
 
 def test_multi_agent_planner_outputs_bounded_executable_plan(session: GiftSession) -> None:
@@ -204,6 +213,8 @@ def test_multi_agent_planner_outputs_bounded_executable_plan(session: GiftSessio
     assert "creative_generation" in plan["agent_sequence"]
     assert plan["fallback_plan"]["type"] == "current_staged_orchestration"
     assert all("agent" in step for step in plan["subtasks"])
+    assert plan["skills_declared"] == ["task_decomposition", "dependency_planning", "fallback_plan_repair"]
+    assert plan["skills_used"] == plan["skills_declared"]
 
 
 def test_intent_and_planning_repair_llm_failures_in_strict_mode(
@@ -279,4 +290,6 @@ def test_recommendation_repairs_when_tool_and_schema_paths_fail(
     recs = result["output"]["recommendations"]
     assert len(recs) == 3
     assert [rec["rank"] for rec in recs] == [1, 2, 3]
+    assert result["output"]["skills_declared"] == ["memory_context_lookup", "bandit_feedback_hint", "ranked_gift_reasoning"]
+    assert result["output"]["skills_used"] == ["memory_context_lookup", "ranked_gift_reasoning"]
     assert "ranked_gift_reasoning" in result["rationale"]

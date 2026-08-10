@@ -14,7 +14,7 @@ const STAGES: Array<{ id: StageName; title: string; system: string; promise: str
   { id: 'gift_intent_reasoning', title: 'Gift Intent Reasoning', system: 'Hybrid intent layer', promise: 'What is the gift trying to accomplish?' },
   { id: 'multi_agent_planning', title: 'Multi-Agent Planning', system: 'Bounded planner', promise: 'How should the agents solve this request?' },
   { id: 'recommendation', title: 'Gift Recommendation', system: 'Ollama · smolagents', promise: 'Which gift direction should we pursue?' },
-  { id: 'creative_generation', title: 'Creative Generation', system: 'MemoryGAN live inference', promise: 'How much creative agency should the model have?' },
+  { id: 'creative_generation', title: 'Creative Generation', system: 'Agent-guided image inference', promise: 'How much creative agency should the model have?' },
   { id: 'greeting_story', title: 'Greeting + Story', system: 'Ollama chat', promise: 'What message travels with the gift?' },
   { id: 'delivery_planner', title: 'Delivery Planner', system: 'Simulated logistics', promise: 'How would this be delivered in the demo?' },
 ];
@@ -464,7 +464,7 @@ function AgencySlider({ sessionId, entry, onUpdate }: { sessionId: string; entry
         <span>AI-shaped</span>
       </div>
       <input type="range" min="0" max="1" step="0.01" value={value} onChange={(event) => schedule(Number(event.target.value))} />
-      <p>{isDragging ? 'Waiting for your pause before calling MemoryGAN…' : 'Pause after dragging to regenerate; Regenerate also commits immediately.'}</p>
+      <p>{isDragging ? 'Waiting for your pause before regenerating the image…' : 'Pause after dragging to regenerate; Regenerate also commits immediately.'}</p>
     </div>
   );
 }

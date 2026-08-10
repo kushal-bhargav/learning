@@ -8,6 +8,7 @@ from jsonschema import ValidationError, validate
 
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 
 def _extract_json(value: Any) -> dict[str, Any]:
@@ -116,7 +117,7 @@ class RecommendationAgent(StructuredAgent):
             raise ValueError(f"{self.stage} returned invalid structured output: {exc.message}") from exc
         output = dict(payload["output"])
         output.setdefault("prompt_version", self.prompt_version_id)
-        output.setdefault("skills_used", list(self.config.get("skills", [])))
+        add_skill_metadata(output, self.config)
         return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
 
     def _run_with_schema_json(self, agent_input: AgentInput, original_error: Exception) -> AgentOutput:
@@ -171,13 +172,14 @@ class RecommendationAgent(StructuredAgent):
                 "artifact_type": "physical",
             },
         ]
+        output = {
+            "recommendations": recommendations,
+            "prompt_version": self.prompt_version_id,
+        }
+        add_skill_metadata(output, self.config, active=["ranked_gift_reasoning", "memory_context_lookup"])
         return AgentOutput(
             stage=self.stage,
-            output={
-                "recommendations": recommendations,
-                "prompt_version": self.prompt_version_id,
-                "skills_used": list(self.config.get("skills", [])),
-            },
+            output=output,
             confidence=0.72,
             rationale=(
                 "smolagents recommendation path failed; repaired with deterministic ranked_gift_reasoning "

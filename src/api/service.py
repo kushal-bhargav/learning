@@ -97,7 +97,7 @@ class AgencyConsoleService:
         self,
         *,
         fixture_root: str | Path = "data/fixtures",
-        checkpoint_path: str | Path = "experiments/run-002/checkpoint-000200.pt",
+        checkpoint_path: str | Path | None = None,
         generated_dir: str | Path = "experiments/generated",
         bandit_log_path: str | Path = "experiments/bandit_log.jsonl",
         bandit_state_path: str | Path = "experiments/bandit_state.json",
@@ -105,7 +105,7 @@ class AgencyConsoleService:
         prompt_versions_dir: str | Path | None = None,
     ) -> None:
         self.fixture_root = Path(fixture_root)
-        self.checkpoint_path = Path(checkpoint_path)
+        self.checkpoint_path = Path(checkpoint_path) if checkpoint_path is not None else None
         self.generated_dir = Path(generated_dir)
         self.bandit_log_path = Path(bandit_log_path)
         self.bandit_state_path = Path(bandit_state_path)
@@ -424,6 +424,7 @@ class AgencyConsoleService:
                 "seed": int(overrides.get("seed", console.seed)),
                 "gift_artifact_type": gift_artifact_type,
                 "visual_style_prompt": visual_generation.get("style_prompt"),
+                "negative_prompt": CreativeGenerationAgent.default_negative_prompt(),
                 "output_dir": self.generated_dir.as_posix(),
                 "filename": f"{console.orchestrator.session.session_id}-{gift_artifact_type}-{agency_slider:.2f}.png",
                 "generation_backend": str(overrides.get("generation_backend") or os.getenv("GMGI_CREATIVE_BACKEND", "diffusers")),
@@ -544,13 +545,15 @@ class AgencyConsoleService:
         visual_generation: Mapping[str, Any],
         agency_slider: float,
     ) -> str:
-        artifact = artifact_type.replace("_", " ")
         style = visual_generation.get("style_prompt") or "personalized gift visual"
         anchor = "user-provided style details" if agency_slider < 0.5 else "memory-grounded emotional symbolism"
-        return (
-            f"A warm {artifact} for a {relationship.get('type', 'relationship')} gifting context, "
-            f"{occasion.get('name', 'special occasion')}, {memory.get('emotion_tag', 'joy')} mood, "
-            f"{style}, {anchor}, polished print-ready composition, no brand logos"
+        return CreativeGenerationAgent.build_image_prompt(
+            artifact_type=artifact_type,
+            occasion=str(occasion.get("name", "special occasion")),
+            relationship_type=str(relationship.get("type", "relationship")),
+            emotion_tag=str(memory.get("emotion_tag", "joy")),
+            style=str(style),
+            agency_anchor=anchor,
         )
 
     def _context_embedding(self, console: ConsoleSession, recipient_id: str, occasion_id: str) -> np.ndarray:
@@ -704,7 +707,7 @@ class AgencyConsoleService:
                 self._require_full_checkpoint(path)
             return path
         candidates = []
-        if self.checkpoint_path.exists():
+        if self.checkpoint_path is not None and self.checkpoint_path.exists():
             candidates.append(self.checkpoint_path)
         candidates.extend(
             sorted(
@@ -721,12 +724,13 @@ class AgencyConsoleService:
             return candidate
         if require_full:
             raise FileNotFoundError(
-                "No full GAN checkpoint found. Train with `python -m src.gan.train --config src/gan/configs/train.json` "
-                "or set GMGI_GAN_CHECKPOINT to a full 256px checkpoint. Smoke checkpoints are rejected."
+                "No full MemoryGAN checkpoint found. Runtime creative generation does not require GAN training; "
+                "use GMGI_CREATIVE_BACKEND=diffusers, or set GMGI_GAN_CHECKPOINT to a full 256px checkpoint. "
+                "Smoke checkpoints are rejected."
             )
         raise FileNotFoundError(
-            "No GAN checkpoint found. Train with `python -m src.gan.train --config src/gan/configs/train.json` "
-            "or set GMGI_GAN_CHECKPOINT."
+            "No MemoryGAN checkpoint found. Runtime creative generation does not require GAN training; "
+            "use GMGI_CREATIVE_BACKEND=diffusers, or set GMGI_GAN_CHECKPOINT to an existing full-resolution checkpoint."
         )
 
     @staticmethod

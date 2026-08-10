@@ -5,6 +5,7 @@ from typing import Any, Mapping
 
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 DEFAULT_AGENT_SEQUENCE = [
     "recipient_profiling",
@@ -89,6 +90,11 @@ class MultiAgentPlanningAgent(StructuredAgent):
                 "reason": "Use the established bounded pipeline if planner output is incomplete or invalid.",
             },
         }
+        add_skill_metadata(
+            output,
+            self.config,
+            active=["task_decomposition", "dependency_planning", "fallback_plan_repair"],
+        )
         confidence = 0.84 if not ask_first else 0.72
         return AgentOutput(
             stage=self.stage,

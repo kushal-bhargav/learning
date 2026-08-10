@@ -1,0 +1,5016 @@
+{
+  "phase": "benchmark",
+  "case_count": 5,
+  "include_creative": true,
+  "summary": {
+    "overall_quality_score": 0.45602976243045135,
+    "stage_quality": {
+      "creative_generation": 0.5384615384615384,
+      "delivery_planner": 1.0,
+      "gift_intent_reasoning": 0.875,
+      "greeting_story": 0.0,
+      "multi_agent_planning": 1.0,
+      "recipient_profiling": 0.0,
+      "recommendation": 0.0,
+      "relationship_analysis": 0.0
+    },
+    "cross_component": {
+      "dag_validity": 1.0,
+      "intent_to_recommendation_consistency": 0.014925373134328356,
+      "no_error_stage_outputs": 0.0,
+      "pipeline_stage_coverage": 1.0,
+      "schema_conformance": 0.5
+    },
+    "behavioral": {},
+    "n": 5
+  },
+  "artifact_analysis": {
+    "generated_artifact_count": 5,
+    "unique_artifact_count": 5,
+    "duplicate_collapse_rate": 0.0,
+    "artifacts": [
+      {
+        "case_id": "ui_perm_001_partner_birthday_c5_0_a0_15",
+        "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_001_partner_birthday_c5_0_a0_15.png",
+        "width": 16,
+        "height": 16,
+        "sha256": "ae26b43880d2789af33b6b8d8b83f553ecb793f9c5a6751d8d67f94f79d7fe9a"
+      },
+      {
+        "case_id": "ui_perm_002_partner_birthday_c5_0_a0_5",
+        "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_002_partner_birthday_c5_0_a0_5.png",
+        "width": 16,
+        "height": 16,
+        "sha256": "ca8073dbf945faeb92924a947bb67b9ef12e58a422e390bd0573b54ea752b19d"
+      },
+      {
+        "case_id": "ui_perm_003_partner_birthday_c5_0_a0_85",
+        "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_003_partner_birthday_c5_0_a0_85.png",
+        "width": 16,
+        "height": 16,
+        "sha256": "dab284274ba0bf685d955e639aa5a94f07ddfbe11ea13038317267766440403c"
+      },
+      {
+        "case_id": "ui_perm_004_partner_birthday_c5_0_a0_15",
+        "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_004_partner_birthday_c5_0_a0_15.png",
+        "width": 16,
+        "height": 16,
+        "sha256": "1e6e003081885647e5b8156e9cbdf505bbb449c13dc8121cd0558e1cce38b490"
+      },
+      {
+        "case_id": "ui_perm_005_partner_birthday_c5_0_a0_5",
+        "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_005_partner_birthday_c5_0_a0_5.png",
+        "width": 16,
+        "height": 16,
+        "sha256": "95a5ec10b8805cdc1783f6791cd5f750e53a0b88f5daf32c9dd5dabd3b44f0a5"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "stage_reports": {
+        "recipient_profiling": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "relationship_analysis": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "gift_intent_reasoning": {
+          "status": "ok",
+          "quality_score": 0.875,
+          "metrics": [
+            {
+              "name": "intent_fields_complete",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "intent_summary": "Create a high-personalization gift for Birthday with casual tone.",
+                "occasion": {
+                  "name": "Birthday",
+                  "date": "2026-09-18",
+                  "formality": "casual",
+                  "urgency": "date-specified"
+                },
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                },
+                "preferences": [
+                  {
+                    "value": "ceramics",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "quiet mornings",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "green",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "handwritten notes",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  }
+                ],
+                "visual_generation": {
+                  "artifact_type": "greeting_card",
+                  "style_prompt": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "open_questions": [],
+                "clarifying_needs": []
+              }
+            },
+            {
+              "name": "occasion_match",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": "birthday",
+                "actual": "birthday"
+              }
+            },
+            {
+              "name": "preference_recall",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ],
+                "actual": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ]
+              }
+            },
+            {
+              "name": "budget_constraint_preserved",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "expected": "flexible",
+                "actual": "flexible"
+              }
+            },
+            {
+              "name": "delivery_constraint_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                }
+              }
+            },
+            {
+              "name": "gift_goal_specific",
+              "score": 0.0,
+              "passed": false,
+              "weight": 1.0,
+              "details": {
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                }
+              }
+            }
+          ]
+        },
+        "multi_agent_planning": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "agent_coverage",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ],
+                "actual": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "stage_order_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "sequence": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "dependencies_executable",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "dependencies": [
+                  {
+                    "after": "recipient_profiling",
+                    "before": "relationship_analysis",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "relationship_analysis",
+                    "before": "gift_intent_reasoning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "gift_intent_reasoning",
+                    "before": "multi_agent_planning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "multi_agent_planning",
+                    "before": "recommendation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "recommendation",
+                    "before": "creative_generation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "creative_generation",
+                    "before": "greeting_story",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "greeting_story",
+                    "before": "delivery_planner",
+                    "type": "stage_output"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "human_review_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "subtasks": [
+                  {
+                    "id": "step_1",
+                    "agent": "recipient_profiling",
+                    "action": "extract recipient signals",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_2",
+                    "agent": "relationship_analysis",
+                    "action": "model relationship tone and risk",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_3",
+                    "agent": "gift_intent_reasoning",
+                    "action": "infer gift intent and constraints",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_4",
+                    "agent": "multi_agent_planning",
+                    "action": "create bounded execution plan",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_5",
+                    "agent": "recommendation",
+                    "action": "rank gift concepts",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_6",
+                    "agent": "creative_generation",
+                    "action": "generate visual artifact",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_7",
+                    "agent": "greeting_story",
+                    "action": "write original message/story",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_8",
+                    "agent": "delivery_planner",
+                    "action": "simulate delivery timing",
+                    "requires_human_review": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "fallback_plan_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "fallback_plan": {
+                  "type": "current_staged_orchestration",
+                  "agent_sequence": [
+                    "recipient_profiling",
+                    "relationship_analysis",
+                    "gift_intent_reasoning",
+                    "multi_agent_planning",
+                    "recommendation",
+                    "creative_generation",
+                    "greeting_story",
+                    "delivery_planner"
+                  ],
+                  "reason": "Use the established bounded pipeline if planner output is incomplete or invalid."
+                }
+              }
+            },
+            {
+              "name": "stop_conditions_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "stop_conditions": [
+                  "human rejects or edits a pending proposal",
+                  "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                  "delivery remains simulated; no external purchase or shipping action is allowed"
+                ]
+              }
+            }
+          ]
+        },
+        "recommendation": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "creative_generation": {
+          "status": "ok",
+          "quality_score": 0.5384615384615384,
+          "metrics": [
+            {
+              "name": "artifact_file_exists",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_001_partner_birthday_c5_0_a0_15.png"
+              }
+            },
+            {
+              "name": "artifact_not_marked_fake",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_001_partner_birthday_c5_0_a0_15.png"
+              }
+            },
+            {
+              "name": "image_file_header_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_001_partner_birthday_c5_0_a0_15.png"
+              }
+            },
+            {
+              "name": "image_resolution_practical",
+              "score": 0.0,
+              "passed": false,
+              "weight": 2.0,
+              "details": {
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "visual_artifact_usable",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "exists": true,
+                "image_valid": true,
+                "fake_marker": false,
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "agency_slider_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "agency_slider": 0.15
+              }
+            },
+            {
+              "name": "conditioning_prompt_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "prompt_text": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+              }
+            }
+          ]
+        },
+        "greeting_story": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "delivery_planner": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "simulated_delivery_only",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "mode": "digital",
+                "channel": "digital card",
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18",
+                "status": "simulated",
+                "disclaimer": "No shipment, purchase, or external delivery was created.",
+                "skills_used": [
+                  "date_logistics_math"
+                ],
+                "prompt_version": "static"
+              }
+            },
+            {
+              "name": "planned_before_or_on_occasion",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18"
+              }
+            },
+            {
+              "name": "channel_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "channel": "digital card"
+              }
+            },
+            {
+              "name": "mode_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "mode": "digital"
+              }
+            },
+            {
+              "name": "no_real_logistics_integration_claim",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "output": {
+                  "mode": "digital",
+                  "channel": "digital card",
+                  "planned_send_date": "2026-09-18",
+                  "occasion_date": "2026-09-18",
+                  "status": "simulated",
+                  "disclaimer": "No shipment, purchase, or external delivery was created.",
+                  "skills_used": [
+                    "date_logistics_math"
+                  ],
+                  "prompt_version": "static"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "cross_component_metrics": [
+        {
+          "name": "pipeline_stage_coverage",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "present": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "expected": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ]
+          }
+        },
+        {
+          "name": "schema_conformance",
+          "score": 0.5,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "stages": {
+              "recipient_profiling": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "relationship_analysis": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "gift_intent_reasoning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "multi_agent_planning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "recommendation": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "creative_generation": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              },
+              "greeting_story": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "delivery_planner": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "dag_validity",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "sequence": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "dependencies": [
+              {
+                "after": "recipient_profiling",
+                "before": "relationship_analysis",
+                "type": "stage_output"
+              },
+              {
+                "after": "relationship_analysis",
+                "before": "gift_intent_reasoning",
+                "type": "stage_output"
+              },
+              {
+                "after": "gift_intent_reasoning",
+                "before": "multi_agent_planning",
+                "type": "stage_output"
+              },
+              {
+                "after": "multi_agent_planning",
+                "before": "recommendation",
+                "type": "stage_output"
+              },
+              {
+                "after": "recommendation",
+                "before": "creative_generation",
+                "type": "stage_output"
+              },
+              {
+                "after": "creative_generation",
+                "before": "greeting_story",
+                "type": "stage_output"
+              },
+              {
+                "after": "greeting_story",
+                "before": "delivery_planner",
+                "type": "stage_output"
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "name": "no_error_stage_outputs",
+          "score": 0.0,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "error_stages": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "recommendation",
+              "greeting_story"
+            ]
+          }
+        },
+        {
+          "name": "intent_to_recommendation_consistency",
+          "score": 0.014925373134328358,
+          "passed": false,
+          "weight": 1.0,
+          "details": {
+            "intent_chars": 1179,
+            "recommendation_chars": 70
+          }
+        }
+      ],
+      "overall_quality_score": 0.4560297624304513,
+      "case_id": "ui_perm_001_partner_birthday_c5_0_a0_15",
+      "session_id": "benchmark-ui_perm_001_partner_birthday_c5_0_a0_15",
+      "agent_traces": [
+        {
+          "stage": "recipient_profiling",
+          "status": "timeout",
+          "latency_seconds": 8.01299519999884,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "relationship_analysis",
+          "status": "timeout",
+          "latency_seconds": 8.003220899998269,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "gift_intent_reasoning",
+          "status": "ok",
+          "latency_seconds": 0.0011694999993778765,
+          "confidence": 0.9,
+          "rationale_present": true
+        },
+        {
+          "stage": "multi_agent_planning",
+          "status": "ok",
+          "latency_seconds": 0.0014788999978918582,
+          "confidence": 0.84,
+          "rationale_present": true
+        },
+        {
+          "stage": "recommendation",
+          "status": "timeout",
+          "latency_seconds": 8.0024601000041,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "creative_generation",
+          "status": "ok",
+          "latency_seconds": 0.15374590000283206,
+          "confidence": null,
+          "rationale_present": true
+        },
+        {
+          "stage": "greeting_story",
+          "status": "timeout",
+          "latency_seconds": 8.007850999994844,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "delivery_planner",
+          "status": "ok",
+          "latency_seconds": 0.0014357000036397949,
+          "confidence": 1.0,
+          "rationale_present": true
+        }
+      ],
+      "input_context": {
+        "fixture": {
+          "schema_version": "1.0",
+          "persona_id": "benchmark-50b50317",
+          "label": "Eval giver to Eval recipient 1",
+          "synthetic": false,
+          "people": [
+            {
+              "id": "person-giver-50b50317",
+              "display_name": "Eval giver",
+              "role": "giver"
+            },
+            {
+              "id": "person-recipient-50b50317",
+              "display_name": "Eval recipient 1",
+              "role": "recipient"
+            }
+          ],
+          "relationships": [
+            {
+              "id": "relationship-live-50b50317",
+              "person_a": "person-giver-50b50317",
+              "person_b": "person-recipient-50b50317",
+              "type": "partner",
+              "closeness_score": 5.0
+            }
+          ],
+          "occasions": [
+            {
+              "id": "occasion-live-50b50317",
+              "name": "Birthday",
+              "date": "2026-09-18",
+              "budget_hint": "Flexible",
+              "formality": "casual"
+            }
+          ],
+          "events": [
+            {
+              "id": "event-live-50b50317",
+              "date": "2026-09-18",
+              "type": "benchmark-context",
+              "participants": [
+                "person-giver-50b50317",
+                "person-recipient-50b50317"
+              ]
+            }
+          ],
+          "memories": [
+            {
+              "id": "memory-live-50b50317-1",
+              "modality": "text",
+              "content": "They once got lost finding a tiny tea shop.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-50b50317",
+              "person_ids": [
+                "person-giver-50b50317",
+                "person-recipient-50b50317"
+              ],
+              "emotion_tag": "nostalgia"
+            },
+            {
+              "id": "memory-live-50b50317-2",
+              "modality": "text",
+              "content": "They always send photos of interesting doors.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-50b50317",
+              "person_ids": [
+                "person-giver-50b50317",
+                "person-recipient-50b50317"
+              ],
+              "emotion_tag": "nostalgia"
+            }
+          ],
+          "preferences": [
+            {
+              "id": "preference-live-50b50317-1",
+              "person_id": "person-recipient-50b50317",
+              "category": "stated",
+              "value": "ceramics",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-50b50317-2",
+              "person_id": "person-recipient-50b50317",
+              "category": "stated",
+              "value": "quiet mornings",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-50b50317-3",
+              "person_id": "person-recipient-50b50317",
+              "category": "stated",
+              "value": "green",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-50b50317-4",
+              "person_id": "person-recipient-50b50317",
+              "category": "stated",
+              "value": "handwritten notes",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            }
+          ]
+        },
+        "recipient": {
+          "id": "person-recipient-50b50317",
+          "display_name": "Eval recipient 1",
+          "role": "recipient"
+        },
+        "relationship": {
+          "id": "relationship-live-50b50317",
+          "person_a": "person-giver-50b50317",
+          "person_b": "person-recipient-50b50317",
+          "type": "partner",
+          "closeness_score": 5.0
+        },
+        "occasion": {
+          "id": "occasion-live-50b50317",
+          "name": "Birthday",
+          "date": "2026-09-18",
+          "budget_hint": "Flexible",
+          "formality": "casual"
+        },
+        "memories": [
+          {
+            "id": "memory-live-50b50317-1",
+            "modality": "text",
+            "content": "They once got lost finding a tiny tea shop.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-50b50317",
+            "person_ids": [
+              "person-giver-50b50317",
+              "person-recipient-50b50317"
+            ],
+            "emotion_tag": "nostalgia"
+          },
+          {
+            "id": "memory-live-50b50317-2",
+            "modality": "text",
+            "content": "They always send photos of interesting doors.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-50b50317",
+            "person_ids": [
+              "person-giver-50b50317",
+              "person-recipient-50b50317"
+            ],
+            "emotion_tag": "nostalgia"
+          }
+        ],
+        "preferences": [
+          {
+            "id": "preference-live-50b50317-1",
+            "person_id": "person-recipient-50b50317",
+            "category": "stated",
+            "value": "ceramics",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-50b50317-2",
+            "person_id": "person-recipient-50b50317",
+            "category": "stated",
+            "value": "quiet mornings",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-50b50317-3",
+            "person_id": "person-recipient-50b50317",
+            "category": "stated",
+            "value": "green",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-50b50317-4",
+            "person_id": "person-recipient-50b50317",
+            "category": "stated",
+            "value": "handwritten notes",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          }
+        ]
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.15,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "behavioral_metrics": {
+        "composite_reward": null,
+        "accept_rate": null,
+        "edit_rate": null,
+        "regenerate_rate": null,
+        "delegate_rate": null,
+        "completed_action_coverage": null
+      }
+    },
+    {
+      "stage_reports": {
+        "recipient_profiling": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "relationship_analysis": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "gift_intent_reasoning": {
+          "status": "ok",
+          "quality_score": 0.875,
+          "metrics": [
+            {
+              "name": "intent_fields_complete",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "intent_summary": "Create a high-personalization gift for Birthday with casual tone.",
+                "occasion": {
+                  "name": "Birthday",
+                  "date": "2026-09-18",
+                  "formality": "casual",
+                  "urgency": "date-specified"
+                },
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                },
+                "preferences": [
+                  {
+                    "value": "ceramics",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "quiet mornings",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "green",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "handwritten notes",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  }
+                ],
+                "visual_generation": {
+                  "artifact_type": "greeting_card",
+                  "style_prompt": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "open_questions": [],
+                "clarifying_needs": []
+              }
+            },
+            {
+              "name": "occasion_match",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": "birthday",
+                "actual": "birthday"
+              }
+            },
+            {
+              "name": "preference_recall",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ],
+                "actual": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ]
+              }
+            },
+            {
+              "name": "budget_constraint_preserved",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "expected": "flexible",
+                "actual": "flexible"
+              }
+            },
+            {
+              "name": "delivery_constraint_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                }
+              }
+            },
+            {
+              "name": "gift_goal_specific",
+              "score": 0.0,
+              "passed": false,
+              "weight": 1.0,
+              "details": {
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                }
+              }
+            }
+          ]
+        },
+        "multi_agent_planning": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "agent_coverage",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ],
+                "actual": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "stage_order_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "sequence": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "dependencies_executable",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "dependencies": [
+                  {
+                    "after": "recipient_profiling",
+                    "before": "relationship_analysis",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "relationship_analysis",
+                    "before": "gift_intent_reasoning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "gift_intent_reasoning",
+                    "before": "multi_agent_planning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "multi_agent_planning",
+                    "before": "recommendation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "recommendation",
+                    "before": "creative_generation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "creative_generation",
+                    "before": "greeting_story",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "greeting_story",
+                    "before": "delivery_planner",
+                    "type": "stage_output"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "human_review_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "subtasks": [
+                  {
+                    "id": "step_1",
+                    "agent": "recipient_profiling",
+                    "action": "extract recipient signals",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_2",
+                    "agent": "relationship_analysis",
+                    "action": "model relationship tone and risk",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_3",
+                    "agent": "gift_intent_reasoning",
+                    "action": "infer gift intent and constraints",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_4",
+                    "agent": "multi_agent_planning",
+                    "action": "create bounded execution plan",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_5",
+                    "agent": "recommendation",
+                    "action": "rank gift concepts",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_6",
+                    "agent": "creative_generation",
+                    "action": "generate visual artifact",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_7",
+                    "agent": "greeting_story",
+                    "action": "write original message/story",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_8",
+                    "agent": "delivery_planner",
+                    "action": "simulate delivery timing",
+                    "requires_human_review": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "fallback_plan_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "fallback_plan": {
+                  "type": "current_staged_orchestration",
+                  "agent_sequence": [
+                    "recipient_profiling",
+                    "relationship_analysis",
+                    "gift_intent_reasoning",
+                    "multi_agent_planning",
+                    "recommendation",
+                    "creative_generation",
+                    "greeting_story",
+                    "delivery_planner"
+                  ],
+                  "reason": "Use the established bounded pipeline if planner output is incomplete or invalid."
+                }
+              }
+            },
+            {
+              "name": "stop_conditions_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "stop_conditions": [
+                  "human rejects or edits a pending proposal",
+                  "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                  "delivery remains simulated; no external purchase or shipping action is allowed"
+                ]
+              }
+            }
+          ]
+        },
+        "recommendation": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "creative_generation": {
+          "status": "ok",
+          "quality_score": 0.5384615384615384,
+          "metrics": [
+            {
+              "name": "artifact_file_exists",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_002_partner_birthday_c5_0_a0_5.png"
+              }
+            },
+            {
+              "name": "artifact_not_marked_fake",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_002_partner_birthday_c5_0_a0_5.png"
+              }
+            },
+            {
+              "name": "image_file_header_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_002_partner_birthday_c5_0_a0_5.png"
+              }
+            },
+            {
+              "name": "image_resolution_practical",
+              "score": 0.0,
+              "passed": false,
+              "weight": 2.0,
+              "details": {
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "visual_artifact_usable",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "exists": true,
+                "image_valid": true,
+                "fake_marker": false,
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "agency_slider_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "agency_slider": 0.5
+              }
+            },
+            {
+              "name": "conditioning_prompt_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "prompt_text": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+              }
+            }
+          ]
+        },
+        "greeting_story": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "delivery_planner": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "simulated_delivery_only",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "mode": "digital",
+                "channel": "digital card",
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18",
+                "status": "simulated",
+                "disclaimer": "No shipment, purchase, or external delivery was created.",
+                "skills_used": [
+                  "date_logistics_math"
+                ],
+                "prompt_version": "static"
+              }
+            },
+            {
+              "name": "planned_before_or_on_occasion",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18"
+              }
+            },
+            {
+              "name": "channel_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "channel": "digital card"
+              }
+            },
+            {
+              "name": "mode_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "mode": "digital"
+              }
+            },
+            {
+              "name": "no_real_logistics_integration_claim",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "output": {
+                  "mode": "digital",
+                  "channel": "digital card",
+                  "planned_send_date": "2026-09-18",
+                  "occasion_date": "2026-09-18",
+                  "status": "simulated",
+                  "disclaimer": "No shipment, purchase, or external delivery was created.",
+                  "skills_used": [
+                    "date_logistics_math"
+                  ],
+                  "prompt_version": "static"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "cross_component_metrics": [
+        {
+          "name": "pipeline_stage_coverage",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "present": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "expected": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ]
+          }
+        },
+        {
+          "name": "schema_conformance",
+          "score": 0.5,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "stages": {
+              "recipient_profiling": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "relationship_analysis": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "gift_intent_reasoning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "multi_agent_planning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "recommendation": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "creative_generation": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              },
+              "greeting_story": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "delivery_planner": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "dag_validity",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "sequence": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "dependencies": [
+              {
+                "after": "recipient_profiling",
+                "before": "relationship_analysis",
+                "type": "stage_output"
+              },
+              {
+                "after": "relationship_analysis",
+                "before": "gift_intent_reasoning",
+                "type": "stage_output"
+              },
+              {
+                "after": "gift_intent_reasoning",
+                "before": "multi_agent_planning",
+                "type": "stage_output"
+              },
+              {
+                "after": "multi_agent_planning",
+                "before": "recommendation",
+                "type": "stage_output"
+              },
+              {
+                "after": "recommendation",
+                "before": "creative_generation",
+                "type": "stage_output"
+              },
+              {
+                "after": "creative_generation",
+                "before": "greeting_story",
+                "type": "stage_output"
+              },
+              {
+                "after": "greeting_story",
+                "before": "delivery_planner",
+                "type": "stage_output"
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "name": "no_error_stage_outputs",
+          "score": 0.0,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "error_stages": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "recommendation",
+              "greeting_story"
+            ]
+          }
+        },
+        {
+          "name": "intent_to_recommendation_consistency",
+          "score": 0.014925373134328358,
+          "passed": false,
+          "weight": 1.0,
+          "details": {
+            "intent_chars": 1179,
+            "recommendation_chars": 70
+          }
+        }
+      ],
+      "overall_quality_score": 0.4560297624304513,
+      "case_id": "ui_perm_002_partner_birthday_c5_0_a0_5",
+      "session_id": "benchmark-ui_perm_002_partner_birthday_c5_0_a0_5",
+      "agent_traces": [
+        {
+          "stage": "recipient_profiling",
+          "status": "timeout",
+          "latency_seconds": 8.010943499997666,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "relationship_analysis",
+          "status": "timeout",
+          "latency_seconds": 8.015704800003732,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "gift_intent_reasoning",
+          "status": "ok",
+          "latency_seconds": 0.0016557999988435768,
+          "confidence": 0.9,
+          "rationale_present": true
+        },
+        {
+          "stage": "multi_agent_planning",
+          "status": "ok",
+          "latency_seconds": 0.0017536000013933517,
+          "confidence": 0.84,
+          "rationale_present": true
+        },
+        {
+          "stage": "recommendation",
+          "status": "timeout",
+          "latency_seconds": 8.004681600003096,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "creative_generation",
+          "status": "ok",
+          "latency_seconds": 0.02241919999505626,
+          "confidence": null,
+          "rationale_present": true
+        },
+        {
+          "stage": "greeting_story",
+          "status": "timeout",
+          "latency_seconds": 8.012486800005718,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "delivery_planner",
+          "status": "ok",
+          "latency_seconds": 0.0023172000001068227,
+          "confidence": 1.0,
+          "rationale_present": true
+        }
+      ],
+      "input_context": {
+        "fixture": {
+          "schema_version": "1.0",
+          "persona_id": "benchmark-ccecf054",
+          "label": "Eval giver to Eval recipient 2",
+          "synthetic": false,
+          "people": [
+            {
+              "id": "person-giver-ccecf054",
+              "display_name": "Eval giver",
+              "role": "giver"
+            },
+            {
+              "id": "person-recipient-ccecf054",
+              "display_name": "Eval recipient 2",
+              "role": "recipient"
+            }
+          ],
+          "relationships": [
+            {
+              "id": "relationship-live-ccecf054",
+              "person_a": "person-giver-ccecf054",
+              "person_b": "person-recipient-ccecf054",
+              "type": "partner",
+              "closeness_score": 5.0
+            }
+          ],
+          "occasions": [
+            {
+              "id": "occasion-live-ccecf054",
+              "name": "Birthday",
+              "date": "2026-09-18",
+              "budget_hint": "Flexible",
+              "formality": "casual"
+            }
+          ],
+          "events": [
+            {
+              "id": "event-live-ccecf054",
+              "date": "2026-09-18",
+              "type": "benchmark-context",
+              "participants": [
+                "person-giver-ccecf054",
+                "person-recipient-ccecf054"
+              ]
+            }
+          ],
+          "memories": [
+            {
+              "id": "memory-live-ccecf054-1",
+              "modality": "text",
+              "content": "They once got lost finding a tiny tea shop.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-ccecf054",
+              "person_ids": [
+                "person-giver-ccecf054",
+                "person-recipient-ccecf054"
+              ],
+              "emotion_tag": "nostalgia"
+            },
+            {
+              "id": "memory-live-ccecf054-2",
+              "modality": "text",
+              "content": "They always send photos of interesting doors.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-ccecf054",
+              "person_ids": [
+                "person-giver-ccecf054",
+                "person-recipient-ccecf054"
+              ],
+              "emotion_tag": "nostalgia"
+            }
+          ],
+          "preferences": [
+            {
+              "id": "preference-live-ccecf054-1",
+              "person_id": "person-recipient-ccecf054",
+              "category": "stated",
+              "value": "ceramics",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-ccecf054-2",
+              "person_id": "person-recipient-ccecf054",
+              "category": "stated",
+              "value": "quiet mornings",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-ccecf054-3",
+              "person_id": "person-recipient-ccecf054",
+              "category": "stated",
+              "value": "green",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-ccecf054-4",
+              "person_id": "person-recipient-ccecf054",
+              "category": "stated",
+              "value": "handwritten notes",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            }
+          ]
+        },
+        "recipient": {
+          "id": "person-recipient-ccecf054",
+          "display_name": "Eval recipient 2",
+          "role": "recipient"
+        },
+        "relationship": {
+          "id": "relationship-live-ccecf054",
+          "person_a": "person-giver-ccecf054",
+          "person_b": "person-recipient-ccecf054",
+          "type": "partner",
+          "closeness_score": 5.0
+        },
+        "occasion": {
+          "id": "occasion-live-ccecf054",
+          "name": "Birthday",
+          "date": "2026-09-18",
+          "budget_hint": "Flexible",
+          "formality": "casual"
+        },
+        "memories": [
+          {
+            "id": "memory-live-ccecf054-1",
+            "modality": "text",
+            "content": "They once got lost finding a tiny tea shop.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-ccecf054",
+            "person_ids": [
+              "person-giver-ccecf054",
+              "person-recipient-ccecf054"
+            ],
+            "emotion_tag": "nostalgia"
+          },
+          {
+            "id": "memory-live-ccecf054-2",
+            "modality": "text",
+            "content": "They always send photos of interesting doors.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-ccecf054",
+            "person_ids": [
+              "person-giver-ccecf054",
+              "person-recipient-ccecf054"
+            ],
+            "emotion_tag": "nostalgia"
+          }
+        ],
+        "preferences": [
+          {
+            "id": "preference-live-ccecf054-1",
+            "person_id": "person-recipient-ccecf054",
+            "category": "stated",
+            "value": "ceramics",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-ccecf054-2",
+            "person_id": "person-recipient-ccecf054",
+            "category": "stated",
+            "value": "quiet mornings",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-ccecf054-3",
+            "person_id": "person-recipient-ccecf054",
+            "category": "stated",
+            "value": "green",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-ccecf054-4",
+            "person_id": "person-recipient-ccecf054",
+            "category": "stated",
+            "value": "handwritten notes",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          }
+        ]
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.5,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "behavioral_metrics": {
+        "composite_reward": null,
+        "accept_rate": null,
+        "edit_rate": null,
+        "regenerate_rate": null,
+        "delegate_rate": null,
+        "completed_action_coverage": null
+      }
+    },
+    {
+      "stage_reports": {
+        "recipient_profiling": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "relationship_analysis": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "gift_intent_reasoning": {
+          "status": "ok",
+          "quality_score": 0.875,
+          "metrics": [
+            {
+              "name": "intent_fields_complete",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "intent_summary": "Create a high-personalization gift for Birthday with casual tone.",
+                "occasion": {
+                  "name": "Birthday",
+                  "date": "2026-09-18",
+                  "formality": "casual",
+                  "urgency": "date-specified"
+                },
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                },
+                "preferences": [
+                  {
+                    "value": "ceramics",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "quiet mornings",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "green",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "handwritten notes",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  }
+                ],
+                "visual_generation": {
+                  "artifact_type": "greeting_card",
+                  "style_prompt": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "open_questions": [],
+                "clarifying_needs": []
+              }
+            },
+            {
+              "name": "occasion_match",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": "birthday",
+                "actual": "birthday"
+              }
+            },
+            {
+              "name": "preference_recall",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ],
+                "actual": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ]
+              }
+            },
+            {
+              "name": "budget_constraint_preserved",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "expected": "flexible",
+                "actual": "flexible"
+              }
+            },
+            {
+              "name": "delivery_constraint_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                }
+              }
+            },
+            {
+              "name": "gift_goal_specific",
+              "score": 0.0,
+              "passed": false,
+              "weight": 1.0,
+              "details": {
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                }
+              }
+            }
+          ]
+        },
+        "multi_agent_planning": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "agent_coverage",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ],
+                "actual": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "stage_order_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "sequence": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "dependencies_executable",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "dependencies": [
+                  {
+                    "after": "recipient_profiling",
+                    "before": "relationship_analysis",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "relationship_analysis",
+                    "before": "gift_intent_reasoning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "gift_intent_reasoning",
+                    "before": "multi_agent_planning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "multi_agent_planning",
+                    "before": "recommendation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "recommendation",
+                    "before": "creative_generation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "creative_generation",
+                    "before": "greeting_story",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "greeting_story",
+                    "before": "delivery_planner",
+                    "type": "stage_output"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "human_review_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "subtasks": [
+                  {
+                    "id": "step_1",
+                    "agent": "recipient_profiling",
+                    "action": "extract recipient signals",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_2",
+                    "agent": "relationship_analysis",
+                    "action": "model relationship tone and risk",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_3",
+                    "agent": "gift_intent_reasoning",
+                    "action": "infer gift intent and constraints",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_4",
+                    "agent": "multi_agent_planning",
+                    "action": "create bounded execution plan",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_5",
+                    "agent": "recommendation",
+                    "action": "rank gift concepts",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_6",
+                    "agent": "creative_generation",
+                    "action": "generate visual artifact",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_7",
+                    "agent": "greeting_story",
+                    "action": "write original message/story",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_8",
+                    "agent": "delivery_planner",
+                    "action": "simulate delivery timing",
+                    "requires_human_review": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "fallback_plan_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "fallback_plan": {
+                  "type": "current_staged_orchestration",
+                  "agent_sequence": [
+                    "recipient_profiling",
+                    "relationship_analysis",
+                    "gift_intent_reasoning",
+                    "multi_agent_planning",
+                    "recommendation",
+                    "creative_generation",
+                    "greeting_story",
+                    "delivery_planner"
+                  ],
+                  "reason": "Use the established bounded pipeline if planner output is incomplete or invalid."
+                }
+              }
+            },
+            {
+              "name": "stop_conditions_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "stop_conditions": [
+                  "human rejects or edits a pending proposal",
+                  "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                  "delivery remains simulated; no external purchase or shipping action is allowed"
+                ]
+              }
+            }
+          ]
+        },
+        "recommendation": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "creative_generation": {
+          "status": "ok",
+          "quality_score": 0.5384615384615384,
+          "metrics": [
+            {
+              "name": "artifact_file_exists",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_003_partner_birthday_c5_0_a0_85.png"
+              }
+            },
+            {
+              "name": "artifact_not_marked_fake",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_003_partner_birthday_c5_0_a0_85.png"
+              }
+            },
+            {
+              "name": "image_file_header_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_003_partner_birthday_c5_0_a0_85.png"
+              }
+            },
+            {
+              "name": "image_resolution_practical",
+              "score": 0.0,
+              "passed": false,
+              "weight": 2.0,
+              "details": {
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "visual_artifact_usable",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "exists": true,
+                "image_valid": true,
+                "fake_marker": false,
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "agency_slider_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "agency_slider": 0.85
+              }
+            },
+            {
+              "name": "conditioning_prompt_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "prompt_text": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+              }
+            }
+          ]
+        },
+        "greeting_story": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "delivery_planner": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "simulated_delivery_only",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "mode": "digital",
+                "channel": "digital card",
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18",
+                "status": "simulated",
+                "disclaimer": "No shipment, purchase, or external delivery was created.",
+                "skills_used": [
+                  "date_logistics_math"
+                ],
+                "prompt_version": "static"
+              }
+            },
+            {
+              "name": "planned_before_or_on_occasion",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18"
+              }
+            },
+            {
+              "name": "channel_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "channel": "digital card"
+              }
+            },
+            {
+              "name": "mode_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "mode": "digital"
+              }
+            },
+            {
+              "name": "no_real_logistics_integration_claim",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "output": {
+                  "mode": "digital",
+                  "channel": "digital card",
+                  "planned_send_date": "2026-09-18",
+                  "occasion_date": "2026-09-18",
+                  "status": "simulated",
+                  "disclaimer": "No shipment, purchase, or external delivery was created.",
+                  "skills_used": [
+                    "date_logistics_math"
+                  ],
+                  "prompt_version": "static"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "cross_component_metrics": [
+        {
+          "name": "pipeline_stage_coverage",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "present": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "expected": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ]
+          }
+        },
+        {
+          "name": "schema_conformance",
+          "score": 0.5,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "stages": {
+              "recipient_profiling": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "relationship_analysis": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "gift_intent_reasoning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "multi_agent_planning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "recommendation": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "creative_generation": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              },
+              "greeting_story": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "delivery_planner": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "dag_validity",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "sequence": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "dependencies": [
+              {
+                "after": "recipient_profiling",
+                "before": "relationship_analysis",
+                "type": "stage_output"
+              },
+              {
+                "after": "relationship_analysis",
+                "before": "gift_intent_reasoning",
+                "type": "stage_output"
+              },
+              {
+                "after": "gift_intent_reasoning",
+                "before": "multi_agent_planning",
+                "type": "stage_output"
+              },
+              {
+                "after": "multi_agent_planning",
+                "before": "recommendation",
+                "type": "stage_output"
+              },
+              {
+                "after": "recommendation",
+                "before": "creative_generation",
+                "type": "stage_output"
+              },
+              {
+                "after": "creative_generation",
+                "before": "greeting_story",
+                "type": "stage_output"
+              },
+              {
+                "after": "greeting_story",
+                "before": "delivery_planner",
+                "type": "stage_output"
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "name": "no_error_stage_outputs",
+          "score": 0.0,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "error_stages": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "recommendation",
+              "greeting_story"
+            ]
+          }
+        },
+        {
+          "name": "intent_to_recommendation_consistency",
+          "score": 0.014925373134328358,
+          "passed": false,
+          "weight": 1.0,
+          "details": {
+            "intent_chars": 1179,
+            "recommendation_chars": 70
+          }
+        }
+      ],
+      "overall_quality_score": 0.4560297624304513,
+      "case_id": "ui_perm_003_partner_birthday_c5_0_a0_85",
+      "session_id": "benchmark-ui_perm_003_partner_birthday_c5_0_a0_85",
+      "agent_traces": [
+        {
+          "stage": "recipient_profiling",
+          "status": "timeout",
+          "latency_seconds": 8.000946100000874,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "relationship_analysis",
+          "status": "timeout",
+          "latency_seconds": 8.017666599997028,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "gift_intent_reasoning",
+          "status": "ok",
+          "latency_seconds": 0.013528400006180163,
+          "confidence": 0.9,
+          "rationale_present": true
+        },
+        {
+          "stage": "multi_agent_planning",
+          "status": "ok",
+          "latency_seconds": 0.005096200002299156,
+          "confidence": 0.84,
+          "rationale_present": true
+        },
+        {
+          "stage": "recommendation",
+          "status": "timeout",
+          "latency_seconds": 8.025419300000067,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "creative_generation",
+          "status": "ok",
+          "latency_seconds": 0.0831289000052493,
+          "confidence": null,
+          "rationale_present": true
+        },
+        {
+          "stage": "greeting_story",
+          "status": "timeout",
+          "latency_seconds": 8.016910899998038,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "delivery_planner",
+          "status": "ok",
+          "latency_seconds": 0.001501099999586586,
+          "confidence": 1.0,
+          "rationale_present": true
+        }
+      ],
+      "input_context": {
+        "fixture": {
+          "schema_version": "1.0",
+          "persona_id": "benchmark-46873ade",
+          "label": "Eval giver to Eval recipient 3",
+          "synthetic": false,
+          "people": [
+            {
+              "id": "person-giver-46873ade",
+              "display_name": "Eval giver",
+              "role": "giver"
+            },
+            {
+              "id": "person-recipient-46873ade",
+              "display_name": "Eval recipient 3",
+              "role": "recipient"
+            }
+          ],
+          "relationships": [
+            {
+              "id": "relationship-live-46873ade",
+              "person_a": "person-giver-46873ade",
+              "person_b": "person-recipient-46873ade",
+              "type": "partner",
+              "closeness_score": 5.0
+            }
+          ],
+          "occasions": [
+            {
+              "id": "occasion-live-46873ade",
+              "name": "Birthday",
+              "date": "2026-09-18",
+              "budget_hint": "Flexible",
+              "formality": "casual"
+            }
+          ],
+          "events": [
+            {
+              "id": "event-live-46873ade",
+              "date": "2026-09-18",
+              "type": "benchmark-context",
+              "participants": [
+                "person-giver-46873ade",
+                "person-recipient-46873ade"
+              ]
+            }
+          ],
+          "memories": [
+            {
+              "id": "memory-live-46873ade-1",
+              "modality": "text",
+              "content": "They once got lost finding a tiny tea shop.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-46873ade",
+              "person_ids": [
+                "person-giver-46873ade",
+                "person-recipient-46873ade"
+              ],
+              "emotion_tag": "nostalgia"
+            },
+            {
+              "id": "memory-live-46873ade-2",
+              "modality": "text",
+              "content": "They always send photos of interesting doors.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-46873ade",
+              "person_ids": [
+                "person-giver-46873ade",
+                "person-recipient-46873ade"
+              ],
+              "emotion_tag": "nostalgia"
+            }
+          ],
+          "preferences": [
+            {
+              "id": "preference-live-46873ade-1",
+              "person_id": "person-recipient-46873ade",
+              "category": "stated",
+              "value": "ceramics",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-46873ade-2",
+              "person_id": "person-recipient-46873ade",
+              "category": "stated",
+              "value": "quiet mornings",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-46873ade-3",
+              "person_id": "person-recipient-46873ade",
+              "category": "stated",
+              "value": "green",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-46873ade-4",
+              "person_id": "person-recipient-46873ade",
+              "category": "stated",
+              "value": "handwritten notes",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            }
+          ]
+        },
+        "recipient": {
+          "id": "person-recipient-46873ade",
+          "display_name": "Eval recipient 3",
+          "role": "recipient"
+        },
+        "relationship": {
+          "id": "relationship-live-46873ade",
+          "person_a": "person-giver-46873ade",
+          "person_b": "person-recipient-46873ade",
+          "type": "partner",
+          "closeness_score": 5.0
+        },
+        "occasion": {
+          "id": "occasion-live-46873ade",
+          "name": "Birthday",
+          "date": "2026-09-18",
+          "budget_hint": "Flexible",
+          "formality": "casual"
+        },
+        "memories": [
+          {
+            "id": "memory-live-46873ade-1",
+            "modality": "text",
+            "content": "They once got lost finding a tiny tea shop.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-46873ade",
+            "person_ids": [
+              "person-giver-46873ade",
+              "person-recipient-46873ade"
+            ],
+            "emotion_tag": "nostalgia"
+          },
+          {
+            "id": "memory-live-46873ade-2",
+            "modality": "text",
+            "content": "They always send photos of interesting doors.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-46873ade",
+            "person_ids": [
+              "person-giver-46873ade",
+              "person-recipient-46873ade"
+            ],
+            "emotion_tag": "nostalgia"
+          }
+        ],
+        "preferences": [
+          {
+            "id": "preference-live-46873ade-1",
+            "person_id": "person-recipient-46873ade",
+            "category": "stated",
+            "value": "ceramics",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-46873ade-2",
+            "person_id": "person-recipient-46873ade",
+            "category": "stated",
+            "value": "quiet mornings",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-46873ade-3",
+            "person_id": "person-recipient-46873ade",
+            "category": "stated",
+            "value": "green",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-46873ade-4",
+            "person_id": "person-recipient-46873ade",
+            "category": "stated",
+            "value": "handwritten notes",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          }
+        ]
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.85,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "behavioral_metrics": {
+        "composite_reward": null,
+        "accept_rate": null,
+        "edit_rate": null,
+        "regenerate_rate": null,
+        "delegate_rate": null,
+        "completed_action_coverage": null
+      }
+    },
+    {
+      "stage_reports": {
+        "recipient_profiling": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "relationship_analysis": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "gift_intent_reasoning": {
+          "status": "ok",
+          "quality_score": 0.875,
+          "metrics": [
+            {
+              "name": "intent_fields_complete",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "intent_summary": "Create a high-personalization gift for Birthday with casual tone.",
+                "occasion": {
+                  "name": "Birthday",
+                  "date": "2026-09-18",
+                  "formality": "casual",
+                  "urgency": "date-specified"
+                },
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                },
+                "preferences": [
+                  {
+                    "value": "ceramics",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "quiet mornings",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "green",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "handwritten notes",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  }
+                ],
+                "visual_generation": {
+                  "artifact_type": "greeting_card",
+                  "style_prompt": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "open_questions": [],
+                "clarifying_needs": []
+              }
+            },
+            {
+              "name": "occasion_match",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": "birthday",
+                "actual": "birthday"
+              }
+            },
+            {
+              "name": "preference_recall",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ],
+                "actual": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ]
+              }
+            },
+            {
+              "name": "budget_constraint_preserved",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "expected": "flexible",
+                "actual": "flexible"
+              }
+            },
+            {
+              "name": "delivery_constraint_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                }
+              }
+            },
+            {
+              "name": "gift_goal_specific",
+              "score": 0.0,
+              "passed": false,
+              "weight": 1.0,
+              "details": {
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                }
+              }
+            }
+          ]
+        },
+        "multi_agent_planning": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "agent_coverage",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ],
+                "actual": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "stage_order_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "sequence": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "dependencies_executable",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "dependencies": [
+                  {
+                    "after": "recipient_profiling",
+                    "before": "relationship_analysis",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "relationship_analysis",
+                    "before": "gift_intent_reasoning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "gift_intent_reasoning",
+                    "before": "multi_agent_planning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "multi_agent_planning",
+                    "before": "recommendation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "recommendation",
+                    "before": "creative_generation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "creative_generation",
+                    "before": "greeting_story",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "greeting_story",
+                    "before": "delivery_planner",
+                    "type": "stage_output"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "human_review_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "subtasks": [
+                  {
+                    "id": "step_1",
+                    "agent": "recipient_profiling",
+                    "action": "extract recipient signals",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_2",
+                    "agent": "relationship_analysis",
+                    "action": "model relationship tone and risk",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_3",
+                    "agent": "gift_intent_reasoning",
+                    "action": "infer gift intent and constraints",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_4",
+                    "agent": "multi_agent_planning",
+                    "action": "create bounded execution plan",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_5",
+                    "agent": "recommendation",
+                    "action": "rank gift concepts",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_6",
+                    "agent": "creative_generation",
+                    "action": "generate visual artifact",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_7",
+                    "agent": "greeting_story",
+                    "action": "write original message/story",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_8",
+                    "agent": "delivery_planner",
+                    "action": "simulate delivery timing",
+                    "requires_human_review": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "fallback_plan_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "fallback_plan": {
+                  "type": "current_staged_orchestration",
+                  "agent_sequence": [
+                    "recipient_profiling",
+                    "relationship_analysis",
+                    "gift_intent_reasoning",
+                    "multi_agent_planning",
+                    "recommendation",
+                    "creative_generation",
+                    "greeting_story",
+                    "delivery_planner"
+                  ],
+                  "reason": "Use the established bounded pipeline if planner output is incomplete or invalid."
+                }
+              }
+            },
+            {
+              "name": "stop_conditions_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "stop_conditions": [
+                  "human rejects or edits a pending proposal",
+                  "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                  "delivery remains simulated; no external purchase or shipping action is allowed"
+                ]
+              }
+            }
+          ]
+        },
+        "recommendation": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "creative_generation": {
+          "status": "ok",
+          "quality_score": 0.5384615384615384,
+          "metrics": [
+            {
+              "name": "artifact_file_exists",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_004_partner_birthday_c5_0_a0_15.png"
+              }
+            },
+            {
+              "name": "artifact_not_marked_fake",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_004_partner_birthday_c5_0_a0_15.png"
+              }
+            },
+            {
+              "name": "image_file_header_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_004_partner_birthday_c5_0_a0_15.png"
+              }
+            },
+            {
+              "name": "image_resolution_practical",
+              "score": 0.0,
+              "passed": false,
+              "weight": 2.0,
+              "details": {
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "visual_artifact_usable",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "exists": true,
+                "image_valid": true,
+                "fake_marker": false,
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "agency_slider_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "agency_slider": 0.15
+              }
+            },
+            {
+              "name": "conditioning_prompt_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "prompt_text": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+              }
+            }
+          ]
+        },
+        "greeting_story": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "delivery_planner": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "simulated_delivery_only",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "mode": "digital",
+                "channel": "digital card",
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18",
+                "status": "simulated",
+                "disclaimer": "No shipment, purchase, or external delivery was created.",
+                "skills_used": [
+                  "date_logistics_math"
+                ],
+                "prompt_version": "static"
+              }
+            },
+            {
+              "name": "planned_before_or_on_occasion",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18"
+              }
+            },
+            {
+              "name": "channel_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "channel": "digital card"
+              }
+            },
+            {
+              "name": "mode_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "mode": "digital"
+              }
+            },
+            {
+              "name": "no_real_logistics_integration_claim",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "output": {
+                  "mode": "digital",
+                  "channel": "digital card",
+                  "planned_send_date": "2026-09-18",
+                  "occasion_date": "2026-09-18",
+                  "status": "simulated",
+                  "disclaimer": "No shipment, purchase, or external delivery was created.",
+                  "skills_used": [
+                    "date_logistics_math"
+                  ],
+                  "prompt_version": "static"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "cross_component_metrics": [
+        {
+          "name": "pipeline_stage_coverage",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "present": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "expected": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ]
+          }
+        },
+        {
+          "name": "schema_conformance",
+          "score": 0.5,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "stages": {
+              "recipient_profiling": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "relationship_analysis": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "gift_intent_reasoning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "multi_agent_planning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "recommendation": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "creative_generation": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              },
+              "greeting_story": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "delivery_planner": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "dag_validity",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "sequence": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "dependencies": [
+              {
+                "after": "recipient_profiling",
+                "before": "relationship_analysis",
+                "type": "stage_output"
+              },
+              {
+                "after": "relationship_analysis",
+                "before": "gift_intent_reasoning",
+                "type": "stage_output"
+              },
+              {
+                "after": "gift_intent_reasoning",
+                "before": "multi_agent_planning",
+                "type": "stage_output"
+              },
+              {
+                "after": "multi_agent_planning",
+                "before": "recommendation",
+                "type": "stage_output"
+              },
+              {
+                "after": "recommendation",
+                "before": "creative_generation",
+                "type": "stage_output"
+              },
+              {
+                "after": "creative_generation",
+                "before": "greeting_story",
+                "type": "stage_output"
+              },
+              {
+                "after": "greeting_story",
+                "before": "delivery_planner",
+                "type": "stage_output"
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "name": "no_error_stage_outputs",
+          "score": 0.0,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "error_stages": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "recommendation",
+              "greeting_story"
+            ]
+          }
+        },
+        {
+          "name": "intent_to_recommendation_consistency",
+          "score": 0.014925373134328358,
+          "passed": false,
+          "weight": 1.0,
+          "details": {
+            "intent_chars": 1179,
+            "recommendation_chars": 70
+          }
+        }
+      ],
+      "overall_quality_score": 0.4560297624304513,
+      "case_id": "ui_perm_004_partner_birthday_c5_0_a0_15",
+      "session_id": "benchmark-ui_perm_004_partner_birthday_c5_0_a0_15",
+      "agent_traces": [
+        {
+          "stage": "recipient_profiling",
+          "status": "timeout",
+          "latency_seconds": 8.009673799999291,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "relationship_analysis",
+          "status": "timeout",
+          "latency_seconds": 8.01503870000306,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "gift_intent_reasoning",
+          "status": "ok",
+          "latency_seconds": 0.0017197999986819923,
+          "confidence": 0.9,
+          "rationale_present": true
+        },
+        {
+          "stage": "multi_agent_planning",
+          "status": "ok",
+          "latency_seconds": 0.0014681000029668212,
+          "confidence": 0.84,
+          "rationale_present": true
+        },
+        {
+          "stage": "recommendation",
+          "status": "timeout",
+          "latency_seconds": 8.00947140000062,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "creative_generation",
+          "status": "ok",
+          "latency_seconds": 0.01538349999464117,
+          "confidence": null,
+          "rationale_present": true
+        },
+        {
+          "stage": "greeting_story",
+          "status": "timeout",
+          "latency_seconds": 8.007986900003743,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "delivery_planner",
+          "status": "ok",
+          "latency_seconds": 0.0016230000037467107,
+          "confidence": 1.0,
+          "rationale_present": true
+        }
+      ],
+      "input_context": {
+        "fixture": {
+          "schema_version": "1.0",
+          "persona_id": "benchmark-783ea637",
+          "label": "Eval giver to Eval recipient 4",
+          "synthetic": false,
+          "people": [
+            {
+              "id": "person-giver-783ea637",
+              "display_name": "Eval giver",
+              "role": "giver"
+            },
+            {
+              "id": "person-recipient-783ea637",
+              "display_name": "Eval recipient 4",
+              "role": "recipient"
+            }
+          ],
+          "relationships": [
+            {
+              "id": "relationship-live-783ea637",
+              "person_a": "person-giver-783ea637",
+              "person_b": "person-recipient-783ea637",
+              "type": "partner",
+              "closeness_score": 5.0
+            }
+          ],
+          "occasions": [
+            {
+              "id": "occasion-live-783ea637",
+              "name": "Birthday",
+              "date": "2026-09-18",
+              "budget_hint": "Flexible",
+              "formality": "casual"
+            }
+          ],
+          "events": [
+            {
+              "id": "event-live-783ea637",
+              "date": "2026-09-18",
+              "type": "benchmark-context",
+              "participants": [
+                "person-giver-783ea637",
+                "person-recipient-783ea637"
+              ]
+            }
+          ],
+          "memories": [
+            {
+              "id": "memory-live-783ea637-1",
+              "modality": "text",
+              "content": "They helped during a difficult project week.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-783ea637",
+              "person_ids": [
+                "person-giver-783ea637",
+                "person-recipient-783ea637"
+              ],
+              "emotion_tag": "gratitude"
+            },
+            {
+              "id": "memory-live-783ea637-2",
+              "modality": "text",
+              "content": "They keep a very organized notebook.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-783ea637",
+              "person_ids": [
+                "person-giver-783ea637",
+                "person-recipient-783ea637"
+              ],
+              "emotion_tag": "nostalgia"
+            }
+          ],
+          "preferences": [
+            {
+              "id": "preference-live-783ea637-1",
+              "person_id": "person-recipient-783ea637",
+              "category": "stated",
+              "value": "ceramics",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-783ea637-2",
+              "person_id": "person-recipient-783ea637",
+              "category": "stated",
+              "value": "quiet mornings",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-783ea637-3",
+              "person_id": "person-recipient-783ea637",
+              "category": "stated",
+              "value": "green",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-783ea637-4",
+              "person_id": "person-recipient-783ea637",
+              "category": "stated",
+              "value": "handwritten notes",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            }
+          ]
+        },
+        "recipient": {
+          "id": "person-recipient-783ea637",
+          "display_name": "Eval recipient 4",
+          "role": "recipient"
+        },
+        "relationship": {
+          "id": "relationship-live-783ea637",
+          "person_a": "person-giver-783ea637",
+          "person_b": "person-recipient-783ea637",
+          "type": "partner",
+          "closeness_score": 5.0
+        },
+        "occasion": {
+          "id": "occasion-live-783ea637",
+          "name": "Birthday",
+          "date": "2026-09-18",
+          "budget_hint": "Flexible",
+          "formality": "casual"
+        },
+        "memories": [
+          {
+            "id": "memory-live-783ea637-1",
+            "modality": "text",
+            "content": "They helped during a difficult project week.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-783ea637",
+            "person_ids": [
+              "person-giver-783ea637",
+              "person-recipient-783ea637"
+            ],
+            "emotion_tag": "gratitude"
+          },
+          {
+            "id": "memory-live-783ea637-2",
+            "modality": "text",
+            "content": "They keep a very organized notebook.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-783ea637",
+            "person_ids": [
+              "person-giver-783ea637",
+              "person-recipient-783ea637"
+            ],
+            "emotion_tag": "nostalgia"
+          }
+        ],
+        "preferences": [
+          {
+            "id": "preference-live-783ea637-1",
+            "person_id": "person-recipient-783ea637",
+            "category": "stated",
+            "value": "ceramics",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-783ea637-2",
+            "person_id": "person-recipient-783ea637",
+            "category": "stated",
+            "value": "quiet mornings",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-783ea637-3",
+            "person_id": "person-recipient-783ea637",
+            "category": "stated",
+            "value": "green",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-783ea637-4",
+            "person_id": "person-recipient-783ea637",
+            "category": "stated",
+            "value": "handwritten notes",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          }
+        ]
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.15,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "behavioral_metrics": {
+        "composite_reward": null,
+        "accept_rate": null,
+        "edit_rate": null,
+        "regenerate_rate": null,
+        "delegate_rate": null,
+        "completed_action_coverage": null
+      }
+    },
+    {
+      "stage_reports": {
+        "recipient_profiling": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "relationship_analysis": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "gift_intent_reasoning": {
+          "status": "ok",
+          "quality_score": 0.875,
+          "metrics": [
+            {
+              "name": "intent_fields_complete",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "intent_summary": "Create a high-personalization gift for Birthday with casual tone.",
+                "occasion": {
+                  "name": "Birthday",
+                  "date": "2026-09-18",
+                  "formality": "casual",
+                  "urgency": "date-specified"
+                },
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                },
+                "preferences": [
+                  {
+                    "value": "ceramics",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "quiet mornings",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "green",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  },
+                  {
+                    "value": "handwritten notes",
+                    "confidence": 1.0,
+                    "source": "benchmark_case"
+                  }
+                ],
+                "visual_generation": {
+                  "artifact_type": "greeting_card",
+                  "style_prompt": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                },
+                "open_questions": [],
+                "clarifying_needs": []
+              }
+            },
+            {
+              "name": "occasion_match",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": "birthday",
+                "actual": "birthday"
+              }
+            },
+            {
+              "name": "preference_recall",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ],
+                "actual": [
+                  "ceramics",
+                  "green",
+                  "handwritten notes",
+                  "quiet mornings"
+                ]
+              }
+            },
+            {
+              "name": "budget_constraint_preserved",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "expected": "flexible",
+                "actual": "flexible"
+              }
+            },
+            {
+              "name": "delivery_constraint_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "constraints": {
+                  "budget_hint": "Flexible",
+                  "budget_sensitivity": "low",
+                  "delivery_constraints": [
+                    "simulated delivery only"
+                  ],
+                  "timing": "date-specified"
+                }
+              }
+            },
+            {
+              "name": "gift_goal_specific",
+              "score": 0.0,
+              "passed": false,
+              "weight": 1.0,
+              "details": {
+                "goal": {
+                  "gift_purpose": "celebrate relationship milestone",
+                  "emotional_objective": "warm connection",
+                  "social_tone": "casual",
+                  "personalization_depth": "high",
+                  "recommended_artifact_type": "greeting_card",
+                  "visual_style": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+                }
+              }
+            }
+          ]
+        },
+        "multi_agent_planning": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "agent_coverage",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "expected": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ],
+                "actual": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "stage_order_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "sequence": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ]
+              }
+            },
+            {
+              "name": "dependencies_executable",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "dependencies": [
+                  {
+                    "after": "recipient_profiling",
+                    "before": "relationship_analysis",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "relationship_analysis",
+                    "before": "gift_intent_reasoning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "gift_intent_reasoning",
+                    "before": "multi_agent_planning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "multi_agent_planning",
+                    "before": "recommendation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "recommendation",
+                    "before": "creative_generation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "creative_generation",
+                    "before": "greeting_story",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "greeting_story",
+                    "before": "delivery_planner",
+                    "type": "stage_output"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "human_review_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "subtasks": [
+                  {
+                    "id": "step_1",
+                    "agent": "recipient_profiling",
+                    "action": "extract recipient signals",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_2",
+                    "agent": "relationship_analysis",
+                    "action": "model relationship tone and risk",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_3",
+                    "agent": "gift_intent_reasoning",
+                    "action": "infer gift intent and constraints",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_4",
+                    "agent": "multi_agent_planning",
+                    "action": "create bounded execution plan",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_5",
+                    "agent": "recommendation",
+                    "action": "rank gift concepts",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_6",
+                    "agent": "creative_generation",
+                    "action": "generate visual artifact",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_7",
+                    "agent": "greeting_story",
+                    "action": "write original message/story",
+                    "requires_human_review": true
+                  },
+                  {
+                    "id": "step_8",
+                    "agent": "delivery_planner",
+                    "action": "simulate delivery timing",
+                    "requires_human_review": true
+                  }
+                ]
+              }
+            },
+            {
+              "name": "fallback_plan_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "fallback_plan": {
+                  "type": "current_staged_orchestration",
+                  "agent_sequence": [
+                    "recipient_profiling",
+                    "relationship_analysis",
+                    "gift_intent_reasoning",
+                    "multi_agent_planning",
+                    "recommendation",
+                    "creative_generation",
+                    "greeting_story",
+                    "delivery_planner"
+                  ],
+                  "reason": "Use the established bounded pipeline if planner output is incomplete or invalid."
+                }
+              }
+            },
+            {
+              "name": "stop_conditions_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "stop_conditions": [
+                  "human rejects or edits a pending proposal",
+                  "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                  "delivery remains simulated; no external purchase or shipping action is allowed"
+                ]
+              }
+            }
+          ]
+        },
+        "recommendation": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "creative_generation": {
+          "status": "ok",
+          "quality_score": 0.5384615384615384,
+          "metrics": [
+            {
+              "name": "artifact_file_exists",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_005_partner_birthday_c5_0_a0_5.png"
+              }
+            },
+            {
+              "name": "artifact_not_marked_fake",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_005_partner_birthday_c5_0_a0_5.png"
+              }
+            },
+            {
+              "name": "image_file_header_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "artifact_path": "experiments\\evals\\ui_permutation_memorygan_debug_5_after_fix\\generated\\benchmark-ui_perm_005_partner_birthday_c5_0_a0_5.png"
+              }
+            },
+            {
+              "name": "image_resolution_practical",
+              "score": 0.0,
+              "passed": false,
+              "weight": 2.0,
+              "details": {
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "visual_artifact_usable",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "exists": true,
+                "image_valid": true,
+                "fake_marker": false,
+                "width": 16,
+                "height": 16
+              }
+            },
+            {
+              "name": "agency_slider_valid",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "agency_slider": 0.5
+              }
+            },
+            {
+              "name": "conditioning_prompt_visible",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "prompt_text": "greeting card using ceramics, quiet mornings, green, handwritten notes as visual cues"
+              }
+            }
+          ]
+        },
+        "greeting_story": {
+          "status": "ok",
+          "quality_score": 0.0,
+          "metrics": [
+            {
+              "name": "agent_execution_success",
+              "score": 0.0,
+              "passed": false,
+              "weight": 4.0,
+              "details": {
+                "error_type": "TimeoutError",
+                "error": "stage exceeded 8.0s timeout"
+              }
+            }
+          ]
+        },
+        "delivery_planner": {
+          "status": "ok",
+          "quality_score": 1.0,
+          "metrics": [
+            {
+              "name": "simulated_delivery_only",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "mode": "digital",
+                "channel": "digital card",
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18",
+                "status": "simulated",
+                "disclaimer": "No shipment, purchase, or external delivery was created.",
+                "skills_used": [
+                  "date_logistics_math"
+                ],
+                "prompt_version": "static"
+              }
+            },
+            {
+              "name": "planned_before_or_on_occasion",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "planned_send_date": "2026-09-18",
+                "occasion_date": "2026-09-18"
+              }
+            },
+            {
+              "name": "channel_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "channel": "digital card"
+              }
+            },
+            {
+              "name": "mode_present",
+              "score": 1.0,
+              "passed": true,
+              "weight": 1.0,
+              "details": {
+                "mode": "digital"
+              }
+            },
+            {
+              "name": "no_real_logistics_integration_claim",
+              "score": 1.0,
+              "passed": true,
+              "weight": 2.0,
+              "details": {
+                "output": {
+                  "mode": "digital",
+                  "channel": "digital card",
+                  "planned_send_date": "2026-09-18",
+                  "occasion_date": "2026-09-18",
+                  "status": "simulated",
+                  "disclaimer": "No shipment, purchase, or external delivery was created.",
+                  "skills_used": [
+                    "date_logistics_math"
+                  ],
+                  "prompt_version": "static"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "cross_component_metrics": [
+        {
+          "name": "pipeline_stage_coverage",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "present": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "expected": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ]
+          }
+        },
+        {
+          "name": "schema_conformance",
+          "score": 0.5,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "stages": {
+              "recipient_profiling": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "relationship_analysis": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "gift_intent_reasoning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "multi_agent_planning": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": []
+              },
+              "recommendation": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "creative_generation": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              },
+              "greeting_story": {
+                "checked": true,
+                "valid": false,
+                "error": "Additional properties are not allowed ('error', 'error_type' were unexpected)",
+                "ignored_observability_keys": []
+              },
+              "delivery_planner": {
+                "checked": true,
+                "valid": true,
+                "ignored_observability_keys": [
+                  "prompt_version",
+                  "skills_used"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "dag_validity",
+          "score": 1.0,
+          "passed": true,
+          "weight": 2.0,
+          "details": {
+            "sequence": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "dependencies": [
+              {
+                "after": "recipient_profiling",
+                "before": "relationship_analysis",
+                "type": "stage_output"
+              },
+              {
+                "after": "relationship_analysis",
+                "before": "gift_intent_reasoning",
+                "type": "stage_output"
+              },
+              {
+                "after": "gift_intent_reasoning",
+                "before": "multi_agent_planning",
+                "type": "stage_output"
+              },
+              {
+                "after": "multi_agent_planning",
+                "before": "recommendation",
+                "type": "stage_output"
+              },
+              {
+                "after": "recommendation",
+                "before": "creative_generation",
+                "type": "stage_output"
+              },
+              {
+                "after": "creative_generation",
+                "before": "greeting_story",
+                "type": "stage_output"
+              },
+              {
+                "after": "greeting_story",
+                "before": "delivery_planner",
+                "type": "stage_output"
+              }
+            ],
+            "errors": []
+          }
+        },
+        {
+          "name": "no_error_stage_outputs",
+          "score": 0.0,
+          "passed": false,
+          "weight": 2.0,
+          "details": {
+            "error_stages": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "recommendation",
+              "greeting_story"
+            ]
+          }
+        },
+        {
+          "name": "intent_to_recommendation_consistency",
+          "score": 0.014925373134328358,
+          "passed": false,
+          "weight": 1.0,
+          "details": {
+            "intent_chars": 1179,
+            "recommendation_chars": 70
+          }
+        }
+      ],
+      "overall_quality_score": 0.4560297624304513,
+      "case_id": "ui_perm_005_partner_birthday_c5_0_a0_5",
+      "session_id": "benchmark-ui_perm_005_partner_birthday_c5_0_a0_5",
+      "agent_traces": [
+        {
+          "stage": "recipient_profiling",
+          "status": "timeout",
+          "latency_seconds": 8.002214899999672,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "relationship_analysis",
+          "status": "timeout",
+          "latency_seconds": 8.003248499997426,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "gift_intent_reasoning",
+          "status": "ok",
+          "latency_seconds": 0.001253599999472499,
+          "confidence": 0.9,
+          "rationale_present": true
+        },
+        {
+          "stage": "multi_agent_planning",
+          "status": "ok",
+          "latency_seconds": 0.0007432000056724064,
+          "confidence": 0.84,
+          "rationale_present": true
+        },
+        {
+          "stage": "recommendation",
+          "status": "timeout",
+          "latency_seconds": 8.003307300001325,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "creative_generation",
+          "status": "ok",
+          "latency_seconds": 0.014126400004897732,
+          "confidence": null,
+          "rationale_present": true
+        },
+        {
+          "stage": "greeting_story",
+          "status": "timeout",
+          "latency_seconds": 8.01335459999973,
+          "error_type": "TimeoutError",
+          "error": "stage exceeded 8.0s timeout"
+        },
+        {
+          "stage": "delivery_planner",
+          "status": "ok",
+          "latency_seconds": 0.0027564999982132576,
+          "confidence": 1.0,
+          "rationale_present": true
+        }
+      ],
+      "input_context": {
+        "fixture": {
+          "schema_version": "1.0",
+          "persona_id": "benchmark-b84d8e69",
+          "label": "Eval giver to Eval recipient 5",
+          "synthetic": false,
+          "people": [
+            {
+              "id": "person-giver-b84d8e69",
+              "display_name": "Eval giver",
+              "role": "giver"
+            },
+            {
+              "id": "person-recipient-b84d8e69",
+              "display_name": "Eval recipient 5",
+              "role": "recipient"
+            }
+          ],
+          "relationships": [
+            {
+              "id": "relationship-live-b84d8e69",
+              "person_a": "person-giver-b84d8e69",
+              "person_b": "person-recipient-b84d8e69",
+              "type": "partner",
+              "closeness_score": 5.0
+            }
+          ],
+          "occasions": [
+            {
+              "id": "occasion-live-b84d8e69",
+              "name": "Birthday",
+              "date": "2026-09-18",
+              "budget_hint": "Flexible",
+              "formality": "casual"
+            }
+          ],
+          "events": [
+            {
+              "id": "event-live-b84d8e69",
+              "date": "2026-09-18",
+              "type": "benchmark-context",
+              "participants": [
+                "person-giver-b84d8e69",
+                "person-recipient-b84d8e69"
+              ]
+            }
+          ],
+          "memories": [
+            {
+              "id": "memory-live-b84d8e69-1",
+              "modality": "text",
+              "content": "They helped during a difficult project week.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-b84d8e69",
+              "person_ids": [
+                "person-giver-b84d8e69",
+                "person-recipient-b84d8e69"
+              ],
+              "emotion_tag": "gratitude"
+            },
+            {
+              "id": "memory-live-b84d8e69-2",
+              "modality": "text",
+              "content": "They keep a very organized notebook.",
+              "timestamp": "2026-09-18T00:00:00Z",
+              "event_id": "event-live-b84d8e69",
+              "person_ids": [
+                "person-giver-b84d8e69",
+                "person-recipient-b84d8e69"
+              ],
+              "emotion_tag": "nostalgia"
+            }
+          ],
+          "preferences": [
+            {
+              "id": "preference-live-b84d8e69-1",
+              "person_id": "person-recipient-b84d8e69",
+              "category": "stated",
+              "value": "ceramics",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-b84d8e69-2",
+              "person_id": "person-recipient-b84d8e69",
+              "category": "stated",
+              "value": "quiet mornings",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-b84d8e69-3",
+              "person_id": "person-recipient-b84d8e69",
+              "category": "stated",
+              "value": "green",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            },
+            {
+              "id": "preference-live-b84d8e69-4",
+              "person_id": "person-recipient-b84d8e69",
+              "category": "stated",
+              "value": "handwritten notes",
+              "confidence": 1.0,
+              "source": "benchmark_case"
+            }
+          ]
+        },
+        "recipient": {
+          "id": "person-recipient-b84d8e69",
+          "display_name": "Eval recipient 5",
+          "role": "recipient"
+        },
+        "relationship": {
+          "id": "relationship-live-b84d8e69",
+          "person_a": "person-giver-b84d8e69",
+          "person_b": "person-recipient-b84d8e69",
+          "type": "partner",
+          "closeness_score": 5.0
+        },
+        "occasion": {
+          "id": "occasion-live-b84d8e69",
+          "name": "Birthday",
+          "date": "2026-09-18",
+          "budget_hint": "Flexible",
+          "formality": "casual"
+        },
+        "memories": [
+          {
+            "id": "memory-live-b84d8e69-1",
+            "modality": "text",
+            "content": "They helped during a difficult project week.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-b84d8e69",
+            "person_ids": [
+              "person-giver-b84d8e69",
+              "person-recipient-b84d8e69"
+            ],
+            "emotion_tag": "gratitude"
+          },
+          {
+            "id": "memory-live-b84d8e69-2",
+            "modality": "text",
+            "content": "They keep a very organized notebook.",
+            "timestamp": "2026-09-18T00:00:00Z",
+            "event_id": "event-live-b84d8e69",
+            "person_ids": [
+              "person-giver-b84d8e69",
+              "person-recipient-b84d8e69"
+            ],
+            "emotion_tag": "nostalgia"
+          }
+        ],
+        "preferences": [
+          {
+            "id": "preference-live-b84d8e69-1",
+            "person_id": "person-recipient-b84d8e69",
+            "category": "stated",
+            "value": "ceramics",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-b84d8e69-2",
+            "person_id": "person-recipient-b84d8e69",
+            "category": "stated",
+            "value": "quiet mornings",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-b84d8e69-3",
+            "person_id": "person-recipient-b84d8e69",
+            "category": "stated",
+            "value": "green",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          },
+          {
+            "id": "preference-live-b84d8e69-4",
+            "person_id": "person-recipient-b84d8e69",
+            "category": "stated",
+            "value": "handwritten notes",
+            "confidence": 1.0,
+            "source": "benchmark_case"
+          }
+        ]
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.5,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "behavioral_metrics": {
+        "composite_reward": null,
+        "accept_rate": null,
+        "edit_rate": null,
+        "regenerate_rate": null,
+        "delegate_rate": null,
+        "completed_action_coverage": null
+      }
+    }
+  ]
+}

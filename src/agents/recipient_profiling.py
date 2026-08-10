@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 
 class Interest(BaseModel):
@@ -93,7 +94,7 @@ class RecipientProfilingAgent(StructuredAgent):
             raise ValueError(f"{self.stage} returned invalid structured output: {exc.message}") from exc
         output = dict(payload["output"])
         output.setdefault("prompt_version", self.prompt_version_id)
-        output.setdefault("skills_used", list(self.config.get("skills", [])))
+        add_skill_metadata(output, self.config)
         return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
 
     def _run_with_schema_json(self, agent_input: AgentInput) -> AgentOutput:
@@ -128,8 +129,8 @@ class RecipientProfilingAgent(StructuredAgent):
             "communication_style": _communication_style_from_notes(notes),
             "gift_history_summary": _gift_history_summary(context.get("gift_history", []), notes),
             "prompt_version": self.prompt_version_id,
-            "skills_used": list(self.config.get("skills", [])),
         }
+        add_skill_metadata(output, self.config, active=["preference_signal_parser", "structured_recipient_extraction"])
         return AgentOutput(
             stage=self.stage,
             output=output,

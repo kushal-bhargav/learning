@@ -1,0 +1,249 @@
+{
+  "rows": [
+    {
+      "case_id": "ui_perm_001_partner_birthday_c5_0_a0_15",
+      "status": "error",
+      "elapsed": 49.88,
+      "output": {},
+      "error": "RuntimeError: Cannot send a request, as the client has been closed.",
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.15,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 1",
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "formality": "casual",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memories": [
+          "They once got lost finding a tiny tea shop.",
+          "They always send photos of interesting doors."
+        ],
+        "agency_slider": 0.15
+      }
+    },
+    {
+      "case_id": "ui_perm_002_partner_birthday_c5_0_a0_5",
+      "status": "error",
+      "elapsed": 6.23,
+      "output": {},
+      "error": "RuntimeError: Cannot send a request, as the client has been closed.",
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.5,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 2",
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "formality": "casual",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memories": [
+          "They once got lost finding a tiny tea shop.",
+          "They always send photos of interesting doors."
+        ],
+        "agency_slider": 0.5
+      }
+    },
+    {
+      "case_id": "ui_perm_003_partner_birthday_c5_0_a0_85",
+      "status": "error",
+      "elapsed": 6.16,
+      "output": {},
+      "error": "RuntimeError: Cannot send a request, as the client has been closed.",
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.85,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 3",
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "formality": "casual",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memories": [
+          "They once got lost finding a tiny tea shop.",
+          "They always send photos of interesting doors."
+        ],
+        "agency_slider": 0.85
+      }
+    },
+    {
+      "case_id": "ui_perm_004_partner_birthday_c5_0_a0_15",
+      "status": "error",
+      "elapsed": 6.25,
+      "output": {},
+      "error": "RuntimeError: Cannot send a request, as the client has been closed.",
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.15,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 4",
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "formality": "casual",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memories": [
+          "They helped during a difficult project week.",
+          "They keep a very organized notebook."
+        ],
+        "agency_slider": 0.15
+      }
+    },
+    {
+      "case_id": "ui_perm_005_partner_birthday_c5_0_a0_5",
+      "status": "error",
+      "elapsed": 6.11,
+      "output": {},
+      "error": "RuntimeError: Cannot send a request, as the client has been closed.",
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.5,
+        "must_preserve_constraints": [
+          "Flexible",
+          "casual",
+          "simulated delivery only"
+        ]
+      },
+      "profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 5",
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "Flexible",
+        "formality": "casual",
+        "preferences": [
+          "ceramics",
+          "quiet mornings",
+          "green",
+          "handwritten notes"
+        ],
+        "memories": [
+          "They helped during a difficult project week.",
+          "They keep a very organized notebook."
+        ],
+        "agency_slider": 0.5
+      }
+    }
+  ]
+}

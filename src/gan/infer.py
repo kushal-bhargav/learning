@@ -1,7 +1,8 @@
 ﻿from __future__ import annotations
 
 from dataclasses import fields
-from typing import Optional
+from pathlib import Path
+from typing import Any, Optional
 
 import numpy as np
 import torch
@@ -50,10 +51,20 @@ def slerp(start: Tensor, end: Tensor, amount: float, *, eps: float = 1e-7) -> Te
 class MemoryGAN:
     """Inference wrapper for the conditional MemoryGAN generator."""
 
-    def __init__(self, generator: Generator, *, device: torch.device | str = "cpu") -> None:
+    def __init__(
+        self,
+        generator: Generator,
+        *,
+        device: torch.device | str = "cpu",
+        checkpoint_path: str | None = None,
+        checkpoint_metadata: dict[str, Any] | None = None,
+    ) -> None:
         self.device = torch.device(device)
         self.generator = generator.to(self.device).eval().requires_grad_(False)
         self.config = generator.config
+        self.checkpoint_path = str(Path(checkpoint_path).resolve()) if checkpoint_path else None
+        self.checkpoint_metadata = checkpoint_metadata or {}
+        self.last_generation_info: dict[str, Any] = {}
 
     @classmethod
     def load(cls, checkpoint_path: str) -> "MemoryGAN":
@@ -71,7 +82,17 @@ class MemoryGAN:
             raise ValueError("checkpoint is missing generator weights")
         generator = Generator(config)
         generator.load_state_dict(state)
-        return cls(generator, device=device)
+        metadata = {
+            "checkpoint_path": str(Path(checkpoint_path).resolve()),
+            "checkpoint_filename": Path(checkpoint_path).name,
+            "step": checkpoint.get("step"),
+            "model_config": raw_config,
+            "training_config": checkpoint.get("training_config", {}),
+            "state_kind": "generator_ema" if "generator_ema" in checkpoint else "generator",
+            "generator_resolutions": list(generator.resolutions),
+            "num_ws": generator.num_ws,
+        }
+        return cls(generator, device=device, checkpoint_path=checkpoint_path, checkpoint_metadata=metadata)
 
     def generate(
         self,
@@ -105,9 +126,23 @@ class MemoryGAN:
                 assert human is not None
                 w_human = self.generator.map(z, human, relationship, emotion, occasion_vector)
                 w_final = slerp(w_human, w_ai, float(agency_slider))
-            image = self.generator.synthesis(w_final, noises=noises)[0]
+            image_tensor = self.generator.synthesis(w_final, noises=noises)
+            image = image_tensor[0]
         pixels = image.add(1).mul(127.5).clamp(0, 255).permute(1, 2, 0).byte().cpu().numpy()
-        return Image.fromarray(pixels, mode="RGB")
+        pil_image = Image.fromarray(pixels, mode="RGB")
+        self.last_generation_info = {
+            "checkpoint_path": self.checkpoint_path,
+            "model_resolution": self.config.resolution,
+            "generator_resolutions": list(self.generator.resolutions),
+            "num_ws": self.generator.num_ws,
+            "tensor_shape": tuple(image_tensor.shape),
+            "saved_width": pil_image.width,
+            "saved_height": pil_image.height,
+            "z_dim": self.config.z_dim,
+            "w_dim": self.config.w_dim,
+            "context_dim": self.config.context_dim,
+        }
+        return pil_image
 
     def _embedding(self, value: np.ndarray, name: str) -> Tensor:
         array = np.asarray(value, dtype=np.float32)

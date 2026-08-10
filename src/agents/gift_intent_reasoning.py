@@ -6,6 +6,7 @@ from typing import Any, Mapping
 
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
+from .skills import add_skill_metadata
 
 
 URGENCY_DAYS = 10
@@ -104,6 +105,11 @@ class GiftIntentReasoningAgent(StructuredAgent):
             "open_questions": open_questions,
             "clarifying_needs": clarifying_needs,
         }
+        add_skill_metadata(
+            output,
+            self.config,
+            active=["intent_classification", "constraint_extraction", "visual_artifact_mapping"],
+        )
         return AgentOutput(
             stage=self.stage,
             output=output,

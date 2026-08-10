@@ -1,0 +1,54 @@
+{
+  "model": "segmind/tiny-sd",
+  "settings": {
+    "num_inference_steps": 20,
+    "guidance_scale": 7.5
+  },
+  "cases": [
+    {
+      "case_id": "ui_perm_001_partner_birthday_c5_0_a0_15",
+      "prompt": "birthday greeting card for partner, ceramic cup and green plant, handwritten note style, cozy tiny tea shop doorway, warm personal memory, polished illustrated card, no readable text",
+      "artifact_path": "experiments/evals/ui_permutation_tiny_sd_5_steps20/generated/ui_perm_001_partner_birthday_c5_0_a0_15.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "55b7cdd3a8436f25ba96859212a510c9b07fa817f64f76f84efd876dc14865ec",
+      "agency_slider": 0.15
+    },
+    {
+      "case_id": "ui_perm_002_partner_birthday_c5_0_a0_5",
+      "prompt": "birthday greeting card for partner, ceramic cup and green plant, handwritten note style, cozy tiny tea shop doorway, warm personal memory, polished illustrated card, no readable text",
+      "artifact_path": "experiments/evals/ui_permutation_tiny_sd_5_steps20/generated/ui_perm_002_partner_birthday_c5_0_a0_5.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "7b51fbb56cc3ed720fdc136ff01e0b86a983337e31871205979dac0a4dc920ce",
+      "agency_slider": 0.5
+    },
+    {
+      "case_id": "ui_perm_003_partner_birthday_c5_0_a0_85",
+      "prompt": "birthday greeting card for partner, ceramic cup and green plant, handwritten note style, cozy tiny tea shop doorway, warm personal memory, polished illustrated card, no readable text",
+      "artifact_path": "experiments/evals/ui_permutation_tiny_sd_5_steps20/generated/ui_perm_003_partner_birthday_c5_0_a0_85.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "6abc788bdf244606e816ac1edf1cd40594998c513adfc160d207174f657c0ecb",
+      "agency_slider": 0.85
+    },
+    {
+      "case_id": "ui_perm_004_partner_birthday_c5_0_a0_15",
+      "prompt": "birthday greeting card for partner, ceramic cup and green plant, handwritten note style, cozy tiny tea shop doorway, warm personal memory, polished illustrated card, no readable text",
+      "artifact_path": "experiments/evals/ui_permutation_tiny_sd_5_steps20/generated/ui_perm_004_partner_birthday_c5_0_a0_15.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "06ebc874637c3cf83909974fcc0a307eab732cf55621d63e617d614d21d4e6bd",
+      "agency_slider": 0.15
+    },
+    {
+      "case_id": "ui_perm_005_partner_birthday_c5_0_a0_5",
+      "prompt": "birthday greeting card for partner, ceramic cup and green plant, handwritten note style, cozy tiny tea shop doorway, warm personal memory, polished illustrated card, no readable text",
+      "artifact_path": "experiments/evals/ui_permutation_tiny_sd_5_steps20/generated/ui_perm_005_partner_birthday_c5_0_a0_5.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "d6550b15523d4f09e34b27b3c936affb3552d9072696d46f450713e47b0b4a2a",
+      "agency_slider": 0.5
+    }
+  ]
+}

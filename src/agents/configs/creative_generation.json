@@ -10,7 +10,8 @@
   },
   "skills": [
     "visual_prompt_builder",
-    "diffusers_or_memorygan_generation",
+    "diffusers_image_generation",
+    "optional_memorygan_checkpoint_inference",
     "clip_critic"
   ]
 }

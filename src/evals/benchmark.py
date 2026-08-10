@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import queue
@@ -78,6 +79,7 @@ def run_benchmark(
         "case_count": len(case_reports),
         "include_creative": include_creative,
         "summary": summarize_quality_reports(case_reports),
+        "artifact_analysis": _artifact_analysis(case_reports),
         "cases": case_reports,
     }
     (output_path / "benchmark_report.json").write_text(json.dumps(summary, indent=2, default=str), encoding="utf-8")
@@ -161,19 +163,36 @@ def run_case(
     _run_stage("recommendation", RecommendationAgent(), session, stage_configs["recommendation"], outputs, traces, timeout)
 
     if include_creative:
+        first_memory = memories[0] if memories else {}
+        visual_generation = outputs.get("gift_intent_reasoning", {}).get("visual_generation", {})
+        style_prompt = str(visual_generation.get("style_prompt") or ", ".join(str(item.get("value")) for item in preferences[:4] if item.get("value")) or "personalized gift visual")
+        artifact_type = str(visual_generation.get("artifact_type") or "greeting_card")
+        context_embedding = _context_embedding(memories, preferences)
+        human_style_ref = _context_embedding([first_memory] if first_memory else [], preferences)
         stage_configs["creative_generation"] = {
+            "context_embedding": context_embedding,
+            "relationship_type": relationship.get("type", "other"),
+            "emotion_tag": first_memory.get("emotion_tag", "joy"),
+            "occasion": _gan_occasion(occasion.get("name", "other")),
             "recipient_profile": outputs.get("recipient_profiling", {}),
             "relationship_guidance": outputs.get("relationship_analysis", {}),
             "gift_intent": outputs.get("gift_intent_reasoning", {}),
             "recommendation": outputs.get("recommendation", {}),
             "memories": memories,
             "preferences": preferences,
-            "occasion": occasion,
+            "occasion_context": occasion,
             "agency_slider": case_agency_slider,
+            "human_style_ref": human_style_ref,
             "seed": seed,
             "output_dir": str(Path(output_dir) / "generated"),
+            "filename": f"{session.session_id}.png",
+            "generation_backend": os.getenv("GMGI_CREATIVE_BACKEND", "diffusers"),
+            "gift_artifact_type": artifact_type,
+            "visual_style_prompt": style_prompt,
+            "negative_prompt": CreativeGenerationAgent.default_negative_prompt(),
+            "diffusers_prompt": _diffusers_prompt(relationship, occasion, first_memory, artifact_type, style_prompt, case_agency_slider),
         }
-        _run_stage("creative_generation", CreativeGenerationAgent(), session, stage_configs["creative_generation"], outputs, traces, timeout)
+        _run_stage("creative_generation", _creative_agent(), session, stage_configs["creative_generation"], outputs, traces, timeout)
     else:
         traces.append({"stage": "creative_generation", "status": "skipped", "latency_seconds": 0.0, "reason": "include_creative=False"})
 
@@ -355,6 +374,117 @@ def _emotion_from_text(value: str) -> str:
     if any(word in text for word in ("home", "kitchen", "chai")):
         return "warmth"
     return "nostalgia"
+
+
+def _context_embedding(memories: Sequence[Mapping[str, Any]], preferences: Sequence[Mapping[str, Any]], size: int = 512) -> list[float]:
+    text = " ".join(
+        [str(memory.get("content", "")) for memory in memories]
+        + [str(preference.get("value", "")) for preference in preferences]
+    )
+    if not text.strip():
+        return [0.0] * size
+    buckets = [0.0] * size
+    for index, char in enumerate(text.encode("utf-8")):
+        buckets[index % size] += (char % 31) / 31.0
+    total = sum(abs(value) for value in buckets) or 1.0
+    return [value / total for value in buckets]
+
+
+def _gan_occasion(value: object) -> str:
+    text = str(value or "").strip().lower()
+    aliases = {
+        "birthday": ("birthday",),
+        "anniversary": ("anniversary",),
+        "graduation": ("graduation",),
+        "housewarming": ("housewarming", "house warming"),
+        "promotion": ("promotion",),
+        "thank-you": ("thank-you", "thank you", "thanks"),
+    }
+    for canonical, variants in aliases.items():
+        if any(variant in text for variant in variants):
+            return canonical
+    return "other"
+
+
+def _diffusers_prompt(
+    relationship: Mapping[str, Any],
+    occasion: Mapping[str, Any],
+    memory: Mapping[str, Any],
+    artifact_type: str,
+    style_prompt: str,
+    agency_slider: float,
+) -> str:
+    anchor = "human-specified style details" if agency_slider < 0.5 else "memory-grounded emotional symbolism"
+    return CreativeGenerationAgent.build_image_prompt(
+        artifact_type=artifact_type,
+        occasion=str(occasion.get("name", "special occasion")),
+        relationship_type=str(relationship.get("type", "relationship")),
+        emotion_tag=str(memory.get("emotion_tag", "joy")),
+        style=str(style_prompt),
+        agency_anchor=anchor,
+    )
+
+
+def _creative_agent() -> CreativeGenerationAgent:
+    backend = os.getenv("GMGI_CREATIVE_BACKEND", "diffusers").lower()
+    if backend != "memorygan":
+        return CreativeGenerationAgent()
+    checkpoint_value = os.getenv("GMGI_GAN_CHECKPOINT")
+    if not checkpoint_value:
+        return CreativeGenerationAgent()
+    checkpoint = Path(checkpoint_value)
+    if not checkpoint.exists():
+        return CreativeGenerationAgent()
+    return CreativeGenerationAgent.from_checkpoint(str(checkpoint))
+
+
+def _artifact_analysis(reports: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    artifacts: list[dict[str, Any]] = []
+    for report in reports:
+        creative = _as_mapping(_as_mapping(report.get("stage_reports")).get("creative_generation"))
+        metrics = _as_list(creative.get("metrics"))
+        path = ""
+        width = 0
+        height = 0
+        for metric in metrics:
+            item = _as_mapping(metric)
+            details = _as_mapping(item.get("details"))
+            if item.get("name") == "artifact_file_exists":
+                path = str(details.get("artifact_path") or "")
+            if item.get("name") == "image_resolution_practical":
+                width = int(details.get("width") or 0)
+                height = int(details.get("height") or 0)
+        digest = _file_digest(Path(path)) if path else None
+        artifacts.append({"case_id": report.get("case_id"), "artifact_path": path, "width": width, "height": height, "sha256": digest})
+
+    hashes = [item["sha256"] for item in artifacts if item.get("sha256")]
+    unique_hashes = len(set(hashes))
+    generated = len(hashes)
+    duplicate_collapse_rate = 0.0 if generated <= 1 else 1.0 - (unique_hashes / generated)
+    return {
+        "generated_artifact_count": generated,
+        "unique_artifact_count": unique_hashes,
+        "duplicate_collapse_rate": duplicate_collapse_rate,
+        "artifacts": artifacts,
+    }
+
+
+def _file_digest(path: Path) -> str | None:
+    if not path.exists() or not path.is_file():
+        return None
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _as_mapping(value: Any) -> Mapping[str, Any]:
+    return value if isinstance(value, Mapping) else {}
+
+
+def _as_list(value: Any) -> list[Any]:
+    return value if isinstance(value, list) else []
 
 
 def _flatten_rows(reports: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
