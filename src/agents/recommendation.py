@@ -120,11 +120,85 @@ class RecommendationAgent(StructuredAgent):
         return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
 
     def _run_with_schema_json(self, agent_input: AgentInput, original_error: Exception) -> AgentOutput:
-        result = super().run(agent_input)
-        rationale = result.get("rationale")
-        note = f"smolagents tool-calling failed; used schema-validated Ollama JSON path; original_error={type(original_error).__name__}"
-        result["rationale"] = f"{note}; {rationale}" if rationale else note
-        return result
+        if os.getenv("GMGI_ALLOW_RECOMMENDATION_REPAIR", "1") == "1":
+            return self._run_ranked_repair(agent_input, original_error, None)
+        try:
+            result = super().run(agent_input)
+            rationale = result.get("rationale")
+            note = f"smolagents tool-calling failed; used schema-validated Ollama JSON path; original_error={type(original_error).__name__}"
+            result["rationale"] = f"{note}; {rationale}" if rationale else note
+            return result
+        except Exception as schema_error:
+            if os.getenv("GMGI_ALLOW_RECOMMENDATION_REPAIR", "1") != "1":
+                raise
+            return self._run_ranked_repair(agent_input, original_error, schema_error)
+
+    def _run_ranked_repair(self, agent_input: AgentInput, original_error: Exception, schema_error: Exception | None) -> AgentOutput:
+        context = self.build_context(agent_input)
+        profile = context.get("recipient_profile", {}) if isinstance(context.get("recipient_profile"), dict) else {}
+        intent = context.get("gift_intent", {}) if isinstance(context.get("gift_intent"), dict) else {}
+        occasion = context.get("occasion", {}) if isinstance(context.get("occasion"), dict) else {}
+        preferences = _preference_labels(context.get("preferences", []), profile, intent)
+        evidence = preferences[:2] or [str(occasion.get("name") or "occasion context")]
+        budget = str(context.get("budget") or occasion.get("budget_hint") or "the stated budget")
+        visual = intent.get("visual_generation", {}) if isinstance(intent.get("visual_generation"), dict) else {}
+        goal = intent.get("goal", {}) if isinstance(intent.get("goal"), dict) else {}
+        artifact_hint = str(visual.get("artifact_type") or goal.get("recommended_artifact_type") or "greeting_card").replace("_", " ")
+        primary_theme = ", ".join(preferences[:3]) if preferences else str(goal.get("emotional_objective") or "the supplied relationship context")
+        recommendations = [
+            {
+                "rank": 1,
+                "category": "generated keepsake",
+                "concept": f"A personalized {artifact_hint} built around {primary_theme}.",
+                "evidence": evidence,
+                "budget_fit": f"Digital generation can stay within {budget}.",
+                "artifact_type": "generated",
+            },
+            {
+                "rank": 2,
+                "category": "curated experience bundle",
+                "concept": f"A small themed bundle that echoes {preferences[0] if preferences else 'the occasion'} and includes a generated note.",
+                "evidence": evidence[:1],
+                "budget_fit": f"Bundle size can be adjusted to {budget}.",
+                "artifact_type": "bundle",
+            },
+            {
+                "rank": 3,
+                "category": "physical keepsake",
+                "concept": f"A modest physical item paired with memory-grounded wording for {occasion.get('name', 'the occasion')}.",
+                "evidence": evidence,
+                "budget_fit": f"Choose a simple object so the total remains near {budget}.",
+                "artifact_type": "physical",
+            },
+        ]
+        return AgentOutput(
+            stage=self.stage,
+            output={
+                "recommendations": recommendations,
+                "prompt_version": self.prompt_version_id,
+                "skills_used": list(self.config.get("skills", [])),
+            },
+            confidence=0.72,
+            rationale=(
+                "smolagents recommendation path failed; repaired with deterministic ranked_gift_reasoning "
+                f"over supplied context; original_error={type(original_error).__name__}"
+                + ("" if schema_error is None else f"; schema_error={type(schema_error).__name__}")
+            ),
+        )
+
+
+def _preference_labels(preferences: Any, profile: dict[str, Any], intent: dict[str, Any]) -> list[str]:
+    labels: list[str] = []
+    for source in (preferences, profile.get("interests", []), intent.get("preferences", [])):
+        for item in source or []:
+            if isinstance(item, dict):
+                value = item.get("value") or item.get("name") or item.get("category")
+            else:
+                value = item
+            text = str(value or "").strip()
+            if text and text not in labels:
+                labels.append(text)
+    return labels
 
 
 

@@ -97,11 +97,62 @@ class RecipientProfilingAgent(StructuredAgent):
         return AgentOutput(stage=self.stage, output=output, confidence=payload["confidence"], rationale=payload["rationale"])
 
     def _run_with_schema_json(self, agent_input: AgentInput) -> AgentOutput:
-        result = super().run(agent_input)
-        rationale = result.get("rationale")
-        note = "instructor validation failed; used schema-validated Ollama JSON path"
-        result["rationale"] = f"{note}; {rationale}" if rationale else note
-        return result
+        try:
+            result = super().run(agent_input)
+            rationale = result.get("rationale")
+            note = "instructor validation failed; used schema-validated Ollama JSON path"
+            result["rationale"] = f"{note}; {rationale}" if rationale else note
+            return result
+        except Exception as schema_error:
+            if os.getenv("GMGI_ALLOW_RECIPIENT_REPAIR", "1") != "1":
+                raise
+            return self._run_profile_repair(agent_input, schema_error)
+
+    def _run_profile_repair(self, agent_input: AgentInput, schema_error: Exception) -> AgentOutput:
+        context = self.build_context(agent_input)
+        interests = []
+        for item in context.get("preferences", []) or []:
+            if isinstance(item, dict):
+                name = item.get("value") or item.get("name") or item.get("category")
+                confidence = float(item.get("confidence", 0.8) or 0.8)
+            else:
+                name = str(item)
+                confidence = 0.8
+            if name:
+                interests.append({"name": str(name), "confidence": max(0.0, min(1.0, confidence))})
+        notes = [str(note) for note in context.get("raw_notes", []) or [] if str(note).strip()]
+        if not interests and notes:
+            interests.append({"name": "memory-grounded personalization", "confidence": 0.65})
+        output = {
+            "interests": interests[:5],
+            "communication_style": _communication_style_from_notes(notes),
+            "gift_history_summary": _gift_history_summary(context.get("gift_history", []), notes),
+            "prompt_version": self.prompt_version_id,
+            "skills_used": list(self.config.get("skills", [])),
+        }
+        return AgentOutput(
+            stage=self.stage,
+            output=output,
+            confidence=0.68,
+            rationale=f"instructor and schema JSON profiling failed; repaired with preference_signal_parser; schema_error={type(schema_error).__name__}",
+        )
+
+
+def _communication_style_from_notes(notes: list[str]) -> str:
+    text = " ".join(notes).lower()
+    if any(word in text for word in ("professional", "colleague", "work", "launch")):
+        return "Warm, concise, and professional."
+    if any(word in text for word in ("laugh", "funny", "joke", "lost")):
+        return "Warm, specific, and lightly playful."
+    return "Warm, specific, and respectful."
+
+
+def _gift_history_summary(gift_history: Any, notes: list[str]) -> str:
+    if gift_history:
+        return json.dumps(gift_history, ensure_ascii=False)
+    if notes:
+        return "No explicit gift history was supplied; use the provided memories as personalization evidence."
+    return "No explicit gift history was supplied."
 
 
 

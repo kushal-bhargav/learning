@@ -1,0 +1,21 @@
+{
+  "phase": "ui-permutations",
+  "case_file": "experiments/evals/ui_permutation_cases_check.json",
+  "source": "ui_input_permutation_generator",
+  "ui_fields": [
+    "giver_name",
+    "recipient_name",
+    "relationship_type",
+    "closeness_score",
+    "occasion_name",
+    "occasion_date",
+    "budget_hint",
+    "formality",
+    "preferences",
+    "memories",
+    "agency_slider"
+  ],
+  "max_cases": 12,
+  "seed": 2026,
+  "full_factorial_size": 12600
+}

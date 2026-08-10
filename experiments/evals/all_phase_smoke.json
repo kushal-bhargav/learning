@@ -1,0 +1,1118 @@
+{
+  "phase": "all",
+  "reports": {
+    "1": {
+      "phase": 1,
+      "episode_count": 1,
+      "summary": {
+        "constraint_satisfaction": {
+          "mean_score": 1.0,
+          "passed": 1,
+          "failed": 0
+        },
+        "dag_validity": {
+          "mean_score": 1.0,
+          "passed": 1,
+          "failed": 0
+        },
+        "provenance_traceability": {
+          "mean_score": 0.5454545454545454,
+          "passed": 0,
+          "failed": 1
+        },
+        "schema_conformance": {
+          "mean_score": 1.0,
+          "passed": 1,
+          "failed": 0
+        }
+      },
+      "episodes": [
+        {
+          "session_id": "long-distance-partners-9f1bd4da",
+          "context_fingerprint": "partner|casual|high|2eff31852c",
+          "metrics": [
+            {
+              "name": "schema_conformance",
+              "score": 1.0,
+              "passed": true,
+              "details": {
+                "stages": {
+                  "creative_generation": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "delivery_planner": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "gift_intent_reasoning": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "greeting_story": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "multi_agent_planning": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "recipient_profiling": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "recommendation": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  },
+                  "relationship_analysis": {
+                    "checked": true,
+                    "valid": true,
+                    "ignored_observability_keys": [
+                      "prompt_version",
+                      "skills_used"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "name": "constraint_satisfaction",
+              "score": 1.0,
+              "passed": true,
+              "details": {
+                "checks": [
+                  {
+                    "name": "recommendation_1_budget_mentions_fit",
+                    "passed": true,
+                    "constraint": "USD 60-100"
+                  },
+                  {
+                    "name": "recommendation_2_budget_mentions_fit",
+                    "passed": true,
+                    "constraint": "USD 60-100"
+                  },
+                  {
+                    "name": "recommendation_3_budget_mentions_fit",
+                    "passed": true,
+                    "constraint": "USD 60-100"
+                  },
+                  {
+                    "name": "delivery_simulated_only",
+                    "passed": true,
+                    "constraint": [
+                      "simulated delivery only"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "name": "dag_validity",
+              "score": 1.0,
+              "passed": true,
+              "details": {
+                "sequence": [
+                  "recipient_profiling",
+                  "relationship_analysis",
+                  "gift_intent_reasoning",
+                  "multi_agent_planning",
+                  "recommendation",
+                  "creative_generation",
+                  "greeting_story",
+                  "delivery_planner"
+                ],
+                "dependencies": [
+                  {
+                    "after": "recipient_profiling",
+                    "before": "relationship_analysis",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "relationship_analysis",
+                    "before": "gift_intent_reasoning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "gift_intent_reasoning",
+                    "before": "multi_agent_planning",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "multi_agent_planning",
+                    "before": "recommendation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "recommendation",
+                    "before": "creative_generation",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "creative_generation",
+                    "before": "greeting_story",
+                    "type": "stage_output"
+                  },
+                  {
+                    "after": "greeting_story",
+                    "before": "delivery_planner",
+                    "type": "stage_output"
+                  }
+                ],
+                "errors": []
+              }
+            },
+            {
+              "name": "provenance_traceability",
+              "score": 0.5454545454545454,
+              "passed": false,
+              "details": {
+                "items": [
+                  {
+                    "stage": "recommendation",
+                    "field": "evidence",
+                    "value": "mustard yellow",
+                    "traceable": true
+                  },
+                  {
+                    "stage": "recommendation",
+                    "field": "evidence",
+                    "value": "urban sketching",
+                    "traceable": true
+                  },
+                  {
+                    "stage": "recommendation",
+                    "field": "evidence",
+                    "value": "memory-lisbon-tram",
+                    "traceable": false
+                  },
+                  {
+                    "stage": "recommendation",
+                    "field": "evidence",
+                    "value": "memory-lisbon-tram",
+                    "traceable": false
+                  },
+                  {
+                    "stage": "recommendation",
+                    "field": "evidence",
+                    "value": "memory-video-dinner",
+                    "traceable": false
+                  },
+                  {
+                    "stage": "recommendation",
+                    "field": "evidence",
+                    "value": "mustard yellow",
+                    "traceable": true
+                  },
+                  {
+                    "stage": "greeting_story",
+                    "field": "memory_references",
+                    "value": "memory-lisbon-tram",
+                    "traceable": false
+                  },
+                  {
+                    "stage": "greeting_story",
+                    "field": "memory_references",
+                    "value": "memory-video-dinner",
+                    "traceable": false
+                  },
+                  {
+                    "stage": "gift_intent_reasoning",
+                    "field": "preferences",
+                    "value": "mustard yellow",
+                    "traceable": true
+                  },
+                  {
+                    "stage": "gift_intent_reasoning",
+                    "field": "preferences",
+                    "value": "urban sketching",
+                    "traceable": true
+                  },
+                  {
+                    "stage": "gift_intent_reasoning",
+                    "field": "preferences",
+                    "value": "travel-poster illustration",
+                    "traceable": true
+                  }
+                ]
+              }
+            }
+          ],
+          "overall_score": 0.8863636363636364
+        }
+      ]
+    },
+    "2": {
+      "phase": 2,
+      "episode_count": 1,
+      "summary": {
+        "mean_faithfulness": 0.41850720551378445,
+        "checked_stage_count": 8
+      },
+      "episodes": [
+        {
+          "session_id": "long-distance-partners-9f1bd4da",
+          "stages": [
+            {
+              "stage": "creative_generation",
+              "faithfulness_score": 0.0,
+              "unsupported_claims": [
+                "agency_slider: 0.25",
+                "artifact_type: generated",
+                "height: 16",
+                "media_type: image/png",
+                "seed: 2026",
+                "width: 16"
+              ],
+              "claim_checks": [
+                {
+                  "claim": "agency_slider: 0.25",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "artifact_type: generated",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "height: 16",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "media_type: image/png",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "seed: 2026",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "width: 16",
+                  "supported": false,
+                  "evidence": null
+                }
+              ]
+            },
+            {
+              "stage": "delivery_planner",
+              "faithfulness_score": 0.0,
+              "unsupported_claims": [
+                "channel: digital card",
+                "disclaimer: No shipment, purchase, or external delivery was created.",
+                "mode: digital",
+                "occasion_date: 2026-09-18",
+                "planned_send_date: 2026-09-18",
+                "status: simulated"
+              ],
+              "claim_checks": [
+                {
+                  "claim": "channel: digital card",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "disclaimer: No shipment, purchase, or external delivery was created.",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "mode: digital",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "occasion_date: 2026-09-18",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "planned_send_date: 2026-09-18",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "status: simulated",
+                  "supported": false,
+                  "evidence": null
+                }
+              ]
+            },
+            {
+              "stage": "gift_intent_reasoning",
+              "faithfulness_score": 0.2916666666666667,
+              "unsupported_claims": [
+                "budget_hint: USD 60-100",
+                "budget_sensitivity: medium",
+                "timing: date-specified",
+                "emotional_objective: shared joy and humor",
+                "gift_purpose: celebrate relationship milestone",
+                "recommended_artifact_type: greeting_card",
+                "social_tone: Affectionate and playful without inventing private details.",
+                "visual_style: greeting card using mustard yellow, urban sketching, travel-poster illustration as visual cues",
+                "intent_summary: Create a high-personalization gift for Jordan's birthday with casual tone.",
+                "name: Jordan's birthday",
+                "urgency: date-specified",
+                "source: stated",
+                "value: mustard yellow",
+                "value: urban sketching",
+                "source: inferred",
+                "value: travel-poster illustration",
+                "style_prompt: greeting card using mustard yellow, urban sketching, travel-poster illustration as visual cues"
+              ],
+              "claim_checks": [
+                {
+                  "claim": "budget_hint: USD 60-100",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "budget_sensitivity: medium",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "simulated delivery only",
+                  "supported": true,
+                  "evidence": "simulated, delivery"
+                },
+                {
+                  "claim": "timing: date-specified",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "emotional_objective: shared joy and humor",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "gift_purpose: celebrate relationship milestone",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "personalization_depth: high",
+                  "supported": true,
+                  "evidence": "high"
+                },
+                {
+                  "claim": "recommended_artifact_type: greeting_card",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "social_tone: Affectionate and playful without inventing private details.",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "visual_style: greeting card using mustard yellow, urban sketching, travel-poster illustration as visual cues",
+                  "supported": false,
+                  "evidence": "card"
+                },
+                {
+                  "claim": "intent_summary: Create a high-personalization gift for Jordan's birthday with casual tone.",
+                  "supported": false,
+                  "evidence": "create, casual"
+                },
+                {
+                  "claim": "date: 2026-09-18",
+                  "supported": true,
+                  "evidence": "date, 2026-09-18"
+                },
+                {
+                  "claim": "formality: casual",
+                  "supported": true,
+                  "evidence": "casual"
+                },
+                {
+                  "claim": "name: Jordan's birthday",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "urgency: date-specified",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "confidence: 1.0",
+                  "supported": true,
+                  "evidence": "claim has no content tokens"
+                },
+                {
+                  "claim": "source: stated",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "value: mustard yellow",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "value: urban sketching",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "confidence: 0.72",
+                  "supported": true,
+                  "evidence": "claim has no content tokens"
+                },
+                {
+                  "claim": "source: inferred",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "value: travel-poster illustration",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "artifact_type: greeting_card",
+                  "supported": true,
+                  "evidence": "artifact_type"
+                },
+                {
+                  "claim": "style_prompt: greeting card using mustard yellow, urban sketching, travel-poster illustration as visual cues",
+                  "supported": false,
+                  "evidence": "card"
+                }
+              ]
+            },
+            {
+              "stage": "greeting_story",
+              "faithfulness_score": 0.25,
+              "unsupported_claims": [
+                "memory-lisbon-tram",
+                "memory-video-dinner",
+                "message: Here is a small memory-made thing for you: warm, specific, and ours without needing to be grand."
+              ],
+              "claim_checks": [
+                {
+                  "claim": "memory-lisbon-tram",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "memory-video-dinner",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "message: Here is a small memory-made thing for you: warm, specific, and ours without needing to be grand.",
+                  "supported": false,
+                  "evidence": "without"
+                },
+                {
+                  "claim": "tone: warm and personal",
+                  "supported": true,
+                  "evidence": "tone, personal"
+                }
+              ]
+            },
+            {
+              "stage": "multi_agent_planning",
+              "faithfulness_score": 0.5,
+              "unsupported_claims": [
+                "recipient_profiling",
+                "relationship_analysis",
+                "multi_agent_planning",
+                "recommendation",
+                "after: recipient_profiling",
+                "before: relationship_analysis",
+                "after: relationship_analysis",
+                "before: multi_agent_planning",
+                "after: multi_agent_planning",
+                "before: recommendation",
+                "after: recommendation",
+                "agent: recipient_profiling",
+                "output: interests, communication style, gift history summary",
+                "agent: relationship_analysis",
+                "output: closeness, tone guidance, risk flags",
+                "agent: multi_agent_planning",
+                "output: subtasks, dependencies, stop conditions, fallback plan",
+                "agent: recommendation",
+                "output: ranked gift concepts",
+                "reason: Use the established bounded pipeline if planner output is incomplete or invalid.",
+                "human rejects or edits a pending proposal",
+                "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                "id: step_1",
+                "requires_human_review: True",
+                "id: step_2",
+                "id: step_3",
+                "id: step_4",
+                "id: step_5",
+                "id: step_6",
+                "id: step_7",
+                "id: step_8"
+              ],
+              "claim_checks": [
+                {
+                  "claim": "recipient_profiling",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "relationship_analysis",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "gift_intent_reasoning",
+                  "supported": true,
+                  "evidence": "gift_intent_reasoning"
+                },
+                {
+                  "claim": "multi_agent_planning",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "recommendation",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "creative_generation",
+                  "supported": true,
+                  "evidence": "creative_generation"
+                },
+                {
+                  "claim": "greeting_story",
+                  "supported": true,
+                  "evidence": "greeting_story"
+                },
+                {
+                  "claim": "delivery_planner",
+                  "supported": true,
+                  "evidence": "delivery_planner"
+                },
+                {
+                  "claim": "after: recipient_profiling",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "before: relationship_analysis",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "type: stage_output",
+                  "supported": true,
+                  "evidence": "type"
+                },
+                {
+                  "claim": "after: relationship_analysis",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "before: gift_intent_reasoning",
+                  "supported": true,
+                  "evidence": "gift_intent_reasoning"
+                },
+                {
+                  "claim": "after: gift_intent_reasoning",
+                  "supported": true,
+                  "evidence": "gift_intent_reasoning"
+                },
+                {
+                  "claim": "before: multi_agent_planning",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "after: multi_agent_planning",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "before: recommendation",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "after: recommendation",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "before: creative_generation",
+                  "supported": true,
+                  "evidence": "creative_generation"
+                },
+                {
+                  "claim": "after: creative_generation",
+                  "supported": true,
+                  "evidence": "creative_generation"
+                },
+                {
+                  "claim": "before: greeting_story",
+                  "supported": true,
+                  "evidence": "greeting_story"
+                },
+                {
+                  "claim": "after: greeting_story",
+                  "supported": true,
+                  "evidence": "greeting_story"
+                },
+                {
+                  "claim": "before: delivery_planner",
+                  "supported": true,
+                  "evidence": "delivery_planner"
+                },
+                {
+                  "claim": "agent: recipient_profiling",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "output: interests, communication style, gift history summary",
+                  "supported": false,
+                  "evidence": "style, gift, summary"
+                },
+                {
+                  "claim": "agent: relationship_analysis",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "output: closeness, tone guidance, risk flags",
+                  "supported": false,
+                  "evidence": "tone"
+                },
+                {
+                  "claim": "agent: gift_intent_reasoning",
+                  "supported": true,
+                  "evidence": "gift_intent_reasoning"
+                },
+                {
+                  "claim": "output: goal, constraints, preferences, clarifying needs",
+                  "supported": true,
+                  "evidence": "goal, constraints, preferences, clarifying, needs"
+                },
+                {
+                  "claim": "agent: multi_agent_planning",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "output: subtasks, dependencies, stop conditions, fallback plan",
+                  "supported": false,
+                  "evidence": "plan"
+                },
+                {
+                  "claim": "agent: recommendation",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "output: ranked gift concepts",
+                  "supported": false,
+                  "evidence": "gift"
+                },
+                {
+                  "claim": "agent: creative_generation",
+                  "supported": true,
+                  "evidence": "creative_generation"
+                },
+                {
+                  "claim": "output: image artifact metadata",
+                  "supported": true,
+                  "evidence": "image, artifact"
+                },
+                {
+                  "claim": "agent: greeting_story",
+                  "supported": true,
+                  "evidence": "greeting_story"
+                },
+                {
+                  "claim": "output: original greeting text",
+                  "supported": true,
+                  "evidence": "greeting, text"
+                },
+                {
+                  "claim": "agent: delivery_planner",
+                  "supported": true,
+                  "evidence": "delivery_planner"
+                },
+                {
+                  "claim": "output: simulated delivery plan",
+                  "supported": true,
+                  "evidence": "simulated, delivery, plan"
+                },
+                {
+                  "claim": "reason: Use the established bounded pipeline if planner output is incomplete or invalid.",
+                  "supported": false,
+                  "evidence": "reason, use, planner"
+                },
+                {
+                  "claim": "type: current_staged_orchestration",
+                  "supported": true,
+                  "evidence": "type"
+                },
+                {
+                  "claim": "human rejects or edits a pending proposal",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "required model/checkpoint is unavailable and fallback cannot satisfy the stage",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "delivery remains simulated; no external purchase or shipping action is allowed",
+                  "supported": true,
+                  "evidence": "delivery, simulated, external, purchase, action"
+                },
+                {
+                  "claim": "action: extract recipient signals",
+                  "supported": true,
+                  "evidence": "action, extract"
+                },
+                {
+                  "claim": "id: step_1",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "requires_human_review: True",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: model relationship tone and risk",
+                  "supported": true,
+                  "evidence": "action, relationship, tone"
+                },
+                {
+                  "claim": "id: step_2",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: infer gift intent and constraints",
+                  "supported": true,
+                  "evidence": "action, infer, gift, intent, constraints"
+                },
+                {
+                  "claim": "id: step_3",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: create bounded execution plan",
+                  "supported": true,
+                  "evidence": "action, create, plan"
+                },
+                {
+                  "claim": "id: step_4",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: rank gift concepts",
+                  "supported": true,
+                  "evidence": "action, gift"
+                },
+                {
+                  "claim": "id: step_5",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: generate visual artifact",
+                  "supported": true,
+                  "evidence": "action, generate, visual, artifact"
+                },
+                {
+                  "claim": "id: step_6",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: write original message/story",
+                  "supported": true,
+                  "evidence": "action, message, story"
+                },
+                {
+                  "claim": "id: step_7",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "action: simulate delivery timing",
+                  "supported": true,
+                  "evidence": "action, simulate, delivery, timing"
+                },
+                {
+                  "claim": "id: step_8",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "task_goal: Create a high-personalization gift for Jordan's birthday with casual tone.",
+                  "supported": true,
+                  "evidence": "create, high-personalization, gift, jordan, birthday, casual, tone"
+                }
+              ]
+            },
+            {
+              "stage": "recipient_profiling",
+              "faithfulness_score": 0.7142857142857143,
+              "unsupported_claims": [
+                "communication_style: A little more playful.",
+                "gift_history_summary: No prior gift history was supplied in this fixture."
+              ],
+              "claim_checks": [
+                {
+                  "claim": "communication_style: A little more playful.",
+                  "supported": false,
+                  "evidence": "playful"
+                },
+                {
+                  "claim": "gift_history_summary: No prior gift history was supplied in this fixture.",
+                  "supported": false,
+                  "evidence": "gift, history"
+                },
+                {
+                  "claim": "confidence: 1.0",
+                  "supported": true,
+                  "evidence": "claim has no content tokens"
+                },
+                {
+                  "claim": "name: mustard yellow",
+                  "supported": true,
+                  "evidence": "name, mustard, yellow"
+                },
+                {
+                  "claim": "name: urban sketching",
+                  "supported": true,
+                  "evidence": "name, urban, sketching"
+                },
+                {
+                  "claim": "confidence: 0.72",
+                  "supported": true,
+                  "evidence": "claim has no content tokens"
+                },
+                {
+                  "claim": "name: travel-poster illustration",
+                  "supported": true,
+                  "evidence": "name, travel-poster, illustration"
+                }
+              ]
+            },
+            {
+              "stage": "recommendation",
+              "faithfulness_score": 0.8421052631578947,
+              "unsupported_claims": [
+                "category: personalized art",
+                "category: experience",
+                "category: physical keepsake"
+              ],
+              "claim_checks": [
+                {
+                  "claim": "artifact_type: generated",
+                  "supported": true,
+                  "evidence": "artifact_type, generated"
+                },
+                {
+                  "claim": "budget_fit: Digital generation fits the supplied budget hint.",
+                  "supported": true,
+                  "evidence": "digital, generation, supplied, budget, hint"
+                },
+                {
+                  "claim": "category: personalized art",
+                  "supported": false,
+                  "evidence": "art"
+                },
+                {
+                  "claim": "concept: A generated keepsake illustration weaving mustard yellow with Maya and Jordan laughing beside a yellow tram after getting pleasantly lost in Lisbon.",
+                  "supported": true,
+                  "evidence": "concept, generated, illustration, mustard, yellow, jordan, yellow, tram"
+                },
+                {
+                  "claim": "mustard yellow",
+                  "supported": true,
+                  "evidence": "mustard, yellow"
+                },
+                {
+                  "claim": "urban sketching",
+                  "supported": true,
+                  "evidence": "urban, sketching"
+                },
+                {
+                  "claim": "memory-lisbon-tram",
+                  "supported": true,
+                  "evidence": "memory-lisbon-tram"
+                },
+                {
+                  "claim": "rank: 1",
+                  "supported": true,
+                  "evidence": "rank"
+                },
+                {
+                  "claim": "artifact_type: bundle",
+                  "supported": true,
+                  "evidence": "artifact_type"
+                },
+                {
+                  "claim": "budget_fit: Can be scaled to the stated budget.",
+                  "supported": true,
+                  "evidence": "can, stated, budget"
+                },
+                {
+                  "claim": "category: experience",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "concept: A small shared ritual kit tied to the occasion.",
+                  "supported": true,
+                  "evidence": "concept, small, shared, occasion"
+                },
+                {
+                  "claim": "memory-video-dinner",
+                  "supported": true,
+                  "evidence": "memory-video-dinner"
+                },
+                {
+                  "claim": "rank: 2",
+                  "supported": true,
+                  "evidence": "rank"
+                },
+                {
+                  "claim": "artifact_type: physical",
+                  "supported": true,
+                  "evidence": "artifact_type"
+                },
+                {
+                  "claim": "budget_fit: Simulated only; no purchase is made.",
+                  "supported": true,
+                  "evidence": "simulated, only, purchase, made"
+                },
+                {
+                  "claim": "category: physical keepsake",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "concept: A modest physical object echoing the recipient's stated preferences.",
+                  "supported": true,
+                  "evidence": "concept, object, recipient, stated, preferences"
+                },
+                {
+                  "claim": "rank: 3",
+                  "supported": true,
+                  "evidence": "rank"
+                }
+              ]
+            },
+            {
+              "stage": "relationship_analysis",
+              "faithfulness_score": 0.75,
+              "unsupported_claims": [
+                "agency_slider_default: 0.5"
+              ],
+              "claim_checks": [
+                {
+                  "claim": "agency_slider_default: 0.5",
+                  "supported": false,
+                  "evidence": null
+                },
+                {
+                  "claim": "closeness_assessment: very close",
+                  "supported": true,
+                  "evidence": "very, close"
+                },
+                {
+                  "claim": "formality: casual",
+                  "supported": true,
+                  "evidence": "formality, casual"
+                },
+                {
+                  "claim": "tone_guidance: Affectionate and playful without inventing private details.",
+                  "supported": true,
+                  "evidence": "affectionate, playful, without, inventing, private, details"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "3": {
+      "phase": 3,
+      "episode_count": 1,
+      "summary": {
+        "status": "not_run",
+        "reason": "ExperienceStore episodes do not include raw per-stage AgentInput payloads required for safe replay."
+      },
+      "episodes": [
+        {
+          "status": "insufficient_logged_context",
+          "details": {
+            "session_id": "long-distance-partners-9f1bd4da",
+            "available_fields": [
+              "agent_outputs",
+              "human_actions",
+              "context_fingerprint",
+              "prompt_versions",
+              "composite_reward"
+            ],
+            "required_for_replay": [
+              "session",
+              "stage_config"
+            ]
+          }
+        }
+      ]
+    },
+    "4": {
+      "phase": 4,
+      "episode_count": 1,
+      "summary": {
+        "status": "not_run",
+        "reason": "Purpose-alignment judge calls are disabled. Pass --enable-judge to call the configured judge model."
+      },
+      "episodes": []
+    }
+  }
+}

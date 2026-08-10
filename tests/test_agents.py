@@ -111,6 +111,28 @@ def test_smolagents_agents_use_real_schema_path_when_tool_wrapper_fails(
     assert "schema-validated Ollama JSON path" in result["rationale"]
 
 
+def test_recipient_profile_repairs_when_local_model_returns_invalid_shape(
+    monkeypatch: pytest.MonkeyPatch,
+    session: GiftSession,
+) -> None:
+    monkeypatch.setenv("GMGI_FORCE_OLLAMA_AGENTS", "1")
+    monkeypatch.setenv("GMGI_ALLOW_AGENT_FALLBACK", "0")
+    monkeypatch.setenv("GMGI_ALLOW_RECIPIENT_REPAIR", "1")
+    monkeypatch.setattr(RecipientProfilingAgent, "_run_with_instructor", lambda *_: (_ for _ in ()).throw(RuntimeError("bad instructor output")))
+    result = RecipientProfilingAgent(FailingStructuredLLM()).run(
+        {
+            "session": session,
+            "stage_config": {
+                "person": {"display_name": "Mira"},
+                "preferences": [{"value": "tea", "confidence": 0.9}],
+                "raw_notes": ["We laughed at a tiny tea shop."],
+            },
+        }
+    )
+    assert result["output"]["interests"][0]["name"] == "tea"
+    assert "preference_signal_parser" in result["rationale"]
+
+
 def test_delivery_planner_is_simulated_and_deterministic(session: GiftSession) -> None:
     result = DeliveryPlannerAgent().run({"session": session, "stage_config": {"artifact_type": "physical", "occasion": {"date": "2026-09-18"}}})
     assert result["output"]["status"] == "simulated"
@@ -228,3 +250,33 @@ def test_intent_and_planning_repair_llm_failures_in_strict_mode(
     )
     assert "recommendation" in plan["output"]["agent_sequence"]
     assert "repaired with bounded rule planner" in plan["rationale"]
+
+
+def test_recommendation_repairs_when_tool_and_schema_paths_fail(
+    monkeypatch: pytest.MonkeyPatch,
+    session: GiftSession,
+) -> None:
+    monkeypatch.setenv("GMGI_FORCE_OLLAMA_AGENTS", "1")
+    monkeypatch.setenv("GMGI_ALLOW_AGENT_FALLBACK", "0")
+    monkeypatch.setenv("GMGI_ALLOW_RECOMMENDATION_REPAIR", "1")
+    monkeypatch.setattr(RecommendationAgent, "_run_with_smolagents", lambda *_: (_ for _ in ()).throw(RuntimeError("tool wrapper failed")))
+    result = RecommendationAgent(FailingStructuredLLM()).run(
+        {
+            "session": session,
+            "stage_config": {
+                "recipient_profile": {"interests": [{"name": "books", "confidence": 0.9}]},
+                "relationship_guidance": {"tone_guidance": "warm"},
+                "gift_intent": {
+                    "goal": {"recommended_artifact_type": "greeting_card", "emotional_objective": "close"},
+                    "visual_generation": {"artifact_type": "greeting_card"},
+                    "preferences": [{"value": "travel"}],
+                },
+                "occasion": {"name": "Birthday", "budget_hint": "USD 60-100"},
+                "preferences": [{"value": "books"}],
+            },
+        }
+    )
+    recs = result["output"]["recommendations"]
+    assert len(recs) == 3
+    assert [rec["rank"] for rec in recs] == [1, 2, 3]
+    assert "ranked_gift_reasoning" in result["rationale"]

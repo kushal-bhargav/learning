@@ -1,0 +1,122 @@
+{
+  "cases": [
+    {
+      "case_id": "close_partner_birthday_memory_art",
+      "custom_profile": {
+        "giver_name": "Maya",
+        "recipient_name": "Jordan",
+        "relationship_type": "partner",
+        "closeness_score": 5,
+        "occasion_name": "Jordan's birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "USD 60-100",
+        "formality": "casual",
+        "preferences": [
+          "mustard yellow",
+          "urban sketching",
+          "travel-poster illustration"
+        ],
+        "memories": [
+          "Maya and Jordan laughed beside a yellow tram after getting lost in Lisbon.",
+          "They cook dinner together over video calls during long-distance weeks."
+        ]
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5,
+        "relationship_closeness": "very close",
+        "occasion_name": "Jordan's birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "USD 60-100",
+        "preferences": [
+          "mustard yellow",
+          "urban sketching",
+          "travel-poster illustration"
+        ],
+        "must_preserve_constraints": [
+          "simulated delivery only",
+          "USD 60-100"
+        ]
+      }
+    },
+    {
+      "case_id": "new_coworker_promotion_professional",
+      "custom_profile": {
+        "giver_name": "Priya",
+        "recipient_name": "Theo",
+        "relationship_type": "coworker",
+        "closeness_score": 2,
+        "occasion_name": "Theo's promotion",
+        "occasion_date": "2026-10-05",
+        "budget_hint": "USD 25-45",
+        "formality": "professional",
+        "preferences": [
+          "desk plants",
+          "coffee",
+          "minimalist design"
+        ],
+        "memories": [
+          "Theo mentored Priya during the first analytics sprint.",
+          "The team often jokes about Theo's extremely organized notebook."
+        ]
+      },
+      "expected": {
+        "relationship_type": "coworker",
+        "closeness_score": 2,
+        "relationship_closeness": "moderate",
+        "occasion_name": "Theo's promotion",
+        "occasion_date": "2026-10-05",
+        "budget_hint": "USD 25-45",
+        "preferences": [
+          "desk plants",
+          "coffee",
+          "minimalist design"
+        ],
+        "must_preserve_constraints": [
+          "professional",
+          "USD 25-45",
+          "simulated delivery only"
+        ]
+      }
+    },
+    {
+      "case_id": "sibling_housewarming_practical_personal",
+      "custom_profile": {
+        "giver_name": "Ravi",
+        "recipient_name": "Asha",
+        "relationship_type": "sibling",
+        "closeness_score": 4,
+        "occasion_name": "Asha's housewarming",
+        "occasion_date": "2026-11-12",
+        "budget_hint": "USD 50-90",
+        "formality": "casual",
+        "preferences": [
+          "ceramics",
+          "herbs",
+          "warm kitchen colors"
+        ],
+        "memories": [
+          "Asha kept a tiny basil plant alive through three apartment moves.",
+          "Ravi and Asha make Sunday chai whenever they are in the same city."
+        ]
+      },
+      "expected": {
+        "relationship_type": "sibling",
+        "closeness_score": 4,
+        "relationship_closeness": "close",
+        "occasion_name": "Asha's housewarming",
+        "occasion_date": "2026-11-12",
+        "budget_hint": "USD 50-90",
+        "preferences": [
+          "ceramics",
+          "herbs",
+          "warm kitchen colors"
+        ],
+        "must_preserve_constraints": [
+          "USD 50-90",
+          "simulated delivery only"
+        ]
+      }
+    }
+  ]
+}
