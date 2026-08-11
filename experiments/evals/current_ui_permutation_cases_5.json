@@ -1,0 +1,235 @@
+{
+  "metadata": {
+    "source": "ui_input_permutation_generator",
+    "ui_fields": [
+      "giver_name",
+      "recipient_name",
+      "relationship_type",
+      "closeness_score",
+      "occasion_name",
+      "occasion_date",
+      "budget_hint",
+      "formality",
+      "preferences",
+      "memories",
+      "agency_slider"
+    ],
+    "max_cases": 5,
+    "seed": 2026,
+    "full_factorial_size": 12600
+  },
+  "cases": [
+    {
+      "case_id": "ui_perm_001_parent-child_thank-you_c4_0_a0_5",
+      "custom_profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 1",
+        "relationship_type": "parent-child",
+        "closeness_score": 4.0,
+        "occasion_name": "Thank-you",
+        "occasion_date": "2026-11-15",
+        "budget_hint": "USD 60-100",
+        "formality": "professional",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memories": [
+          "They helped during a difficult project week.",
+          "They keep a very organized notebook."
+        ],
+        "agency_slider": 0.5
+      },
+      "expected": {
+        "relationship_type": "parent-child",
+        "closeness_score": 4.0,
+        "relationship_closeness": "close",
+        "occasion_name": "Thank-you",
+        "occasion_date": "2026-11-15",
+        "budget_hint": "USD 60-100",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.5,
+        "must_preserve_constraints": [
+          "USD 60-100",
+          "professional",
+          "simulated delivery only"
+        ]
+      }
+    },
+    {
+      "case_id": "ui_perm_002_colleague_birthday_c2_0_a0_15",
+      "custom_profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 2",
+        "relationship_type": "colleague",
+        "closeness_score": 2.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "USD 25-45",
+        "formality": "casual",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memories": [
+          "They kept a basil plant alive through three apartment moves.",
+          "They make Sunday chai whenever they are in the same city."
+        ],
+        "agency_slider": 0.15
+      },
+      "expected": {
+        "relationship_type": "colleague",
+        "closeness_score": 2.0,
+        "relationship_closeness": "moderate",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "USD 25-45",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.15,
+        "must_preserve_constraints": [
+          "USD 25-45",
+          "casual",
+          "simulated delivery only"
+        ]
+      }
+    },
+    {
+      "case_id": "ui_perm_003_mentor_promotion_c3_0_a0_85",
+      "custom_profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 3",
+        "relationship_type": "mentor",
+        "closeness_score": 3.0,
+        "occasion_name": "Promotion",
+        "occasion_date": "2026-08-28",
+        "budget_hint": "Flexible",
+        "formality": "professional",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memories": [
+          "They once got lost finding a tiny tea shop.",
+          "They always send photos of interesting doors."
+        ],
+        "agency_slider": 0.85
+      },
+      "expected": {
+        "relationship_type": "mentor",
+        "closeness_score": 3.0,
+        "relationship_closeness": "moderate",
+        "occasion_name": "Promotion",
+        "occasion_date": "2026-08-28",
+        "budget_hint": "Flexible",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.85,
+        "must_preserve_constraints": [
+          "Flexible",
+          "professional",
+          "simulated delivery only"
+        ]
+      }
+    },
+    {
+      "case_id": "ui_perm_004_extended-family_thank-you_c2_5_a0_5",
+      "custom_profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 4",
+        "relationship_type": "extended-family",
+        "closeness_score": 2.5,
+        "occasion_name": "Thank-you",
+        "occasion_date": "2026-11-15",
+        "budget_hint": "USD 150-250",
+        "formality": "professional",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memories": [
+          "They laughed beside a yellow tram after getting lost in Lisbon.",
+          "They cook together over video calls during long-distance weeks."
+        ],
+        "agency_slider": 0.5
+      },
+      "expected": {
+        "relationship_type": "extended-family",
+        "closeness_score": 2.5,
+        "relationship_closeness": "moderate",
+        "occasion_name": "Thank-you",
+        "occasion_date": "2026-11-15",
+        "budget_hint": "USD 150-250",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memory_count": 2,
+        "agency_slider": 0.5,
+        "must_preserve_constraints": [
+          "USD 150-250",
+          "professional",
+          "simulated delivery only"
+        ]
+      }
+    },
+    {
+      "case_id": "ui_perm_005_partner_birthday_c5_0_a0_15",
+      "custom_profile": {
+        "giver_name": "Eval giver",
+        "recipient_name": "Eval recipient 5",
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "USD 60-100",
+        "formality": "casual",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memories": [],
+        "agency_slider": 0.15
+      },
+      "expected": {
+        "relationship_type": "partner",
+        "closeness_score": 5.0,
+        "relationship_closeness": "very close",
+        "occasion_name": "Birthday",
+        "occasion_date": "2026-09-18",
+        "budget_hint": "USD 60-100",
+        "preferences": [
+          "coffee",
+          "minimalist design",
+          "desk plants"
+        ],
+        "memory_count": 0,
+        "agency_slider": 0.15,
+        "must_preserve_constraints": [
+          "USD 60-100",
+          "casual",
+          "simulated delivery only"
+        ]
+      }
+    }
+  ]
+}

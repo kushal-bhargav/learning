@@ -57,6 +57,8 @@ export interface GiftSessionResponse {
   stage_log: StageLogEntry[];
   next_stage: StageName | null;
   ledger: LedgerSummary;
+  run_id?: string;
+  harness?: Record<string, unknown>;
 }
 
 export interface LiveProfilePayload {
@@ -129,6 +131,9 @@ export const api = {
   },
   getSession(sessionId: string): Promise<GiftSessionResponse> {
     return request(`/sessions/${sessionId}`);
+  },
+  runTrace(sessionId: string): Promise<Record<string, unknown>> {
+    return request(`/sessions/${sessionId}/trace`);
   },
   propose(sessionId: string, stage: StageName, overrides: Record<string, unknown> = {}): Promise<GiftSessionResponse> {
     return request(`/sessions/${sessionId}/stages/${stage}/propose`, {

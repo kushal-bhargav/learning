@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -10,6 +11,7 @@ from pydantic import BaseModel
 
 from .orchestrator import AgentInput, AgentOutput
 from .skills import add_skill_metadata
+from src.harness import ensure_tool_allowed, record_tool_call
 
 
 class _DeliveryPlanOutput(BaseModel):
@@ -60,7 +62,15 @@ class DeliveryPlannerAgent:
 
     def run(self, agent_input: AgentInput) -> AgentOutput:
         stage_config = agent_input["stage_config"]
+        started = time.perf_counter()
+        ensure_tool_allowed("date_logistics_math")
         deterministic_output, lead_days = _planned_delivery_fields(stage_config, self.config)
+        record_tool_call(
+            "date_logistics_math",
+            arguments={"artifact_type": stage_config.get("artifact_type", "generated"), "occasion": stage_config.get("occasion", {})},
+            result={"output": deterministic_output, "lead_days": lead_days},
+            latency_seconds=time.perf_counter() - started,
+        )
         add_skill_metadata(deterministic_output, self.config, active=["date_logistics_math", "simulated_delivery_structuring"])
         deterministic_output["prompt_version"] = self.prompt_version_id
         try:

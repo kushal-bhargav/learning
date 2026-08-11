@@ -1,0 +1,1006 @@
+{
+  "manifest": {
+    "experiment_id": "rep-test",
+    "cases": [
+      "rep-case"
+    ],
+    "candidates": [
+      "gmgi_default"
+    ],
+    "case_file": null,
+    "provider": "ollama",
+    "model": null,
+    "model_parameters": {},
+    "seed": 1,
+    "state_isolation": "isolated",
+    "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+    "include_creative": false,
+    "agency_slider": 0.5,
+    "stage_timeout_seconds": null,
+    "execution_timeout_seconds": null,
+    "repetitions": 3,
+    "randomized_order": false,
+    "resume": false,
+    "report_path": null
+  },
+  "environment": {
+    "provider": "ollama",
+    "model": null,
+    "model_parameters": {},
+    "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+    "state_isolation": "isolated",
+    "creative_enabled": false,
+    "seed": 1,
+    "stage_timeout_seconds": null,
+    "execution_timeout_seconds": null,
+    "candidate_ids": [
+      "gmgi_default"
+    ]
+  },
+  "candidate_definitions": [
+    {
+      "candidate_id": "gmgi_default",
+      "config_hash": "b3f074b0af45a34a",
+      "orchestration": "fixed_stage",
+      "routing": "static",
+      "planner": "advisory",
+      "verification": "schema_validation_with_offline_evals",
+      "retry": "agent_local_retries",
+      "fallback": "agent_local_fallbacks"
+    }
+  ],
+  "candidate_differences": {
+    "candidate_count": 1,
+    "rows": [
+      {
+        "candidate_id": "gmgi_default",
+        "config_hash": "b3f074b0af45a34a",
+        "orchestration": "fixed_stage",
+        "routing": "static",
+        "planner": "advisory",
+        "verification": "schema_validation_with_offline_evals",
+        "retry": "agent_local_retries",
+        "fallback": "agent_local_fallbacks"
+      }
+    ],
+    "pairwise": []
+  },
+  "case_selection": {
+    "case_ids": [
+      "rep-case"
+    ],
+    "case_count": 1,
+    "dimensions": {
+      "relationship_type": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "occasion_name": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "budget_hint": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "formality": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "agency_slider": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      }
+    },
+    "selection_note": "Small stratified UI-permutation subset; not statistically representative of all 12,600 cases."
+  },
+  "case_count": 1,
+  "candidate_count": 1,
+  "cases": [
+    {
+      "experiment_id": "rep-test",
+      "case_id": "rep-case",
+      "state_isolation": "isolated",
+      "execution_order": [
+        "gmgi_default",
+        "gmgi_default",
+        "gmgi_default"
+      ],
+      "executions": [
+        {
+          "experiment_id": "rep-test",
+          "case_id": "rep-case",
+          "candidate_id": "gmgi_default",
+          "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+          "candidate": {
+            "candidate_id": "gmgi_default",
+            "version": 1,
+            "name": "Fixed Default",
+            "description": "Current fixed-stage GMGI behavior.",
+            "config": {
+              "harness_id": "gmgi_default",
+              "harness_version": 1,
+              "description": "Default fixed-stage GMGI workflow with instrumentation.",
+              "orchestration_mode": "fixed_stage",
+              "stage_execution_mode": "service_run_stage",
+              "stage_order": [
+                "recipient_profiling",
+                "relationship_analysis",
+                "gift_intent_reasoning",
+                "multi_agent_planning",
+                "recommendation",
+                "creative_generation",
+                "greeting_story",
+                "delivery_planner"
+              ],
+              "planner_mode": "advisory",
+              "routing_mode": "static",
+              "memory_policy": "fixture_graph_plus_experience_retrieval",
+              "context_policy": "stage_specific_static_context",
+              "tool_policy": "agent_local_tools",
+              "verification_policy": "schema_validation_with_offline_evals",
+              "retry_policy": "agent_local_retries",
+              "fallback_policy": "agent_local_fallbacks",
+              "stopping_policy": "fixed_stage_completion_or_human_gate",
+              "budget_policy": "local_retry_and_eval_timeout_only",
+              "model_policy": "provider_env_and_agent_config",
+              "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+              "max_controller_steps": 64,
+              "max_agent_invocations": 64,
+              "max_retries_per_action": 1,
+              "max_total_retries": 8,
+              "config_hash": "b3f074b0af45a34a",
+              "identity": "gmgi_default:v1:b3f074b0af45a34a"
+            },
+            "created_at": "2026-08-11T06:13:19.871767+00:00",
+            "created_by": "gmgi_phase_4_registry",
+            "compatibility": {
+              "runtime": "service_run_stage",
+              "default_behavior": true
+            },
+            "enabled": true,
+            "candidate_hash": "cf2f1b7796da457e",
+            "identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e"
+          },
+          "harness_config": {
+            "harness_id": "gmgi_default",
+            "harness_version": 1,
+            "description": "Default fixed-stage GMGI workflow with instrumentation.",
+            "orchestration_mode": "fixed_stage",
+            "stage_execution_mode": "service_run_stage",
+            "stage_order": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "planner_mode": "advisory",
+            "routing_mode": "static",
+            "memory_policy": "fixture_graph_plus_experience_retrieval",
+            "context_policy": "stage_specific_static_context",
+            "tool_policy": "agent_local_tools",
+            "verification_policy": "schema_validation_with_offline_evals",
+            "retry_policy": "agent_local_retries",
+            "fallback_policy": "agent_local_fallbacks",
+            "stopping_policy": "fixed_stage_completion_or_human_gate",
+            "budget_policy": "local_retry_and_eval_timeout_only",
+            "model_policy": "provider_env_and_agent_config",
+            "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+            "max_controller_steps": 64,
+            "max_agent_invocations": 64,
+            "max_retries_per_action": 1,
+            "max_total_retries": 8,
+            "config_hash": "b3f074b0af45a34a",
+            "identity": "gmgi_default:v1:b3f074b0af45a34a"
+          },
+          "run_id": "run-1",
+          "trace": {
+            "run_id": "run-1",
+            "final_status": "success",
+            "termination_reason": "completed",
+            "total_latency_seconds": 1.0,
+            "invocations": [],
+            "candidate_id": "gmgi_default",
+            "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+            "events": [
+              {
+                "event_type": "execution_started",
+                "timestamp": "2026-08-11T06:13:19.872716+00:00",
+                "component": "harness_comparison",
+                "status": null,
+                "details": {
+                  "repetition": 1
+                }
+              },
+              {
+                "event_type": "candidate_run_started",
+                "timestamp": "2026-08-11T06:13:19.875173+00:00",
+                "component": "gmgi_default",
+                "status": null,
+                "details": {}
+              },
+              {
+                "event_type": "candidate_run_completed",
+                "timestamp": "2026-08-11T06:13:19.875173+00:00",
+                "component": "gmgi_default",
+                "status": "success",
+                "details": {}
+              }
+            ]
+          },
+          "evaluation": {
+            "overall_quality": 1.0,
+            "stage_reports": {},
+            "schema_conformance": null,
+            "constraint_satisfaction": null,
+            "DAG_validity": null,
+            "provenance": null,
+            "faithfulness": null,
+            "purpose_alignment": null,
+            "creative_quality": null,
+            "human_behavior": null,
+            "unavailable_metrics": [
+              "faithfulness",
+              "purpose_alignment",
+              "human_behavior"
+            ]
+          },
+          "timing": {
+            "start_time": null,
+            "end_time": null,
+            "total_wall_clock_latency_seconds": 1.0,
+            "sum_invocation_latency_seconds": 0,
+            "sum_tool_latency_seconds": 0,
+            "model_latency_status": "unavailable",
+            "routing_decision_latency_status": "unavailable",
+            "planner_latency_status": "not_invoked",
+            "verification_latency_status": "not_invoked",
+            "execution_wrapper_latency_seconds": 0.0006843000010121614
+          },
+          "resource_usage": {
+            "agent_invocation_count": 0,
+            "tool_call_count": 0,
+            "retry_count": 0,
+            "fallback_count": 0,
+            "verification_count": 0,
+            "routing_decision_count": 0,
+            "planner_invocation_count": 0,
+            "failed_invocation_count": 0,
+            "run_prompt_tokens": null,
+            "run_completion_tokens": null,
+            "run_total_tokens": null,
+            "token_usage_status": "unavailable",
+            "model_cost": null,
+            "tool_cost": null,
+            "verifier_cost": null,
+            "total_cost": null,
+            "cost_status": "unknown"
+          },
+          "randomness": {
+            "experiment_seed": 1,
+            "repetition": 1,
+            "agency_slider": 0.5,
+            "include_creative": false,
+            "LLM_sampling": "stochastic_unless_temperature_zero_or_provider_forces_determinism",
+            "image_generation": "stochastic_when_include_creative_true",
+            "tool_results": "deterministic_for_local_fixture_tools",
+            "retrieval": "deterministic_for_same_experience_store",
+            "bandit": "state_dependent_if_shared_state_enabled",
+            "stochastic_model_generation": true
+          },
+          "final_status": "SUCCESS",
+          "termination_reason": "completed",
+          "failure_type": "none",
+          "failure_categories": [],
+          "progress_events": [
+            {
+              "event_type": "execution_started",
+              "timestamp": "2026-08-11T06:13:19.872716+00:00",
+              "component": "harness_comparison",
+              "status": null,
+              "details": {
+                "repetition": 1
+              }
+            },
+            {
+              "event_type": "candidate_run_started",
+              "timestamp": "2026-08-11T06:13:19.875173+00:00",
+              "component": "gmgi_default",
+              "status": null,
+              "details": {}
+            },
+            {
+              "event_type": "candidate_run_completed",
+              "timestamp": "2026-08-11T06:13:19.875173+00:00",
+              "component": "gmgi_default",
+              "status": "success",
+              "details": {}
+            }
+          ]
+        },
+        {
+          "experiment_id": "rep-test",
+          "case_id": "rep-case",
+          "candidate_id": "gmgi_default",
+          "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+          "candidate": {
+            "candidate_id": "gmgi_default",
+            "version": 1,
+            "name": "Fixed Default",
+            "description": "Current fixed-stage GMGI behavior.",
+            "config": {
+              "harness_id": "gmgi_default",
+              "harness_version": 1,
+              "description": "Default fixed-stage GMGI workflow with instrumentation.",
+              "orchestration_mode": "fixed_stage",
+              "stage_execution_mode": "service_run_stage",
+              "stage_order": [
+                "recipient_profiling",
+                "relationship_analysis",
+                "gift_intent_reasoning",
+                "multi_agent_planning",
+                "recommendation",
+                "creative_generation",
+                "greeting_story",
+                "delivery_planner"
+              ],
+              "planner_mode": "advisory",
+              "routing_mode": "static",
+              "memory_policy": "fixture_graph_plus_experience_retrieval",
+              "context_policy": "stage_specific_static_context",
+              "tool_policy": "agent_local_tools",
+              "verification_policy": "schema_validation_with_offline_evals",
+              "retry_policy": "agent_local_retries",
+              "fallback_policy": "agent_local_fallbacks",
+              "stopping_policy": "fixed_stage_completion_or_human_gate",
+              "budget_policy": "local_retry_and_eval_timeout_only",
+              "model_policy": "provider_env_and_agent_config",
+              "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+              "max_controller_steps": 64,
+              "max_agent_invocations": 64,
+              "max_retries_per_action": 1,
+              "max_total_retries": 8,
+              "config_hash": "b3f074b0af45a34a",
+              "identity": "gmgi_default:v1:b3f074b0af45a34a"
+            },
+            "created_at": "2026-08-11T06:13:19.871767+00:00",
+            "created_by": "gmgi_phase_4_registry",
+            "compatibility": {
+              "runtime": "service_run_stage",
+              "default_behavior": true
+            },
+            "enabled": true,
+            "candidate_hash": "cf2f1b7796da457e",
+            "identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e"
+          },
+          "harness_config": {
+            "harness_id": "gmgi_default",
+            "harness_version": 1,
+            "description": "Default fixed-stage GMGI workflow with instrumentation.",
+            "orchestration_mode": "fixed_stage",
+            "stage_execution_mode": "service_run_stage",
+            "stage_order": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "planner_mode": "advisory",
+            "routing_mode": "static",
+            "memory_policy": "fixture_graph_plus_experience_retrieval",
+            "context_policy": "stage_specific_static_context",
+            "tool_policy": "agent_local_tools",
+            "verification_policy": "schema_validation_with_offline_evals",
+            "retry_policy": "agent_local_retries",
+            "fallback_policy": "agent_local_fallbacks",
+            "stopping_policy": "fixed_stage_completion_or_human_gate",
+            "budget_policy": "local_retry_and_eval_timeout_only",
+            "model_policy": "provider_env_and_agent_config",
+            "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+            "max_controller_steps": 64,
+            "max_agent_invocations": 64,
+            "max_retries_per_action": 1,
+            "max_total_retries": 8,
+            "config_hash": "b3f074b0af45a34a",
+            "identity": "gmgi_default:v1:b3f074b0af45a34a"
+          },
+          "run_id": "run-2",
+          "trace": {
+            "run_id": "run-2",
+            "final_status": "success",
+            "termination_reason": "completed",
+            "total_latency_seconds": 2.0,
+            "invocations": [],
+            "candidate_id": "gmgi_default",
+            "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+            "events": [
+              {
+                "event_type": "execution_started",
+                "timestamp": "2026-08-11T06:13:19.878454+00:00",
+                "component": "harness_comparison",
+                "status": null,
+                "details": {
+                  "repetition": 2
+                }
+              },
+              {
+                "event_type": "candidate_run_started",
+                "timestamp": "2026-08-11T06:13:19.878454+00:00",
+                "component": "gmgi_default",
+                "status": null,
+                "details": {}
+              },
+              {
+                "event_type": "candidate_run_completed",
+                "timestamp": "2026-08-11T06:13:19.878454+00:00",
+                "component": "gmgi_default",
+                "status": "success",
+                "details": {}
+              }
+            ]
+          },
+          "evaluation": {
+            "overall_quality": 2.0,
+            "stage_reports": {},
+            "schema_conformance": null,
+            "constraint_satisfaction": null,
+            "DAG_validity": null,
+            "provenance": null,
+            "faithfulness": null,
+            "purpose_alignment": null,
+            "creative_quality": null,
+            "human_behavior": null,
+            "unavailable_metrics": [
+              "faithfulness",
+              "purpose_alignment",
+              "human_behavior"
+            ]
+          },
+          "timing": {
+            "start_time": null,
+            "end_time": null,
+            "total_wall_clock_latency_seconds": 2.0,
+            "sum_invocation_latency_seconds": 0,
+            "sum_tool_latency_seconds": 0,
+            "model_latency_status": "unavailable",
+            "routing_decision_latency_status": "unavailable",
+            "planner_latency_status": "not_invoked",
+            "verification_latency_status": "not_invoked",
+            "execution_wrapper_latency_seconds": 0.0005950999911874533
+          },
+          "resource_usage": {
+            "agent_invocation_count": 0,
+            "tool_call_count": 0,
+            "retry_count": 0,
+            "fallback_count": 0,
+            "verification_count": 0,
+            "routing_decision_count": 0,
+            "planner_invocation_count": 0,
+            "failed_invocation_count": 0,
+            "run_prompt_tokens": null,
+            "run_completion_tokens": null,
+            "run_total_tokens": null,
+            "token_usage_status": "unavailable",
+            "model_cost": null,
+            "tool_cost": null,
+            "verifier_cost": null,
+            "total_cost": null,
+            "cost_status": "unknown"
+          },
+          "randomness": {
+            "experiment_seed": 2,
+            "repetition": 2,
+            "agency_slider": 0.5,
+            "include_creative": false,
+            "LLM_sampling": "stochastic_unless_temperature_zero_or_provider_forces_determinism",
+            "image_generation": "stochastic_when_include_creative_true",
+            "tool_results": "deterministic_for_local_fixture_tools",
+            "retrieval": "deterministic_for_same_experience_store",
+            "bandit": "state_dependent_if_shared_state_enabled",
+            "stochastic_model_generation": true
+          },
+          "final_status": "SUCCESS",
+          "termination_reason": "completed",
+          "failure_type": "none",
+          "failure_categories": [],
+          "progress_events": [
+            {
+              "event_type": "execution_started",
+              "timestamp": "2026-08-11T06:13:19.878454+00:00",
+              "component": "harness_comparison",
+              "status": null,
+              "details": {
+                "repetition": 2
+              }
+            },
+            {
+              "event_type": "candidate_run_started",
+              "timestamp": "2026-08-11T06:13:19.878454+00:00",
+              "component": "gmgi_default",
+              "status": null,
+              "details": {}
+            },
+            {
+              "event_type": "candidate_run_completed",
+              "timestamp": "2026-08-11T06:13:19.878454+00:00",
+              "component": "gmgi_default",
+              "status": "success",
+              "details": {}
+            }
+          ]
+        },
+        {
+          "experiment_id": "rep-test",
+          "case_id": "rep-case",
+          "candidate_id": "gmgi_default",
+          "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+          "candidate": {
+            "candidate_id": "gmgi_default",
+            "version": 1,
+            "name": "Fixed Default",
+            "description": "Current fixed-stage GMGI behavior.",
+            "config": {
+              "harness_id": "gmgi_default",
+              "harness_version": 1,
+              "description": "Default fixed-stage GMGI workflow with instrumentation.",
+              "orchestration_mode": "fixed_stage",
+              "stage_execution_mode": "service_run_stage",
+              "stage_order": [
+                "recipient_profiling",
+                "relationship_analysis",
+                "gift_intent_reasoning",
+                "multi_agent_planning",
+                "recommendation",
+                "creative_generation",
+                "greeting_story",
+                "delivery_planner"
+              ],
+              "planner_mode": "advisory",
+              "routing_mode": "static",
+              "memory_policy": "fixture_graph_plus_experience_retrieval",
+              "context_policy": "stage_specific_static_context",
+              "tool_policy": "agent_local_tools",
+              "verification_policy": "schema_validation_with_offline_evals",
+              "retry_policy": "agent_local_retries",
+              "fallback_policy": "agent_local_fallbacks",
+              "stopping_policy": "fixed_stage_completion_or_human_gate",
+              "budget_policy": "local_retry_and_eval_timeout_only",
+              "model_policy": "provider_env_and_agent_config",
+              "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+              "max_controller_steps": 64,
+              "max_agent_invocations": 64,
+              "max_retries_per_action": 1,
+              "max_total_retries": 8,
+              "config_hash": "b3f074b0af45a34a",
+              "identity": "gmgi_default:v1:b3f074b0af45a34a"
+            },
+            "created_at": "2026-08-11T06:13:19.871767+00:00",
+            "created_by": "gmgi_phase_4_registry",
+            "compatibility": {
+              "runtime": "service_run_stage",
+              "default_behavior": true
+            },
+            "enabled": true,
+            "candidate_hash": "cf2f1b7796da457e",
+            "identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e"
+          },
+          "harness_config": {
+            "harness_id": "gmgi_default",
+            "harness_version": 1,
+            "description": "Default fixed-stage GMGI workflow with instrumentation.",
+            "orchestration_mode": "fixed_stage",
+            "stage_execution_mode": "service_run_stage",
+            "stage_order": [
+              "recipient_profiling",
+              "relationship_analysis",
+              "gift_intent_reasoning",
+              "multi_agent_planning",
+              "recommendation",
+              "creative_generation",
+              "greeting_story",
+              "delivery_planner"
+            ],
+            "planner_mode": "advisory",
+            "routing_mode": "static",
+            "memory_policy": "fixture_graph_plus_experience_retrieval",
+            "context_policy": "stage_specific_static_context",
+            "tool_policy": "agent_local_tools",
+            "verification_policy": "schema_validation_with_offline_evals",
+            "retry_policy": "agent_local_retries",
+            "fallback_policy": "agent_local_fallbacks",
+            "stopping_policy": "fixed_stage_completion_or_human_gate",
+            "budget_policy": "local_retry_and_eval_timeout_only",
+            "model_policy": "provider_env_and_agent_config",
+            "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+            "max_controller_steps": 64,
+            "max_agent_invocations": 64,
+            "max_retries_per_action": 1,
+            "max_total_retries": 8,
+            "config_hash": "b3f074b0af45a34a",
+            "identity": "gmgi_default:v1:b3f074b0af45a34a"
+          },
+          "run_id": "run-3",
+          "trace": {
+            "run_id": "run-3",
+            "final_status": "success",
+            "termination_reason": "completed",
+            "total_latency_seconds": 3.0,
+            "invocations": [],
+            "candidate_id": "gmgi_default",
+            "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+            "events": [
+              {
+                "event_type": "execution_started",
+                "timestamp": "2026-08-11T06:13:19.882128+00:00",
+                "component": "harness_comparison",
+                "status": null,
+                "details": {
+                  "repetition": 3
+                }
+              },
+              {
+                "event_type": "candidate_run_started",
+                "timestamp": "2026-08-11T06:13:19.882128+00:00",
+                "component": "gmgi_default",
+                "status": null,
+                "details": {}
+              },
+              {
+                "event_type": "candidate_run_completed",
+                "timestamp": "2026-08-11T06:13:19.882128+00:00",
+                "component": "gmgi_default",
+                "status": "success",
+                "details": {}
+              }
+            ]
+          },
+          "evaluation": {
+            "overall_quality": 3.0,
+            "stage_reports": {},
+            "schema_conformance": null,
+            "constraint_satisfaction": null,
+            "DAG_validity": null,
+            "provenance": null,
+            "faithfulness": null,
+            "purpose_alignment": null,
+            "creative_quality": null,
+            "human_behavior": null,
+            "unavailable_metrics": [
+              "faithfulness",
+              "purpose_alignment",
+              "human_behavior"
+            ]
+          },
+          "timing": {
+            "start_time": null,
+            "end_time": null,
+            "total_wall_clock_latency_seconds": 3.0,
+            "sum_invocation_latency_seconds": 0,
+            "sum_tool_latency_seconds": 0,
+            "model_latency_status": "unavailable",
+            "routing_decision_latency_status": "unavailable",
+            "planner_latency_status": "not_invoked",
+            "verification_latency_status": "not_invoked",
+            "execution_wrapper_latency_seconds": 0.0004935000033583492
+          },
+          "resource_usage": {
+            "agent_invocation_count": 0,
+            "tool_call_count": 0,
+            "retry_count": 0,
+            "fallback_count": 0,
+            "verification_count": 0,
+            "routing_decision_count": 0,
+            "planner_invocation_count": 0,
+            "failed_invocation_count": 0,
+            "run_prompt_tokens": null,
+            "run_completion_tokens": null,
+            "run_total_tokens": null,
+            "token_usage_status": "unavailable",
+            "model_cost": null,
+            "tool_cost": null,
+            "verifier_cost": null,
+            "total_cost": null,
+            "cost_status": "unknown"
+          },
+          "randomness": {
+            "experiment_seed": 3,
+            "repetition": 3,
+            "agency_slider": 0.5,
+            "include_creative": false,
+            "LLM_sampling": "stochastic_unless_temperature_zero_or_provider_forces_determinism",
+            "image_generation": "stochastic_when_include_creative_true",
+            "tool_results": "deterministic_for_local_fixture_tools",
+            "retrieval": "deterministic_for_same_experience_store",
+            "bandit": "state_dependent_if_shared_state_enabled",
+            "stochastic_model_generation": true
+          },
+          "final_status": "SUCCESS",
+          "termination_reason": "completed",
+          "failure_type": "none",
+          "failure_categories": [],
+          "progress_events": [
+            {
+              "event_type": "execution_started",
+              "timestamp": "2026-08-11T06:13:19.882128+00:00",
+              "component": "harness_comparison",
+              "status": null,
+              "details": {
+                "repetition": 3
+              }
+            },
+            {
+              "event_type": "candidate_run_started",
+              "timestamp": "2026-08-11T06:13:19.882128+00:00",
+              "component": "gmgi_default",
+              "status": null,
+              "details": {}
+            },
+            {
+              "event_type": "candidate_run_completed",
+              "timestamp": "2026-08-11T06:13:19.882128+00:00",
+              "component": "gmgi_default",
+              "status": "success",
+              "details": {}
+            }
+          ]
+        }
+      ],
+      "comparison": {
+        "table": [
+          {
+            "case_id": "rep-case",
+            "candidate_id": "gmgi_default",
+            "repetition": 1,
+            "status": "SUCCESS",
+            "failure_type": "none",
+            "termination_reason": "completed",
+            "quality_comparison_eligible": true,
+            "quality": 1.0,
+            "constraint": null,
+            "reliability": 1.0,
+            "latency": 1.0,
+            "tokens": null,
+            "token_usage_status": "unavailable",
+            "cost": null,
+            "cost_status": "unknown",
+            "invocations": 0,
+            "tool_calls": 0,
+            "retries": 0,
+            "fallbacks": 0,
+            "verifications": 0,
+            "failures": 0,
+            "trajectory": [],
+            "failure_categories": []
+          },
+          {
+            "case_id": "rep-case",
+            "candidate_id": "gmgi_default",
+            "repetition": 2,
+            "status": "SUCCESS",
+            "failure_type": "none",
+            "termination_reason": "completed",
+            "quality_comparison_eligible": true,
+            "quality": 2.0,
+            "constraint": null,
+            "reliability": 1.0,
+            "latency": 2.0,
+            "tokens": null,
+            "token_usage_status": "unavailable",
+            "cost": null,
+            "cost_status": "unknown",
+            "invocations": 0,
+            "tool_calls": 0,
+            "retries": 0,
+            "fallbacks": 0,
+            "verifications": 0,
+            "failures": 0,
+            "trajectory": [],
+            "failure_categories": []
+          },
+          {
+            "case_id": "rep-case",
+            "candidate_id": "gmgi_default",
+            "repetition": 3,
+            "status": "SUCCESS",
+            "failure_type": "none",
+            "termination_reason": "completed",
+            "quality_comparison_eligible": true,
+            "quality": 3.0,
+            "constraint": null,
+            "reliability": 1.0,
+            "latency": 3.0,
+            "tokens": null,
+            "token_usage_status": "unavailable",
+            "cost": null,
+            "cost_status": "unknown",
+            "invocations": 0,
+            "tool_calls": 0,
+            "retries": 0,
+            "fallbacks": 0,
+            "verifications": 0,
+            "failures": 0,
+            "trajectory": [],
+            "failure_categories": []
+          }
+        ],
+        "pareto": {
+          "dominated_candidates": [],
+          "non_dominated_candidates": [
+            "gmgi_default"
+          ],
+          "excluded_rows": 0,
+          "note": "Pareto uses only rows with available quality, reliability, and latency; missing values are excluded, not coerced to zero."
+        },
+        "trajectory_differences": {
+          "changed": false,
+          "trajectories": {
+            "gmgi_default": []
+          }
+        },
+        "metrics_note": "Metrics remain separate; no single opaque harness score is produced."
+      }
+    }
+  ],
+  "aggregate": {
+    "gmgi_default": {
+      "n": 3,
+      "successful_runs": 3,
+      "partial_runs": 0,
+      "failed_runs": 0,
+      "timeout_runs": 0,
+      "success_rate": 1.0,
+      "timeout_rate": 0.0,
+      "infrastructure_failure_rate": 0.0,
+      "harness_failure_rate": 0.0,
+      "retry_rate": 0.0,
+      "fallback_rate": 0.0,
+      "mean_quality": 2.0,
+      "median_quality": 2.0,
+      "std_quality": 1.0,
+      "min_quality": 1.0,
+      "max_quality": 3.0,
+      "mean_reliability": 1.0,
+      "mean_latency": 2.0,
+      "median_latency": 2.0,
+      "std_latency": 1.0,
+      "mean_invocations": 0.0,
+      "mean_retries": 0.0,
+      "mean_verifications": 0.0,
+      "total_retries": 0,
+      "token_usage_status": [
+        "unavailable"
+      ],
+      "cost_status": [
+        "unknown"
+      ]
+    }
+  },
+  "trajectory_analysis": {
+    "rows": [
+      {
+        "case_id": "rep-case",
+        "candidate_id": "gmgi_default",
+        "trajectory": [],
+        "trajectory_text": "",
+        "trajectory_length": 0,
+        "unique_agents_used": 0,
+        "divergence_trigger": "none"
+      },
+      {
+        "case_id": "rep-case",
+        "candidate_id": "gmgi_default",
+        "trajectory": [],
+        "trajectory_text": "",
+        "trajectory_length": 0,
+        "unique_agents_used": 0,
+        "divergence_trigger": "none"
+      },
+      {
+        "case_id": "rep-case",
+        "candidate_id": "gmgi_default",
+        "trajectory": [],
+        "trajectory_text": "",
+        "trajectory_length": 0,
+        "unique_agents_used": 0,
+        "divergence_trigger": "none"
+      }
+    ],
+    "changed": false
+  },
+  "stage_latency": {},
+  "evaluation_stability": {
+    "schema_conformance": {
+      "readiness": "READY",
+      "stability": "deterministic",
+      "reason": "Pure structural validation."
+    },
+    "constraint_satisfaction": {
+      "readiness": "READY",
+      "stability": "deterministic",
+      "reason": "Deterministic field and budget checks where data is present."
+    },
+    "DAG_validity": {
+      "readiness": "READY",
+      "stability": "deterministic",
+      "reason": "Pure plan-graph validation."
+    },
+    "provenance": {
+      "readiness": "PARTIAL",
+      "stability": "deterministic",
+      "reason": "Depends on whether outputs contain evidence/provenance fields."
+    },
+    "faithfulness": {
+      "readiness": "PARTIAL",
+      "stability": "model_judge_dependent_or_unavailable",
+      "reason": "Only stable when using deterministic/local verifier inputs."
+    },
+    "self_consistency": {
+      "readiness": "PARTIAL",
+      "stability": "stochastic",
+      "reason": "Requires repeated model executions."
+    },
+    "purpose_alignment": {
+      "readiness": "PARTIAL",
+      "stability": "model_judge_dependent",
+      "reason": "Judge availability and model choice affect score."
+    },
+    "agent_level_quality": {
+      "readiness": "READY",
+      "stability": "deterministic_given_outputs",
+      "reason": "Current quality metrics are deterministic over captured outputs."
+    },
+    "overall_system_quality": {
+      "readiness": "READY",
+      "stability": "deterministic_given_outputs",
+      "reason": "Aggregation is deterministic."
+    },
+    "creative_quality": {
+      "readiness": "PARTIAL",
+      "stability": "unavailable_when_no_image_generation",
+      "reason": "Must distinguish creative input coverage from generated image quality."
+    },
+    "human_behavior": {
+      "readiness": "NOT READY",
+      "stability": "unavailable",
+      "reason": "UI permutation data is not real human action data."
+    },
+    "latency": {
+      "readiness": "READY",
+      "stability": "environment_sensitive",
+      "reason": "Measured directly but depends on runtime/provider conditions."
+    },
+    "tokens": {
+      "readiness": "PARTIAL",
+      "stability": "provider_dependent",
+      "reason": "Only exact when provider exposes token usage."
+    },
+    "cost": {
+      "readiness": "PARTIAL",
+      "stability": "provider_dependent",
+      "reason": "Only exact when pricing/cost metadata is configured."
+    },
+    "reliability": {
+      "readiness": "READY",
+      "stability": "deterministic_given_trace",
+      "reason": "Derived from explicit status/failure taxonomy."
+    }
+  }
+}

@@ -212,6 +212,13 @@ def create_app(service: AgencyConsoleService | None = None) -> FastAPI:
         except KeyError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
 
+    @app.get("/sessions/{session_id}/trace")
+    def run_trace(session_id: str, api: AgencyConsoleService = Depends(get_service)) -> dict[str, Any]:
+        try:
+            return api.run_trace(session_id).to_dict()
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
 
     @app.get("/artifacts/{artifact_path:path}")
     def artifact(artifact_path: str, api: AgencyConsoleService = Depends(get_service)) -> FileResponse:
@@ -248,6 +255,9 @@ def _session_response(api: AgencyConsoleService, session_id: str) -> JSONRespons
     payload = json.loads(session.model_dump_json())
     payload["next_stage"] = api.next_stage(session_id)
     payload["ledger"] = api.ledger(session_id)
+    trace = api.run_trace(session_id)
+    payload["harness"] = trace.harness_config
+    payload["run_id"] = trace.run_id
     return JSONResponse(payload)
 
 

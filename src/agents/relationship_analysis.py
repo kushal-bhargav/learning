@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 from typing import Any
 
 from networkx.readwrite import json_graph
@@ -11,6 +12,7 @@ from jsonschema import ValidationError, validate
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
 from .skills import add_skill_metadata
+from src.harness import ensure_tool_allowed, record_tool_call
 
 
 def _extract_json(value: Any) -> dict[str, Any]:
@@ -65,17 +67,25 @@ class RelationshipAnalysisAgent(StructuredAgent):
         @tool
         def query_memory_graph(query: str) -> str:
             """Return relationship, occasion, and supplied memory evidence relevant to the query."""
-            if self.memory_graph is not None:
-                person_id = str(stage_config.get("recipient_id") or stage_config.get("person_id") or "")
-                occasion_id = stage_config.get("occasion_id")
-                if person_id:
-                    graph = self.memory_graph.subgraph_for(person_id, None if occasion_id is None else str(occasion_id))
-                    return json.dumps(json_graph.node_link_data(graph, edges="edges"), ensure_ascii=False, default=str)
-            lowered = query.lower()
-            memories = context.get("memories", [])
-            if "memory" in lowered or "evidence" in lowered:
-                return json.dumps(memories, ensure_ascii=False)
-            return json.dumps(context, ensure_ascii=False)
+            started = time.perf_counter()
+            ensure_tool_allowed("query_memory_graph")
+            try:
+                if self.memory_graph is not None:
+                    person_id = str(stage_config.get("recipient_id") or stage_config.get("person_id") or "")
+                    occasion_id = stage_config.get("occasion_id")
+                    if person_id:
+                        graph = self.memory_graph.subgraph_for(person_id, None if occasion_id is None else str(occasion_id))
+                        result = json.dumps(json_graph.node_link_data(graph, edges="edges"), ensure_ascii=False, default=str)
+                        record_tool_call("query_memory_graph", arguments={"query": query, "person_id": person_id, "occasion_id": occasion_id}, result=result, latency_seconds=time.perf_counter() - started)
+                        return result
+                lowered = query.lower()
+                memories = context.get("memories", [])
+                result = json.dumps(memories if "memory" in lowered or "evidence" in lowered else context, ensure_ascii=False)
+                record_tool_call("query_memory_graph", arguments={"query": query}, result=result, latency_seconds=time.perf_counter() - started)
+                return result
+            except Exception as exc:
+                record_tool_call("query_memory_graph", arguments={"query": query}, latency_seconds=time.perf_counter() - started, error=exc)
+                raise
 
         model_name = str(stage_config.get("model") or os.getenv("GMGI_RELATIONSHIP_MODEL") or os.getenv("GMGI_OLLAMA_MODEL") or self.config["models"]["ollama"])
         model = LiteLLMModel(
@@ -83,6 +93,7 @@ class RelationshipAnalysisAgent(StructuredAgent):
             api_base=os.getenv("GMGI_OLLAMA_HOST", "http://localhost:11434"),
             api_key=os.getenv("OLLAMA_API_KEY", "ollama"),
             num_ctx=int(os.getenv("GMGI_OLLAMA_NUM_CTX", "8192")),
+            timeout=float(os.getenv("GMGI_OLLAMA_TIMEOUT_SECONDS", "30")),
         )
         agent = ToolCallingAgent(tools=[query_memory_graph], model=model, max_steps=int(stage_config.get("max_steps", 4)))
         prompt = (

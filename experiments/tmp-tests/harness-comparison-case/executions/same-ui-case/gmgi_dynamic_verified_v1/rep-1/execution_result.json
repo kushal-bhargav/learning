@@ -1,0 +1,262 @@
+{
+  "experiment_id": "phase4-test",
+  "case_id": "same-ui-case",
+  "candidate_id": "gmgi_dynamic_verified_v1",
+  "candidate_identity": "gmgi_dynamic_verified_v1:v1:b1098d1e5bbde7ba:596f393224e07c07",
+  "candidate": {
+    "candidate_id": "gmgi_dynamic_verified_v1",
+    "version": 1,
+    "name": "Dynamic + Verification",
+    "description": "Dynamic routing plus deterministic constraint verifier.",
+    "config": {
+      "harness_id": "gmgi_dynamic_verified_v1",
+      "harness_version": 1,
+      "description": "Dynamic router with deterministic constraint verification.",
+      "orchestration_mode": "dynamic",
+      "stage_execution_mode": "service_run_stage",
+      "stage_order": [
+        "recipient_profiling",
+        "relationship_analysis",
+        "gift_intent_reasoning",
+        "multi_agent_planning",
+        "recommendation",
+        "creative_generation",
+        "greeting_story",
+        "delivery_planner"
+      ],
+      "planner_mode": "advisory",
+      "routing_mode": "dynamic",
+      "memory_policy": "fixture_graph_plus_experience_retrieval",
+      "context_policy": "stage_specific_static_context",
+      "tool_policy": "agent_local_tools",
+      "verification_policy": "deterministic_constraints",
+      "retry_policy": "agent_local_retries",
+      "fallback_policy": "agent_local_fallbacks",
+      "stopping_policy": "fixed_stage_completion_or_human_gate",
+      "budget_policy": "local_retry_and_eval_timeout_only",
+      "model_policy": "provider_env_and_agent_config",
+      "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+      "max_controller_steps": 64,
+      "max_agent_invocations": 64,
+      "max_retries_per_action": 1,
+      "max_total_retries": 8,
+      "config_hash": "b1098d1e5bbde7ba",
+      "identity": "gmgi_dynamic_verified_v1:v1:b1098d1e5bbde7ba"
+    },
+    "created_at": "2026-08-11T06:13:19.814601+00:00",
+    "created_by": "gmgi_phase_4_registry",
+    "compatibility": {
+      "runtime": "service_run_stage",
+      "dynamic_routing": true,
+      "deterministic_verifier": true
+    },
+    "enabled": true,
+    "candidate_hash": "596f393224e07c07",
+    "identity": "gmgi_dynamic_verified_v1:v1:b1098d1e5bbde7ba:596f393224e07c07"
+  },
+  "harness_config": {
+    "harness_id": "gmgi_dynamic_verified_v1",
+    "harness_version": 1,
+    "description": "Dynamic router with deterministic constraint verification.",
+    "orchestration_mode": "dynamic",
+    "stage_execution_mode": "service_run_stage",
+    "stage_order": [
+      "recipient_profiling",
+      "relationship_analysis",
+      "gift_intent_reasoning",
+      "multi_agent_planning",
+      "recommendation",
+      "creative_generation",
+      "greeting_story",
+      "delivery_planner"
+    ],
+    "planner_mode": "advisory",
+    "routing_mode": "dynamic",
+    "memory_policy": "fixture_graph_plus_experience_retrieval",
+    "context_policy": "stage_specific_static_context",
+    "tool_policy": "agent_local_tools",
+    "verification_policy": "deterministic_constraints",
+    "retry_policy": "agent_local_retries",
+    "fallback_policy": "agent_local_fallbacks",
+    "stopping_policy": "fixed_stage_completion_or_human_gate",
+    "budget_policy": "local_retry_and_eval_timeout_only",
+    "model_policy": "provider_env_and_agent_config",
+    "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+    "max_controller_steps": 64,
+    "max_agent_invocations": 64,
+    "max_retries_per_action": 1,
+    "max_total_retries": 8,
+    "config_hash": "b1098d1e5bbde7ba",
+    "identity": "gmgi_dynamic_verified_v1:v1:b1098d1e5bbde7ba"
+  },
+  "run_id": "run-gmgi_dynamic_verified_v1",
+  "trace": {
+    "run_id": "run-gmgi_dynamic_verified_v1",
+    "final_status": "success",
+    "start_time": "2026-01-01T00:00:00Z",
+    "end_time": "2026-01-01T00:00:01Z",
+    "total_latency_seconds": 0.3,
+    "invocations": [
+      {
+        "stage_name": "recipient_profiling",
+        "status": "success",
+        "latency_seconds": 0.1,
+        "retry_count": 0,
+        "fallback_used": false,
+        "tool_calls": [],
+        "routing_decision": {
+          "decision": "recipient_profiling"
+        },
+        "verifier_decision": {
+          "decision": "not_available",
+          "policy": "deterministic_constraints"
+        }
+      },
+      {
+        "stage_name": "creative_generation",
+        "status": "success",
+        "latency_seconds": 0.2,
+        "retry_count": 0,
+        "fallback_used": false,
+        "tool_calls": [
+          {
+            "tool_name": "query_memory_graph",
+            "latency_seconds": 0.01
+          }
+        ],
+        "routing_decision": {
+          "decision": "next"
+        },
+        "verifier_decision": {
+          "decision": "pass",
+          "policy": "deterministic_constraints"
+        }
+      }
+    ],
+    "candidate_id": "gmgi_dynamic_verified_v1",
+    "candidate_identity": "gmgi_dynamic_verified_v1:v1:b1098d1e5bbde7ba:596f393224e07c07",
+    "events": [
+      {
+        "event_type": "execution_started",
+        "timestamp": "2026-08-11T06:13:19.825220+00:00",
+        "component": "harness_comparison",
+        "status": null,
+        "details": {
+          "repetition": 1
+        }
+      },
+      {
+        "event_type": "candidate_run_started",
+        "timestamp": "2026-08-11T06:13:19.826132+00:00",
+        "component": "gmgi_dynamic_verified_v1",
+        "status": null,
+        "details": {}
+      },
+      {
+        "event_type": "candidate_run_completed",
+        "timestamp": "2026-08-11T06:13:19.826132+00:00",
+        "component": "gmgi_dynamic_verified_v1",
+        "status": "success",
+        "details": {}
+      }
+    ]
+  },
+  "evaluation": {
+    "overall_quality": 0.8,
+    "stage_reports": {
+      "gift_intent_reasoning": {
+        "metrics": [
+          {
+            "name": "budget_constraint_preserved",
+            "score": 1.0
+          }
+        ]
+      }
+    },
+    "schema_conformance": null,
+    "constraint_satisfaction": 1.0,
+    "DAG_validity": null,
+    "provenance": null,
+    "faithfulness": null,
+    "purpose_alignment": null,
+    "creative_quality": null,
+    "human_behavior": null,
+    "unavailable_metrics": [
+      "faithfulness",
+      "purpose_alignment",
+      "human_behavior"
+    ]
+  },
+  "timing": {
+    "start_time": "2026-01-01T00:00:00Z",
+    "end_time": "2026-01-01T00:00:01Z",
+    "total_wall_clock_latency_seconds": 0.3,
+    "sum_invocation_latency_seconds": 0.30000000000000004,
+    "sum_tool_latency_seconds": 0.01,
+    "model_latency_status": "unavailable",
+    "routing_decision_latency_status": "unavailable",
+    "planner_latency_status": "not_invoked",
+    "verification_latency_status": "not_separately_measured",
+    "execution_wrapper_latency_seconds": 0.0014735000004293397
+  },
+  "resource_usage": {
+    "agent_invocation_count": 2,
+    "tool_call_count": 1,
+    "retry_count": 0,
+    "fallback_count": 0,
+    "verification_count": 1,
+    "routing_decision_count": 2,
+    "planner_invocation_count": 0,
+    "failed_invocation_count": 0,
+    "run_prompt_tokens": null,
+    "run_completion_tokens": null,
+    "run_total_tokens": null,
+    "token_usage_status": "unavailable",
+    "model_cost": null,
+    "tool_cost": null,
+    "verifier_cost": null,
+    "total_cost": null,
+    "cost_status": "unknown"
+  },
+  "randomness": {
+    "experiment_seed": 42,
+    "repetition": 1,
+    "agency_slider": 0.5,
+    "include_creative": false,
+    "LLM_sampling": "stochastic_unless_temperature_zero_or_provider_forces_determinism",
+    "image_generation": "stochastic_when_include_creative_true",
+    "tool_results": "deterministic_for_local_fixture_tools",
+    "retrieval": "deterministic_for_same_experience_store",
+    "bandit": "state_dependent_if_shared_state_enabled",
+    "stochastic_model_generation": true
+  },
+  "final_status": "SUCCESS",
+  "termination_reason": "completed",
+  "failure_type": "none",
+  "failure_categories": [],
+  "progress_events": [
+    {
+      "event_type": "execution_started",
+      "timestamp": "2026-08-11T06:13:19.825220+00:00",
+      "component": "harness_comparison",
+      "status": null,
+      "details": {
+        "repetition": 1
+      }
+    },
+    {
+      "event_type": "candidate_run_started",
+      "timestamp": "2026-08-11T06:13:19.826132+00:00",
+      "component": "gmgi_dynamic_verified_v1",
+      "status": null,
+      "details": {}
+    },
+    {
+      "event_type": "candidate_run_completed",
+      "timestamp": "2026-08-11T06:13:19.826132+00:00",
+      "component": "gmgi_dynamic_verified_v1",
+      "status": "success",
+      "details": {}
+    }
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "manifest": {
+    "experiment_id": "manifest-test",
+    "cases": [
+      "case-one"
+    ],
+    "candidates": [
+      "gmgi_default"
+    ],
+    "case_file": null,
+    "provider": "ollama",
+    "model": null,
+    "model_parameters": {},
+    "seed": 123,
+    "state_isolation": "isolated",
+    "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+    "include_creative": false,
+    "agency_slider": 0.5,
+    "stage_timeout_seconds": null,
+    "execution_timeout_seconds": null,
+    "repetitions": 1,
+    "randomized_order": false,
+    "resume": true,
+    "report_path": null
+  },
+  "environment": {
+    "provider": "ollama",
+    "model": null,
+    "model_parameters": {},
+    "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+    "state_isolation": "isolated",
+    "creative_enabled": false,
+    "seed": 123,
+    "stage_timeout_seconds": null,
+    "execution_timeout_seconds": null,
+    "candidate_ids": [
+      "gmgi_default"
+    ]
+  },
+  "candidate_definitions": [
+    {
+      "candidate_id": "gmgi_default",
+      "config_hash": "b3f074b0af45a34a",
+      "orchestration": "fixed_stage",
+      "routing": "static",
+      "planner": "advisory",
+      "verification": "schema_validation_with_offline_evals",
+      "retry": "agent_local_retries",
+      "fallback": "agent_local_fallbacks"
+    }
+  ],
+  "candidate_differences": {
+    "candidate_count": 1,
+    "rows": [
+      {
+        "candidate_id": "gmgi_default",
+        "config_hash": "b3f074b0af45a34a",
+        "orchestration": "fixed_stage",
+        "routing": "static",
+        "planner": "advisory",
+        "verification": "schema_validation_with_offline_evals",
+        "retry": "agent_local_retries",
+        "fallback": "agent_local_fallbacks"
+      }
+    ],
+    "pairwise": []
+  },
+  "case_selection": {
+    "case_ids": [
+      "case-one"
+    ],
+    "case_count": 1,
+    "dimensions": {
+      "relationship_type": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "occasion_name": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "budget_hint": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "formality": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      },
+      "agency_slider": {
+        "unique_count": 1,
+        "values": [
+          ""
+        ]
+      }
+    },
+    "selection_note": "Small stratified UI-permutation subset; not statistically representative of all 12,600 cases."
+  },
+  "case_count": 1,
+  "candidate_count": 1,
+  "cases": [
+    {
+      "experiment_id": "manifest-test",
+      "case_id": "case-one",
+      "comparison": {
+        "table": [
+          {
+            "case_id": "case-one",
+            "candidate_id": "gmgi_default",
+            "quality": 0.7,
+            "reliability": 1.0,
+            "latency": 0.2,
+            "invocations": 2,
+            "retries": 0,
+            "token_usage_status": "unavailable",
+            "cost_status": "unknown"
+          }
+        ]
+      }
+    }
+  ],
+  "aggregate": {
+    "gmgi_default": {
+      "n": 1,
+      "successful_runs": 0,
+      "partial_runs": 0,
+      "failed_runs": 0,
+      "timeout_runs": 0,
+      "success_rate": 0.0,
+      "timeout_rate": 0.0,
+      "infrastructure_failure_rate": 0.0,
+      "harness_failure_rate": 0.0,
+      "retry_rate": 0.0,
+      "fallback_rate": 0.0,
+      "mean_quality": 0.7,
+      "median_quality": 0.7,
+      "std_quality": 0.0,
+      "min_quality": 0.7,
+      "max_quality": 0.7,
+      "mean_reliability": 1.0,
+      "mean_latency": 0.2,
+      "median_latency": 0.2,
+      "std_latency": 0.0,
+      "mean_invocations": 2.0,
+      "mean_retries": 0.0,
+      "mean_verifications": null,
+      "total_retries": 0,
+      "token_usage_status": [
+        "unavailable"
+      ],
+      "cost_status": [
+        "unknown"
+      ]
+    }
+  },
+  "trajectory_analysis": {
+    "rows": [],
+    "changed": false
+  },
+  "stage_latency": {},
+  "evaluation_stability": {
+    "schema_conformance": {
+      "readiness": "READY",
+      "stability": "deterministic",
+      "reason": "Pure structural validation."
+    },
+    "constraint_satisfaction": {
+      "readiness": "READY",
+      "stability": "deterministic",
+      "reason": "Deterministic field and budget checks where data is present."
+    },
+    "DAG_validity": {
+      "readiness": "READY",
+      "stability": "deterministic",
+      "reason": "Pure plan-graph validation."
+    },
+    "provenance": {
+      "readiness": "PARTIAL",
+      "stability": "deterministic",
+      "reason": "Depends on whether outputs contain evidence/provenance fields."
+    },
+    "faithfulness": {
+      "readiness": "PARTIAL",
+      "stability": "model_judge_dependent_or_unavailable",
+      "reason": "Only stable when using deterministic/local verifier inputs."
+    },
+    "self_consistency": {
+      "readiness": "PARTIAL",
+      "stability": "stochastic",
+      "reason": "Requires repeated model executions."
+    },
+    "purpose_alignment": {
+      "readiness": "PARTIAL",
+      "stability": "model_judge_dependent",
+      "reason": "Judge availability and model choice affect score."
+    },
+    "agent_level_quality": {
+      "readiness": "READY",
+      "stability": "deterministic_given_outputs",
+      "reason": "Current quality metrics are deterministic over captured outputs."
+    },
+    "overall_system_quality": {
+      "readiness": "READY",
+      "stability": "deterministic_given_outputs",
+      "reason": "Aggregation is deterministic."
+    },
+    "creative_quality": {
+      "readiness": "PARTIAL",
+      "stability": "unavailable_when_no_image_generation",
+      "reason": "Must distinguish creative input coverage from generated image quality."
+    },
+    "human_behavior": {
+      "readiness": "NOT READY",
+      "stability": "unavailable",
+      "reason": "UI permutation data is not real human action data."
+    },
+    "latency": {
+      "readiness": "READY",
+      "stability": "environment_sensitive",
+      "reason": "Measured directly but depends on runtime/provider conditions."
+    },
+    "tokens": {
+      "readiness": "PARTIAL",
+      "stability": "provider_dependent",
+      "reason": "Only exact when provider exposes token usage."
+    },
+    "cost": {
+      "readiness": "PARTIAL",
+      "stability": "provider_dependent",
+      "reason": "Only exact when pricing/cost metadata is configured."
+    },
+    "reliability": {
+      "readiness": "READY",
+      "stability": "deterministic_given_trace",
+      "reason": "Derived from explicit status/failure taxonomy."
+    }
+  }
+}

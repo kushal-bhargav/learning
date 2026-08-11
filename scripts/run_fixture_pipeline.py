@@ -43,7 +43,7 @@ def append(service: AgentOrchestrator, agent: Any, stage_config: dict[str, Any])
     service.append_agent_output(agent.run({"session": service.session, "stage_config": stage_config}))
 
 
-def run_pipeline(fixture_path: Path, checkpoint: Path, output_path: Path) -> GiftSession:
+def run_pipeline(fixture_path: Path, output_path: Path) -> GiftSession:
     data = json.loads(fixture_path.read_text(encoding="utf-8"))
     giver = next(person for person in data["people"] if person["role"] == "giver")
     recipient = next(person for person in data["people"] if person["role"] == "recipient")
@@ -131,9 +131,10 @@ def run_pipeline(fixture_path: Path, checkpoint: Path, output_path: Path) -> Gif
     })
 
     graph = load_fixture(fixture_path)
-    creative = CreativeGenerationAgent.from_checkpoint(str(checkpoint))
-    context = padded(graph.context_embedding(recipient["id"], occasion["id"]), creative.gan.config.context_dim)
-    human_style = padded(np.asarray(data["memories"][0]["embedding"]), creative.gan.config.context_dim)
+    creative = CreativeGenerationAgent()
+    context_dim = 512
+    context = padded(graph.context_embedding(recipient["id"], occasion["id"]), context_dim)
+    human_style = padded(np.asarray(data["memories"][0]["embedding"]), context_dim)
     append(service, creative, {
         "context_embedding": context,
         "relationship_type": relationship["type"],
@@ -144,6 +145,7 @@ def run_pipeline(fixture_path: Path, checkpoint: Path, output_path: Path) -> Gif
         "seed": 2026,
         "output_dir": "experiments/generated",
         "filename": "fixture-long-distance-partners-2026.png",
+        "generation_backend": "diffusers",
     })
 
     greeting_response = {
@@ -176,7 +178,6 @@ def run_pipeline(fixture_path: Path, checkpoint: Path, output_path: Path) -> Gif
 def main() -> None:
     session = run_pipeline(
         Path("data/fixtures/long_distance_partners.json"),
-        Path("experiments/run-002/checkpoint-000200.pt"),
         Path("experiments/fixture_pipeline_session.json"),
     )
     print(session.model_dump_json(indent=2))

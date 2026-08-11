@@ -62,15 +62,18 @@ class GreetingStoryAgent(StructuredAgent):
         context = self.build_context(agent_input)
         prompt = self.config["prompt_template"].format(context=json.dumps(context, ensure_ascii=False, indent=2))
         model = str(stage_config.get("model") or os.getenv("GMGI_GREETING_MODEL") or os.getenv("GMGI_OLLAMA_MODEL") or self.config["models"]["ollama"])
-        client = Client(host=os.getenv("GMGI_OLLAMA_HOST", "http://localhost:11434"))
+        client = Client(host=os.getenv("GMGI_OLLAMA_HOST", "http://localhost:11434"), timeout=float(os.getenv("GMGI_OLLAMA_TIMEOUT_SECONDS", "30")))
         response = client.chat(
             model=model,
             messages=[
                 {"role": "system", "content": self._system_prompt(agent_input)},
-                {"role": "user", "content": prompt + "\nReturn only JSON matching the provided schema."},
+                {"role": "user", "content": prompt + "\nReturn only JSON matching the provided schema. Keep the message under 90 words."},
             ],
             format=self.config["output_schema"],
-            options={"temperature": float(stage_config.get("temperature", self.config["temperature"]))},
+            options={
+                "temperature": float(stage_config.get("temperature", self.config["temperature"])),
+                "num_predict": int(stage_config.get("num_predict", os.getenv("GMGI_GREETING_NUM_PREDICT", "220"))),
+            },
             stream=False,
         )
         payload = _extract_json(response["message"]["content"])

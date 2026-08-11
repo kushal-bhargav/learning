@@ -24,6 +24,7 @@ from src.agents import (
     RelationshipAnalysisAgent,
 )
 from src.agents.orchestrator import AgentOutput
+from src.harness import HarnessConfig, HarnessController, NextAction, TraceRecorder, default_harness_config, trace_recorder_context
 
 from .quality import evaluate_outputs, summarize_quality_reports
 from .structural import DEFAULT_STAGE_ORDER
@@ -59,6 +60,7 @@ def run_benchmark(
     seed: int = 2026,
     limit: int | None = None,
     stage_timeout_seconds: float | None = None,
+    harness_config: HarnessConfig | None = None,
 ) -> dict[str, Any]:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -71,6 +73,7 @@ def run_benchmark(
             agency_slider=agency_slider,
             seed=seed,
             stage_timeout_seconds=stage_timeout_seconds,
+            harness_config=harness_config,
         )
         for case in selected
     ]
@@ -87,6 +90,49 @@ def run_benchmark(
     return summary
 
 
+def compare_harness_runs(
+    case: BenchmarkCase,
+    *,
+    harness_a: HarnessConfig,
+    harness_b: HarnessConfig,
+    output_dir: str | Path = "experiments/evals/harness_comparison",
+    include_creative: bool = False,
+    agency_slider: float = 0.5,
+    seed: int = 2026,
+    stage_timeout_seconds: float | None = None,
+) -> dict[str, Any]:
+    root = Path(output_dir)
+    report_a = run_case(
+        case,
+        output_dir=root / "harness_a",
+        include_creative=include_creative,
+        agency_slider=agency_slider,
+        seed=seed,
+        stage_timeout_seconds=stage_timeout_seconds,
+        harness_config=harness_a,
+    )
+    report_b = run_case(
+        case,
+        output_dir=root / "harness_b",
+        include_creative=include_creative,
+        agency_slider=agency_slider,
+        seed=seed,
+        stage_timeout_seconds=stage_timeout_seconds,
+        harness_config=harness_b,
+    )
+    comparison = {
+        "case_id": case.case_id,
+        "harness_a": _harness_run_summary(report_a),
+        "harness_b": _harness_run_summary(report_b),
+        "trajectory_changed": _trajectory(report_a) != _trajectory(report_b),
+        "verifier_outcomes_changed": _verifier_outcomes(report_a) != _verifier_outcomes(report_b),
+        "quality_delta": float(report_b.get("overall_score", 0.0) or 0.0) - float(report_a.get("overall_score", 0.0) or 0.0),
+    }
+    root.mkdir(parents=True, exist_ok=True)
+    (root / f"{case.case_id}_harness_comparison.json").write_text(json.dumps(comparison, indent=2, default=str), encoding="utf-8")
+    return comparison
+
+
 def run_case(
     case: BenchmarkCase,
     *,
@@ -95,6 +141,7 @@ def run_case(
     agency_slider: float,
     seed: int,
     stage_timeout_seconds: float | None = None,
+    harness_config: HarnessConfig | None = None,
 ) -> dict[str, Any]:
     fixture = _fixture_from_profile(case.custom_profile)
     giver = _person(fixture, "giver")
@@ -109,8 +156,12 @@ def run_case(
         recipient_id=recipient["id"],
         occasion_id=occasion["id"],
     )
+    effective_harness = harness_config or default_harness_config()
+    trace_recorder = TraceRecorder(session_id=session.session_id, case_id=case.case_id, harness_config=effective_harness)
+    controller = HarnessController(effective_harness)
     outputs: dict[str, Any] = {}
     traces: list[dict[str, Any]] = []
+    completed_stages: list[str] = []
     case_agency_slider = float(case.custom_profile.get("agency_slider", agency_slider))
 
     stage_configs: dict[str, dict[str, Any]] = {
@@ -128,8 +179,8 @@ def run_case(
         },
     }
     timeout = stage_timeout_seconds if stage_timeout_seconds is not None else float(os.getenv("GMGI_EVAL_STAGE_TIMEOUT_SECONDS", "60"))
-    _run_stage("recipient_profiling", RecipientProfilingAgent(), session, stage_configs["recipient_profiling"], outputs, traces, timeout)
-    _run_stage("relationship_analysis", RelationshipAnalysisAgent(), session, stage_configs["relationship_analysis"], outputs, traces, timeout)
+    _run_expected_stage(controller, completed_stages, "recipient_profiling", RecipientProfilingAgent(), session, stage_configs["recipient_profiling"], outputs, traces, timeout, trace_recorder)
+    _run_expected_stage(controller, completed_stages, "relationship_analysis", RelationshipAnalysisAgent(), session, stage_configs["relationship_analysis"], outputs, traces, timeout, trace_recorder)
 
     stage_configs["gift_intent_reasoning"] = {
         "recipient_profile": outputs.get("recipient_profiling", {}),
@@ -140,7 +191,7 @@ def run_case(
         "preferences": preferences,
         "budget_hint": occasion.get("budget_hint"),
     }
-    _run_stage("gift_intent_reasoning", GiftIntentReasoningAgent(), session, stage_configs["gift_intent_reasoning"], outputs, traces, timeout)
+    _run_expected_stage(controller, completed_stages, "gift_intent_reasoning", GiftIntentReasoningAgent(), session, stage_configs["gift_intent_reasoning"], outputs, traces, timeout, trace_recorder)
 
     stage_configs["multi_agent_planning"] = {
         "user_request": f"Create a gift for {recipient.get('display_name', 'recipient')}",
@@ -150,7 +201,7 @@ def run_case(
         "memory_signals": {"memory_count": len(memories), "preference_count": len(preferences)},
         "available_agents": list(DEFAULT_STAGE_ORDER),
     }
-    _run_stage("multi_agent_planning", MultiAgentPlanningAgent(), session, stage_configs["multi_agent_planning"], outputs, traces, timeout)
+    _run_expected_stage(controller, completed_stages, "multi_agent_planning", MultiAgentPlanningAgent(), session, stage_configs["multi_agent_planning"], outputs, traces, timeout, trace_recorder)
 
     stage_configs["recommendation"] = {
         "recipient_profile": outputs.get("recipient_profiling", {}),
@@ -160,7 +211,7 @@ def run_case(
         "occasion": occasion,
         "preferences": preferences,
     }
-    _run_stage("recommendation", RecommendationAgent(), session, stage_configs["recommendation"], outputs, traces, timeout)
+    _run_expected_stage(controller, completed_stages, "recommendation", RecommendationAgent(), session, stage_configs["recommendation"], outputs, traces, timeout, trace_recorder)
 
     if include_creative:
         first_memory = memories[0] if memories else {}
@@ -173,7 +224,7 @@ def run_case(
             "context_embedding": context_embedding,
             "relationship_type": relationship.get("type", "other"),
             "emotion_tag": first_memory.get("emotion_tag", "joy"),
-            "occasion": _gan_occasion(occasion.get("name", "other")),
+            "occasion": _visual_occasion(occasion.get("name", "other")),
             "recipient_profile": outputs.get("recipient_profiling", {}),
             "relationship_guidance": outputs.get("relationship_analysis", {}),
             "gift_intent": outputs.get("gift_intent_reasoning", {}),
@@ -192,9 +243,11 @@ def run_case(
             "negative_prompt": CreativeGenerationAgent.default_negative_prompt(),
             "diffusers_prompt": _diffusers_prompt(relationship, occasion, first_memory, artifact_type, style_prompt, case_agency_slider),
         }
-        _run_stage("creative_generation", _creative_agent(), session, stage_configs["creative_generation"], outputs, traces, timeout)
+        _run_expected_stage(controller, completed_stages, "creative_generation", _creative_agent(), session, stage_configs["creative_generation"], outputs, traces, timeout, trace_recorder)
     else:
         traces.append({"stage": "creative_generation", "status": "skipped", "latency_seconds": 0.0, "reason": "include_creative=False"})
+        if controller.next_action(completed_stages=completed_stages).stage == "creative_generation":
+            completed_stages.append("creative_generation")
 
     stage_configs["greeting_story"] = {
         "relationship_guidance": outputs.get("relationship_analysis", {}),
@@ -204,13 +257,13 @@ def run_case(
         "giver_name": giver.get("display_name"),
         "recipient_name": recipient.get("display_name"),
     }
-    _run_stage("greeting_story", GreetingStoryAgent(), session, stage_configs["greeting_story"], outputs, traces, timeout)
+    _run_expected_stage(controller, completed_stages, "greeting_story", GreetingStoryAgent(), session, stage_configs["greeting_story"], outputs, traces, timeout, trace_recorder)
 
     stage_configs["delivery_planner"] = {
         "artifact_type": outputs.get("creative_generation", {}).get("artifact_type", "generated"),
         "occasion": occasion,
     }
-    _run_stage("delivery_planner", DeliveryPlannerAgent(), session, stage_configs["delivery_planner"], outputs, traces, timeout)
+    _run_expected_stage(controller, completed_stages, "delivery_planner", DeliveryPlannerAgent(), session, stage_configs["delivery_planner"], outputs, traces, timeout, trace_recorder)
 
     input_context = {
         "fixture": fixture,
@@ -221,11 +274,22 @@ def run_case(
         "preferences": preferences,
     }
     report = evaluate_outputs(outputs, expected=case.expected, input_context=input_context)
+    if not include_creative:
+        _mark_creative_unavailable(report)
+    has_timeout = any(trace.get("status") == "timeout" for trace in traces)
+    has_error = any(trace.get("status") in {"error", "fallback"} for trace in traces)
+    final_status = "partial" if has_timeout or has_error else "success"
+    termination_reason = "agent_timeout" if has_timeout else "stage_error_or_fallback" if has_error else "completed"
     report.update(
         {
             "case_id": case.case_id,
             "session_id": session.session_id,
             "agent_traces": traces,
+            "run_trace": trace_recorder.finish(final_status=final_status, termination_reason=termination_reason).to_dict(),
+            "run_id": trace_recorder.run_id,
+            "harness_id": trace_recorder.harness_config.harness_id,
+            "harness_version": trace_recorder.harness_config.harness_version,
+            "harness_config_hash": trace_recorder.harness_config.config_hash,
             "input_context": input_context,
             "expected": dict(case.expected),
             "behavioral_metrics": {
@@ -241,6 +305,78 @@ def run_case(
     return report
 
 
+def _mark_creative_unavailable(report: dict[str, Any]) -> None:
+    stage_reports = _as_mapping(report.get("stage_reports"))
+    if "creative_generation" in stage_reports:
+        stage_reports["creative_generation"] = {
+            "quality_score": None,
+            "status": "skipped",
+            "metrics": [
+                {
+                    "name": "creative_generation_skipped",
+                    "score": None,
+                    "passed": None,
+                    "weight": 0.0,
+                    "details": {"reason": "include_creative=False"},
+                }
+            ],
+        }
+    cross_scores = [
+        _as_mapping(metric).get("score")
+        for metric in _as_list(report.get("cross_component_metrics"))
+        if _as_mapping(metric).get("score") is not None
+    ]
+    stage_scores = [
+        _as_mapping(item).get("quality_score")
+        for item in stage_reports.values()
+        if _as_mapping(item).get("quality_score") is not None
+    ]
+    scores = [float(score) for score in [*stage_scores, *cross_scores] if score is not None]
+    report["overall_quality_score"] = None if not scores else sum(scores) / len(scores)
+
+
+def _run_expected_stage(
+    controller: HarnessController,
+    completed_stages: list[str],
+    stage: str,
+    agent: Any,
+    session: GiftSession,
+    stage_config: Mapping[str, Any],
+    outputs: dict[str, Any],
+    traces: list[dict[str, Any]],
+    timeout_seconds: float,
+    trace_recorder: TraceRecorder,
+) -> None:
+    action = controller.next_action(
+        completed_stages=completed_stages,
+        dependency_ids=[trace_recorder.invocations[-1].invocation_id] if trace_recorder.invocations else [],
+        agent_outputs=outputs,
+        constraints={"budget_hint": _as_mapping(stage_config.get("occasion")).get("budget_hint") or stage_config.get("budget_hint")},
+        memory_context={"memory_count": len(_as_list(stage_config.get("memories"))), "preference_count": len(_as_list(stage_config.get("preferences")))},
+        run_id=trace_recorder.run_id,
+        case_id=trace_recorder.run_trace.case_id,
+    )
+    if action.action_type == "stop":
+        traces.append({"stage": stage, "status": "skipped", "latency_seconds": 0.0, "reason": action.reason})
+        return
+    if action.stage != stage:
+        raise RuntimeError(f"HarnessController selected {action.stage!r}; benchmark expected {stage!r}")
+    try:
+        result = controller.execute_agent_action(
+            action,
+            lambda: _run_stage(stage, agent, session, stage_config, outputs, traces, timeout_seconds, trace_recorder, controller, action),
+        )
+    except Exception:
+        completed_stages.append(stage)
+        return
+    if result.get("output", {}).get("fallback") == "skip_failed_stage":
+        outputs[stage] = dict(result.get("output") or {})
+        traces.append({"stage": stage, "status": "fallback", "latency_seconds": 0.0, "reason": "skip_failed_stage"})
+    if stage == "multi_agent_planning" and controller.config.planner_mode == "authoritative":
+        controller.adopt_execution_plan_from_output(result)
+    completed_stages.append(stage)
+
+
 def _run_stage(
     stage: str,
     agent: Any,
@@ -249,13 +385,45 @@ def _run_stage(
     outputs: dict[str, Any],
     traces: list[dict[str, Any]],
     timeout_seconds: float,
-) -> None:
+    trace_recorder: TraceRecorder,
+    controller: HarnessController,
+    action: NextAction,
+) -> AgentOutput:
     started = time.perf_counter()
     result_queue: queue.Queue[tuple[str, Any]] = queue.Queue(maxsize=1)
 
     def invoke() -> None:
         try:
-            result_queue.put(("ok", agent.run({"session": session, "stage_config": dict(stage_config)})))
+            agent_input = {"session": session, "stage_config": dict(stage_config)}
+            with trace_recorder_context(trace_recorder):
+                with controller.tool_context(type(agent).__name__):
+                    with trace_recorder.invocation(
+                        stage_name=stage,
+                        agent_name=type(agent).__name__,
+                        agent_version=str(getattr(agent, "prompt_version_id", "static")),
+                        raw_agent_input=agent_input,
+                        context={"stage": stage, "stage_config": dict(stage_config), "input_diagnostics": _input_diagnostics(agent_input, stage_config)},
+                        relevant_memory={"memories": stage_config.get("memories", [])},
+                        constraints={key: stage_config[key] for key in ("budget_hint", "agency_slider", "generation_backend") if key in stage_config},
+                        model_provider=_model_provider(agent),
+                        model_name=_model_name(agent, stage_config),
+                        model_parameters=_model_parameters(agent, stage_config),
+                        routing_decision=action.routing_decision(),
+                        planner_decision=action.planner_decision(controller.config),
+                        dependency_ids=list(action.dependency_ids),
+                    ) as invocation:
+                        result = agent.run(agent_input)
+                        invocation.raw_agent_output = _jsonable(result)
+                        invocation.structured_output = _jsonable(result.get("output", {}))
+                        invocation.verifier_decision = controller.verify_output(
+                            stage=stage,
+                            result=result,
+                            output_schema=_stage_output_schema(agent),
+                            stage_config=stage_config,
+                            agent_outputs=outputs,
+                        )
+                        invocation.validation_result = {"status": invocation.verifier_decision.decision, "policy": invocation.verifier_decision.policy}
+            result_queue.put(("ok", result))
         except Exception as exc:  # pragma: no cover - exercised through outer branch in tests
             result_queue.put(("error", exc))
 
@@ -267,7 +435,16 @@ def _run_stage(
         message = f"stage exceeded {timeout_seconds:.1f}s timeout"
         outputs[stage] = {"error": message, "error_type": "TimeoutError"}
         traces.append({"stage": stage, "status": "timeout", "latency_seconds": latency, "error_type": "TimeoutError", "error": message})
-        return
+        trace_recorder.record_timeout(
+            stage_name=stage,
+            agent_name=type(agent).__name__,
+            agent_version=str(getattr(agent, "prompt_version_id", "static")),
+            raw_agent_input={"session": session, "stage_config": dict(stage_config)},
+            latency_seconds=latency,
+            error_message=message,
+            dependency_ids=[trace_recorder.invocations[-1].invocation_id] if trace_recorder.invocations else [],
+        )
+        return AgentOutput(stage=stage, output=outputs[stage], confidence=0.0, rationale=message)
 
     status, value = result_queue.get()
     try:
@@ -285,10 +462,131 @@ def _run_stage(
                 "rationale_present": bool(result.get("rationale")),
             }
         )
+        return result
     except Exception as exc:
         latency = time.perf_counter() - started
         outputs[stage] = {"error": str(exc), "error_type": type(exc).__name__}
         traces.append({"stage": stage, "status": "error", "latency_seconds": latency, "error_type": type(exc).__name__, "error": str(exc)[:2000]})
+        raise
+
+
+def _model_provider(agent: Any) -> str | None:
+    provider = getattr(getattr(agent, "llm", None), "provider", None)
+    if provider is not None:
+        return str(getattr(provider, "value", provider))
+    return None
+
+
+def _model_name(agent: Any, stage_config: Mapping[str, Any]) -> str | None:
+    if stage_config.get("model"):
+        return str(stage_config["model"])
+    env_model = _agent_model_env(agent)
+    if env_model:
+        return env_model
+    config = getattr(agent, "config", {})
+    provider = getattr(getattr(getattr(agent, "llm", None), "provider", None), "value", None)
+    if isinstance(config, Mapping) and provider:
+        models = config.get("models")
+        if isinstance(models, Mapping) and provider in models:
+            return str(models[provider])
+    return None
+
+
+def _agent_model_env(agent: Any) -> str | None:
+    env_by_agent = {
+        "RecipientProfilingAgent": "GMGI_RECIPIENT_MODEL",
+        "RelationshipAnalysisAgent": "GMGI_RELATIONSHIP_MODEL",
+        "RecommendationAgent": "GMGI_RECOMMENDATION_MODEL",
+        "GreetingStoryAgent": "GMGI_GREETING_MODEL",
+        "DeliveryPlannerAgent": "GMGI_DELIVERY_MODEL",
+    }
+    specific = os.getenv(env_by_agent.get(type(agent).__name__, ""))
+    return specific or os.getenv("GMGI_OLLAMA_MODEL") or os.getenv("OLLAMA_MODEL")
+
+
+def _model_parameters(agent: Any, stage_config: Mapping[str, Any]) -> dict[str, Any]:
+    config = getattr(agent, "config", {})
+    parameters: dict[str, Any] = {}
+    if isinstance(config, Mapping) and "temperature" in config:
+        parameters["temperature"] = stage_config.get("temperature", config.get("temperature"))
+    for key in ("max_steps", "num_predict", "num_inference_steps", "guidance_scale", "width", "height", "critique_max_retries"):
+        if key in stage_config:
+            parameters[key] = stage_config[key]
+    parameters["request_timeout_seconds"] = _request_timeout(agent)
+    parameters["endpoint_type"] = _endpoint_type(agent)
+    parameters["retry_configuration"] = {
+        "max_validation_retries": stage_config.get("max_validation_retries", _config_value(agent, "runtime_config", "max_validation_retries")),
+        "critique_max_retries": stage_config.get("critique_max_retries"),
+    }
+    return parameters
+
+
+def _request_timeout(agent: Any) -> Any:
+    llm = getattr(agent, "llm", None)
+    if getattr(llm, "timeout_seconds", None) is not None:
+        return getattr(llm, "timeout_seconds")
+    if type(agent).__name__ in {"RecipientProfilingAgent", "DeliveryPlannerAgent"}:
+        return os.getenv("GMGI_OLLAMA_TIMEOUT_SECONDS", "30")
+    if type(agent).__name__ in {"GreetingStoryAgent", "RelationshipAnalysisAgent", "RecommendationAgent"}:
+        return os.getenv("GMGI_OLLAMA_TIMEOUT_SECONDS", "unknown")
+    return "unknown"
+
+
+def _endpoint_type(agent: Any) -> str:
+    name = type(agent).__name__
+    if name in {"RecipientProfilingAgent", "DeliveryPlannerAgent"}:
+        return "ollama_openai_compatible"
+    if name in {"RelationshipAnalysisAgent", "RecommendationAgent"}:
+        return "smolagents_ollama_chat"
+    if name == "GreetingStoryAgent":
+        return "ollama_python_client"
+    if getattr(getattr(agent, "llm", None), "provider", None) is not None:
+        return "structured_http_llm"
+    return "local_or_deterministic"
+
+
+def _config_value(agent: Any, attr: str, key: str) -> Any:
+    value = getattr(agent, attr, None)
+    return value.get(key) if isinstance(value, Mapping) else None
+
+
+def _input_diagnostics(agent_input: Mapping[str, Any], stage_config: Mapping[str, Any]) -> dict[str, Any]:
+    serialized_input = json.dumps(_jsonable(agent_input), ensure_ascii=False, default=str)
+    serialized_context = json.dumps(_jsonable(stage_config), ensure_ascii=False, default=str)
+    memories = _as_list(stage_config.get("memories"))
+    constraints = {key: stage_config[key] for key in ("budget_hint", "agency_slider", "generation_backend") if key in stage_config}
+    return {
+        "input_character_count": len(serialized_input),
+        "approx_input_token_count": max(1, len(serialized_input) // 4),
+        "context_character_count": len(serialized_context),
+        "approx_context_token_count": max(1, len(serialized_context) // 4),
+        "memory_item_count": len(memories),
+        "memory_character_count": sum(len(str(item)) for item in memories),
+        "constraint_character_count": len(json.dumps(_jsonable(constraints), ensure_ascii=False, default=str)),
+    }
+
+
+def _stage_output_schema(agent: Any) -> Mapping[str, Any] | None:
+    config = getattr(agent, "config", {})
+    if isinstance(config, Mapping) and isinstance(config.get("output_schema"), Mapping):
+        return config["output_schema"]
+    return None
+
+
+def _jsonable(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {str(key): _jsonable(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [_jsonable(item) for item in value]
+    if isinstance(value, list):
+        return [_jsonable(item) for item in value]
+    if hasattr(value, "model_dump"):
+        return _jsonable(value.model_dump(mode="json"))
+    if hasattr(value, "tolist"):
+        return _jsonable(value.tolist())
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
 
 
 def _fixture_from_profile(profile: Mapping[str, Any]) -> dict[str, Any]:
@@ -390,7 +688,7 @@ def _context_embedding(memories: Sequence[Mapping[str, Any]], preferences: Seque
     return [value / total for value in buckets]
 
 
-def _gan_occasion(value: object) -> str:
+def _visual_occasion(value: object) -> str:
     text = str(value or "").strip().lower()
     aliases = {
         "birthday": ("birthday",),
@@ -426,16 +724,7 @@ def _diffusers_prompt(
 
 
 def _creative_agent() -> CreativeGenerationAgent:
-    backend = os.getenv("GMGI_CREATIVE_BACKEND", "diffusers").lower()
-    if backend != "memorygan":
-        return CreativeGenerationAgent()
-    checkpoint_value = os.getenv("GMGI_GAN_CHECKPOINT")
-    if not checkpoint_value:
-        return CreativeGenerationAgent()
-    checkpoint = Path(checkpoint_value)
-    if not checkpoint.exists():
-        return CreativeGenerationAgent()
-    return CreativeGenerationAgent.from_checkpoint(str(checkpoint))
+    return CreativeGenerationAgent()
 
 
 def _artifact_analysis(reports: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
@@ -467,6 +756,44 @@ def _artifact_analysis(reports: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "duplicate_collapse_rate": duplicate_collapse_rate,
         "artifacts": artifacts,
     }
+
+
+def _harness_run_summary(report: Mapping[str, Any]) -> dict[str, Any]:
+    trace = _as_mapping(report.get("run_trace"))
+    invocations = _as_list(trace.get("invocations"))
+    return {
+        "run_id": report.get("run_id"),
+        "harness_id": report.get("harness_id"),
+        "harness_version": report.get("harness_version"),
+        "harness_config_hash": report.get("harness_config_hash"),
+        "final_status": trace.get("final_status"),
+        "trajectory": _trajectory(report),
+        "verifier_outcomes": _verifier_outcomes(report),
+        "retry_count": sum(int(_as_mapping(item).get("retry_count") or 0) for item in invocations),
+        "failure_count": sum(1 for item in invocations if _as_mapping(item).get("status") in {"error", "timeout"}),
+        "quality_score": report.get("overall_score"),
+    }
+
+
+def _trajectory(report: Mapping[str, Any]) -> list[str]:
+    trace = _as_mapping(report.get("run_trace"))
+    return [str(_as_mapping(item).get("stage_name")) for item in _as_list(trace.get("invocations"))]
+
+
+def _verifier_outcomes(report: Mapping[str, Any]) -> list[dict[str, Any]]:
+    trace = _as_mapping(report.get("run_trace"))
+    outcomes = []
+    for item in _as_list(trace.get("invocations")):
+        invocation = _as_mapping(item)
+        verifier = _as_mapping(invocation.get("verifier_decision"))
+        outcomes.append(
+            {
+                "stage": invocation.get("stage_name"),
+                "decision": verifier.get("decision"),
+                "policy": verifier.get("policy"),
+            }
+        )
+    return outcomes
 
 
 def _file_digest(path: Path) -> str | None:

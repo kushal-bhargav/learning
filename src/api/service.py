@@ -28,6 +28,7 @@ from src.agents import (
 from src.agents.orchestrator import AgentOutput
 from src.agents.experience_retriever import ExperienceRetriever
 from src.agents.experience_store import Episode, ExperienceStore, context_fingerprint
+from src.harness import AgentRunTrace, HarnessConfig, HarnessController, NextAction, TraceRecorder, default_harness_config, trace_recorder_context
 from src.memory_graph.fixtures import load_fixture
 from src.rl import BanditAction, ContextEncoder, LinUCBBandit, log_session, reward_from_feedback
 
@@ -87,6 +88,8 @@ class ConsoleSession:
     fixture_path: Path | None
     agency_slider: float
     seed: int
+    trace_recorder: TraceRecorder
+    controller: HarnessController
     budget_hint: str | None = None
 
 
@@ -97,15 +100,14 @@ class AgencyConsoleService:
         self,
         *,
         fixture_root: str | Path = "data/fixtures",
-        checkpoint_path: str | Path | None = None,
         generated_dir: str | Path = "experiments/generated",
         bandit_log_path: str | Path = "experiments/bandit_log.jsonl",
         bandit_state_path: str | Path = "experiments/bandit_state.json",
         experience_store_path: str | Path | None = None,
         prompt_versions_dir: str | Path | None = None,
+        harness_config: HarnessConfig | None = None,
     ) -> None:
         self.fixture_root = Path(fixture_root)
-        self.checkpoint_path = Path(checkpoint_path) if checkpoint_path is not None else None
         self.generated_dir = Path(generated_dir)
         self.bandit_log_path = Path(bandit_log_path)
         self.bandit_state_path = Path(bandit_state_path)
@@ -113,6 +115,7 @@ class AgencyConsoleService:
         self.experience_store = ExperienceStore.load(store_path)
         self.experience_retriever = ExperienceRetriever(self.experience_store, top_k=int(os.getenv("GMGI_EXPERIENCE_TOP_K", "2")))
         self.prompt_versions_dir = Path(prompt_versions_dir or os.getenv("GMGI_PROMPT_VERSIONS") or Path("src/agents/configs/prompt_versions"))
+        self.harness_config = harness_config or default_harness_config()
         self.sessions: dict[str, ConsoleSession] = {}
         self._creative_agent: CreativeGenerationAgent | None = None
         self._encoder = ContextEncoder()
@@ -179,6 +182,8 @@ class AgencyConsoleService:
             fixture_path=fixture_path,
             agency_slider=default_agency,
             seed=int(seed),
+            trace_recorder=TraceRecorder(session_id=session_id, case_id=fixture.get("persona_id"), harness_config=self.harness_config),
+            controller=HarnessController(self.harness_config),
             budget_hint=budget_hint,
         )
         return session
@@ -190,7 +195,12 @@ class AgencyConsoleService:
         if stage not in STAGES:
             raise KeyError(f"Unknown stage: {stage}")
         console = self._console(session_id)
-        result = self._run_stage(console, stage, dict(overrides or {}))
+        action = self._next_action(console)
+        if action.action_type == "stop":
+            raise RuntimeError(f"HarnessController has stopped execution: {action.reason}")
+        if action.stage != stage:
+            raise ValueError(f"HarnessController selected {action.stage!r}; requested {stage!r}")
+        result = console.controller.execute_agent_action(action, lambda: self._run_stage(console, stage, dict(overrides or {}), action))
         return console.orchestrator.append_agent_output(result)
 
     def accept(self, session_id: str) -> GiftSession:
@@ -227,7 +237,14 @@ class AgencyConsoleService:
             self.propose(session_id, next_stage)
 
     def next_stage(self, session_id: str) -> str | None:
-        session = self.get_session(session_id)
+        console = self._console(session_id)
+        action = self._next_action(console)
+        if action.action_type == "stop":
+            return None
+        return action.stage
+
+    def _completed_stages(self, console: ConsoleSession) -> set[str]:
+        session = console.orchestrator.session
         completed = {
             entry.stage
             for entry in session.stage_log
@@ -238,10 +255,18 @@ class AgencyConsoleService:
             for entry in session.stage_log
             if entry.status == "completed" and entry.proposed_by == "agent" and entry.human_action == HumanAction.DELEGATE
         )
-        for stage in STAGES:
-            if stage not in completed:
-                return stage
-        return None
+        return completed
+
+    def _next_action(self, console: ConsoleSession) -> NextAction:
+        return console.controller.next_action(
+            completed_stages=self._completed_stages(console),
+            dependency_ids=self._trace_dependencies(console),
+            agent_outputs=self._collect_outputs(console.orchestrator.session),
+            constraints={"budget_hint": console.budget_hint},
+            memory_context={"memory_count": len(console.fixture.get("memories", [])), "preference_count": len(console.fixture.get("preferences", []))},
+            run_id=console.trace_recorder.run_id,
+            case_id=console.fixture.get("persona_id"),
+        )
 
     def ledger(self, session_id: str) -> dict[str, Any]:
         session = self.get_session(session_id)
@@ -274,6 +299,12 @@ class AgencyConsoleService:
             "stage_count": len(STAGES),
             "completed": self.next_stage(session_id) is None,
         }
+
+    def run_trace(self, session_id: str) -> AgentRunTrace:
+        console = self._console(session_id)
+        completed = self.next_stage(session_id) is None
+        final_status = "success" if completed else "partial"
+        return console.trace_recorder.finish(final_status=final_status)
 
     def submit_feedback(
         self,
@@ -346,7 +377,7 @@ class AgencyConsoleService:
         )
         return {"session_id": session_id, "reward": reward, "action": action.__dict__, "bandit_counts": {a.key: c for a, c in policy.counts.items()}}
 
-    def _run_stage(self, console: ConsoleSession, stage: str, overrides: dict[str, Any]) -> AgentOutput:
+    def _run_stage(self, console: ConsoleSession, stage: str, overrides: dict[str, Any], action: NextAction) -> AgentOutput:
         fixture = console.fixture
         giver = self._person(fixture, "giver")
         recipient = self._person(fixture, "recipient")
@@ -400,7 +431,7 @@ class AgencyConsoleService:
             }
         elif stage == "creative_generation":
             agent = self._creative()
-            context_dim = int(getattr(getattr(agent.gan, "config", None), "context_dim", 512))
+            context_dim = 512
             context = _padded(self._context_embedding(console, recipient["id"], occasion["id"]), context_dim)
             memory = fixture.get("memories", [{}])[0]
             intent = self._safe_effective(console, "gift_intent_reasoning")
@@ -418,7 +449,7 @@ class AgencyConsoleService:
                 "context_embedding": context,
                 "relationship_type": relationship.get("type", "other"),
                 "emotion_tag": memory.get("emotion_tag", "joy"),
-                "occasion": self._gan_occasion(occasion.get("name", "other")),
+                "occasion": self._visual_occasion(occasion.get("name", "other")),
                 "agency_slider": agency_slider,
                 "human_style_ref": _padded(memory.get("embedding", context), context_dim),
                 "seed": int(overrides.get("seed", console.seed)),
@@ -447,7 +478,41 @@ class AgencyConsoleService:
             raise KeyError(stage)
         config.update(overrides)
         config.setdefault("context_fingerprint", context_fp)
-        result = agent.run({"session": console.orchestrator.session, "stage_config": config})
+        agent_input = {"session": console.orchestrator.session, "stage_config": config}
+        with trace_recorder_context(console.trace_recorder):
+            with console.controller.tool_context(type(agent).__name__):
+                with console.trace_recorder.invocation(
+                    stage_name=stage,
+                    agent_name=type(agent).__name__,
+                    agent_version=str(getattr(agent, "prompt_version_id", "static")),
+                    raw_agent_input=agent_input,
+                    context=self._trace_context(stage, config),
+                    relevant_memory=self._trace_relevant_memory(config),
+                    constraints=self._trace_constraints(config),
+                    model_provider=self._trace_model_provider(agent),
+                    model_name=self._trace_model_name(agent, config),
+                    model_parameters=self._trace_model_parameters(agent, config),
+                    routing_decision=action.routing_decision(),
+                    planner_decision=action.planner_decision(console.controller.config),
+                    dependency_ids=list(action.dependency_ids),
+                ) as invocation:
+                    result = agent.run(agent_input)
+                    invocation.raw_agent_output = self._jsonable_mapping(result)
+                    invocation.structured_output = self._jsonable_mapping(result.get("output", {}))
+                    invocation.verifier_decision = console.controller.verify_output(
+                        stage=stage,
+                        result=result,
+                        output_schema=self._stage_output_schema(agent),
+                        stage_config=config,
+                        agent_outputs=self._collect_outputs(console.orchestrator.session),
+                    )
+                    invocation.validation_result = {
+                        "status": invocation.verifier_decision.decision,
+                        "policy": invocation.verifier_decision.policy,
+                        "note": invocation.verifier_decision.reason,
+                    }
+        if stage == "multi_agent_planning" and console.controller.config.planner_mode == "authoritative":
+            console.controller.adopt_execution_plan_from_output(result)
         return self._finalize_agent_output(result, agent)
 
 
@@ -521,6 +586,82 @@ class AgencyConsoleService:
             if entry.human_action is not None:
                 actions[entry.stage] = entry.human_action.value
         return actions
+
+    @staticmethod
+    def _trace_context(stage: str, config: Mapping[str, Any]) -> dict[str, Any]:
+        return {
+            "stage": stage,
+            "stage_config": config,
+            "context_fingerprint": config.get("context_fingerprint"),
+        }
+
+    @staticmethod
+    def _trace_relevant_memory(config: Mapping[str, Any]) -> Any:
+        return {
+            "memories": config.get("memories", []),
+            "human_style_ref_present": config.get("human_style_ref") is not None,
+            "context_embedding_present": config.get("context_embedding") is not None,
+        }
+
+    @staticmethod
+    def _trace_constraints(config: Mapping[str, Any]) -> Any:
+        constraints = {}
+        for key in ("budget_hint", "negative_prompt", "agency_slider", "generation_backend", "delivery_mode"):
+            if key in config:
+                constraints[key] = config[key]
+        occasion = config.get("occasion")
+        if isinstance(occasion, Mapping):
+            constraints["occasion"] = {key: occasion.get(key) for key in ("date", "budget_hint", "formality") if key in occasion}
+        return constraints
+
+    @staticmethod
+    def _trace_model_provider(agent: Any) -> str | None:
+        llm = getattr(agent, "llm", None)
+        provider = getattr(llm, "provider", None)
+        if provider is not None:
+            return str(getattr(provider, "value", provider))
+        if isinstance(agent, CreativeGenerationAgent):
+            return "diffusers"
+        return None
+
+    @staticmethod
+    def _trace_model_name(agent: Any, config: Mapping[str, Any]) -> str | None:
+        if config.get("model"):
+            return str(config["model"])
+        agent_config = getattr(agent, "config", {})
+        llm = getattr(agent, "llm", None)
+        provider = getattr(getattr(llm, "provider", None), "value", None)
+        if isinstance(agent_config, Mapping) and provider:
+            models = agent_config.get("models")
+            if isinstance(models, Mapping) and provider in models:
+                return str(models[provider])
+        if isinstance(agent, CreativeGenerationAgent):
+            return str(os.getenv("GMGI_SDXL_MODEL", "stabilityai/sdxl-turbo"))
+        return None
+
+    @staticmethod
+    def _trace_model_parameters(agent: Any, config: Mapping[str, Any]) -> dict[str, Any]:
+        agent_config = getattr(agent, "config", {})
+        parameters: dict[str, Any] = {}
+        if isinstance(agent_config, Mapping) and "temperature" in agent_config:
+            parameters["temperature"] = config.get("temperature", agent_config.get("temperature"))
+        for key in ("max_steps", "num_inference_steps", "guidance_scale", "width", "height", "critique_max_retries"):
+            if key in config:
+                parameters[key] = config[key]
+        return parameters
+
+    @staticmethod
+    def _stage_output_schema(agent: Any) -> Mapping[str, Any] | None:
+        config = getattr(agent, "config", {})
+        if isinstance(config, Mapping) and isinstance(config.get("output_schema"), Mapping):
+            return config["output_schema"]
+        return None
+
+    @staticmethod
+    def _trace_dependencies(console: ConsoleSession) -> list[str]:
+        if not console.trace_recorder.invocations:
+            return []
+        return [console.trace_recorder.invocations[-1].invocation_id]
 
     def _current_prompt_versions(self) -> dict[str, str]:
         versions: dict[str, str] = {}
@@ -653,7 +794,7 @@ class AgencyConsoleService:
         }
 
     @staticmethod
-    def _gan_occasion(value: object) -> str:
+    def _visual_occasion(value: object) -> str:
         text = str(value or "").strip().lower()
         aliases = {
             "birthday": ("birthday", "bday", "birth day"),
@@ -688,67 +829,9 @@ class AgencyConsoleService:
         return "joy"
     def _creative(self) -> CreativeGenerationAgent:
         if self._creative_agent is None:
-            backend = os.getenv("GMGI_CREATIVE_BACKEND", "diffusers").lower()
             kwargs = {"retriever": self.experience_retriever, "prompt_versions_dir": self.prompt_versions_dir}
-            if backend == "memorygan":
-                self._creative_agent = CreativeGenerationAgent.from_checkpoint(str(self._resolve_checkpoint_path()), **kwargs)
-            else:
-                self._creative_agent = CreativeGenerationAgent(**kwargs)
+            self._creative_agent = CreativeGenerationAgent(**kwargs)
         return self._creative_agent
-
-    def _resolve_checkpoint_path(self) -> Path:
-        require_full = os.getenv("GMGI_REQUIRE_FULL_GAN_CHECKPOINT", "0") == "1"
-        explicit = os.getenv("GMGI_GAN_CHECKPOINT")
-        if explicit:
-            path = Path(explicit)
-            if not path.exists():
-                raise FileNotFoundError(f"GMGI_GAN_CHECKPOINT does not exist: {path}")
-            if require_full:
-                self._require_full_checkpoint(path)
-            return path
-        candidates = []
-        if self.checkpoint_path is not None and self.checkpoint_path.exists():
-            candidates.append(self.checkpoint_path)
-        candidates.extend(
-            sorted(
-                Path("experiments").glob("run-*/checkpoint-*.pt"),
-                key=lambda path: (path.parent.name, path.name),
-            )
-        )
-        for candidate in reversed(candidates):
-            if require_full:
-                try:
-                    self._require_full_checkpoint(candidate)
-                except ValueError:
-                    continue
-            return candidate
-        if require_full:
-            raise FileNotFoundError(
-                "No full MemoryGAN checkpoint found. Runtime creative generation does not require GAN training; "
-                "use GMGI_CREATIVE_BACKEND=diffusers, or set GMGI_GAN_CHECKPOINT to a full 256px checkpoint. "
-                "Smoke checkpoints are rejected."
-            )
-        raise FileNotFoundError(
-            "No MemoryGAN checkpoint found. Runtime creative generation does not require GAN training; "
-            "use GMGI_CREATIVE_BACKEND=diffusers, or set GMGI_GAN_CHECKPOINT to an existing full-resolution checkpoint."
-        )
-
-    @staticmethod
-    def _require_full_checkpoint(path: Path) -> None:
-        import torch
-
-        checkpoint = torch.load(path, map_location="cpu", weights_only=False)
-        model_config = checkpoint.get("model_config", {}) if isinstance(checkpoint, dict) else {}
-        training_config = checkpoint.get("training_config", {}) if isinstance(checkpoint, dict) else {}
-        resolution = int(model_config.get("resolution", 0) or 0)
-        max_steps = int(training_config.get("max_steps", 0) or 0)
-        metric_backend = str(training_config.get("metric_backend", ""))
-        base_config = str(training_config.get("base_config", ""))
-        if resolution < 256 or max_steps < 1000 or metric_backend == "clip" or "train_smoke" in base_config:
-            raise ValueError(
-                f"Checkpoint {path} looks like a smoke/pilot checkpoint "
-                f"(resolution={resolution}, max_steps={max_steps}, metric_backend={metric_backend!r})."
-            )
 
     def _load_or_create_bandit(self, action: BanditAction) -> LinUCBBandit:
         if self.bandit_state_path.exists():

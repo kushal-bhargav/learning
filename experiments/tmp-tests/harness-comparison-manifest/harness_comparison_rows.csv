@@ -1,0 +1,2 @@
+case_id,candidate_id,repetition,status,failure_type,quality,constraint,reliability,latency,tokens,cost,invocations,retries,fallbacks,verifications,failures
+"case-one","gmgi_default","","","",0.7,"",1.0,0.2,"","",2,0,"","",""

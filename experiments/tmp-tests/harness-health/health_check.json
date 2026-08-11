@@ -1,0 +1,12 @@
+{
+  "provider": {
+    "provider": "ollama",
+    "reachable": false,
+    "error": "connection refused"
+  },
+  "candidate": "gmgi_default",
+  "case_id": "close_partner_birthday_memory_art",
+  "single_case_smoke": null,
+  "harness_comparison_allowed": false,
+  "recommendation": "fix provider/model execution before large comparisons"
+}

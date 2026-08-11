@@ -1,0 +1,23 @@
+{
+  "experiment_id": "phase4_initial_harness_comparison",
+  "cases": [
+    "close_partner_birthday_memory_art",
+    "new_coworker_promotion_professional",
+    "sibling_housewarming_practical_personal"
+  ],
+  "candidates": [
+    "gmgi_default",
+    "gmgi_dynamic_v1",
+    "gmgi_dynamic_verified_v1"
+  ],
+  "seed": 2026,
+  "state_isolation": "isolated",
+  "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+  "include_creative": false,
+  "agency_slider": 0.5,
+  "stage_timeout_seconds": 20,
+  "execution_timeout_seconds": 90,
+  "repetitions": 1,
+  "randomized_order": false,
+  "resume": true
+}

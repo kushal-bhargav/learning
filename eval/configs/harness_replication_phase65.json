@@ -1,0 +1,29 @@
+{
+  "experiment_id": "phase65_controlled_harness_replication_v1",
+  "case_id": "ui_perm_001_partner_birthday_c5_0_a0_15",
+  "case_file": "experiments/evals/ui_permutation_cases.json",
+  "candidates": [
+    "gmgi_default",
+    "gmgi_dynamic_v1"
+  ],
+  "repetitions": 3,
+  "provider": "ollama",
+  "model": "llama3.2:latest",
+  "model_parameters": {
+    "GMGI_OLLAMA_TIMEOUT_SECONDS": "160",
+    "GMGI_OLLAMA_NUM_PREDICT": "384",
+    "GMGI_OLLAMA_NUM_CTX": "4096",
+    "GMGI_RECOMMENDATION_MAX_STEPS": "2",
+    "GMGI_GREETING_NUM_PREDICT": "160"
+  },
+  "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+  "include_creative": false,
+  "agency_slider": 0.5,
+  "state_isolation": "isolated",
+  "stage_timeout_seconds": 180,
+  "execution_timeout_seconds": 500,
+  "seed": 2026,
+  "execution_order": "interleaved",
+  "resume": true,
+  "report_path": "experiments/evals/phase65_harness_replication_report.md"
+}

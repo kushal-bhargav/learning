@@ -1,0 +1,20 @@
+{
+  "experiment_id": "phase5_real_bounded",
+  "cases": [
+    "close_partner_birthday_memory_art"
+  ],
+  "candidates": [
+    "gmgi_default",
+    "gmgi_dynamic_v1"
+  ],
+  "seed": 2026,
+  "state_isolation": "isolated",
+  "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+  "include_creative": false,
+  "agency_slider": 0.5,
+  "stage_timeout_seconds": 2,
+  "execution_timeout_seconds": 12,
+  "repetitions": 1,
+  "randomized_order": false,
+  "resume": true
+}

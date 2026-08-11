@@ -299,7 +299,7 @@ def _creative_config(service: AgencyConsoleService, fixture: Mapping[str, Any], 
         "context_embedding": np.asarray(context, dtype=np.float32),
         "relationship_type": relationship.get("type", "other"),
         "emotion_tag": memory.get("emotion_tag", "joy"),
-        "occasion": service._gan_occasion(occasion.get("name", "other")),
+        "occasion": service._visual_occasion(occasion.get("name", "other")),
         "agency_slider": agency_slider,
         "human_style_ref": np.asarray(memory.get("embedding", context), dtype=np.float32),
         "seed": 2026,
@@ -389,7 +389,7 @@ def main() -> None:
     parser.add_argument("--config", default="eval/configs/intent_planning_eval.json")
     parser.add_argument("--output-dir", default="experiments/agent_quality_eval")
     parser.add_argument("--limit", type=int, default=None)
-    parser.add_argument("--include-creative", action="store_true", help="Run real Diffusers/MemoryGAN creative generation instead of marking it skipped.")
+    parser.add_argument("--include-creative", action="store_true", help="Run real Diffusers creative generation instead of marking it skipped.")
     parser.add_argument("--creative-backend", default=os.getenv("GMGI_CREATIVE_BACKEND", "diffusers"))
     parser.add_argument("--agency-slider", type=float, default=0.5)
     parser.add_argument("--skip-ollama-check", action="store_true")

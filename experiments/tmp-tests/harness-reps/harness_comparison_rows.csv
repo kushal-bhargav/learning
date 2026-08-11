@@ -1,0 +1,4 @@
+case_id,candidate_id,repetition,status,failure_type,quality,constraint,reliability,latency,tokens,cost,invocations,retries,fallbacks,verifications,failures
+"rep-case","gmgi_default",1,"SUCCESS","none",1.0,null,1.0,1.0,null,null,0,0,0,0,0
+"rep-case","gmgi_default",2,"SUCCESS","none",2.0,null,1.0,2.0,null,null,0,0,0,0,0
+"rep-case","gmgi_default",3,"SUCCESS","none",3.0,null,1.0,3.0,null,null,0,0,0,0,0

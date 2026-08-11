@@ -11,7 +11,6 @@
   "skills": [
     "visual_prompt_builder",
     "diffusers_image_generation",
-    "optional_memorygan_checkpoint_inference",
     "clip_critic"
   ]
 }

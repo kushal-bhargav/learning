@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from src.evals.benchmark import BenchmarkCase, load_cases, run_case
+from src.evals.benchmark import BenchmarkCase, compare_harness_runs, load_cases, run_case
+from src.harness import HarnessConfig
 
 
 def test_default_benchmark_cases_are_loadable() -> None:
@@ -106,3 +107,109 @@ def test_benchmark_case_records_agent_errors_without_raising(monkeypatch) -> Non
     report = run_case(case, output_dir="experiments/evals/test-benchmark", include_creative=False, agency_slider=0.5, seed=1)
     assert any(trace["stage"] == "recipient_profiling" and trace["status"] == "error" for trace in report["agent_traces"])
     assert report["stage_reports"]["recipient_profiling"]["quality_score"] < 0.5
+    assert report["run_id"].startswith("run-")
+    assert report["harness_id"] == "gmgi_default"
+    assert report["harness_config_hash"]
+    assert report["run_trace"]["case_id"] == "error-case"
+    assert report["run_trace"]["harness_config"]["harness_id"] == "gmgi_default"
+    assert report["run_trace"]["invocations"][0]["stage_name"] == "recipient_profiling"
+    assert report["run_trace"]["invocations"][0]["status"] == "error"
+    assert "raw_agent_input" in report["run_trace"]["invocations"][0]
+    assert report["stage_reports"]["creative_generation"]["status"] == "skipped"
+    assert report["stage_reports"]["creative_generation"]["quality_score"] is None
+
+
+def test_benchmark_case_accepts_custom_harness_config(monkeypatch) -> None:
+    class OkAgent:
+        output = {}
+
+        def run(self, _agent_input):
+            return {"stage": "test", "output": self.output, "confidence": 0.8, "rationale": "test"}
+
+    class RecipientOkAgent(OkAgent):
+        output = {"interests": [{"name": "tea", "confidence": 1.0}], "communication_style": "warm", "gift_history_summary": "none"}
+
+    class RelationshipOkAgent(OkAgent):
+        output = {"closeness_assessment": "moderate", "tone_guidance": "warm", "formality": "casual", "risk_flags": [], "agency_slider_default": 0.5}
+
+    class IntentOkAgent(OkAgent):
+        output = {"intent_summary": "Birthday tea gift", "occasion": {"name": "Birthday"}, "goal": {"gift_purpose": "thoughtful birthday gift"}, "constraints": {"budget_hint": "USD 20-40", "delivery_constraints": ["simulated delivery only"]}, "preferences": [{"value": "tea", "confidence": 1.0}], "visual_generation": {"artifact_type": "greeting_card"}, "open_questions": [], "clarifying_needs": []}
+
+    class PlanningOkAgent(OkAgent):
+        output = {"task_goal": "Create a gift", "subtasks": [], "agent_sequence": [], "dependencies": [], "expected_outputs": [], "stop_conditions": ["done"], "fallback_plan": {"type": "current_staged_orchestration"}}
+
+    class RecommendationOkAgent(OkAgent):
+        output = {"recommendations": [{"rank": 1, "category": "generated", "concept": "tea card", "evidence": ["tea"], "budget_fit": "fits", "artifact_type": "generated"}]}
+
+    class GreetingOkAgent(OkAgent):
+        output = {"message": "Warm birthday tea note.", "memory_references": [], "tone": "warm"}
+
+    class DeliveryOkAgent(OkAgent):
+        output = {"mode": "digital", "channel": "digital card", "planned_send_date": "2026-12-01", "occasion_date": "2026-12-01", "status": "simulated", "disclaimer": "No shipment was created."}
+
+    import src.evals.benchmark as benchmark
+
+    monkeypatch.setattr(benchmark, "RecipientProfilingAgent", RecipientOkAgent)
+    monkeypatch.setattr(benchmark, "RelationshipAnalysisAgent", RelationshipOkAgent)
+    monkeypatch.setattr(benchmark, "GiftIntentReasoningAgent", IntentOkAgent)
+    monkeypatch.setattr(benchmark, "MultiAgentPlanningAgent", PlanningOkAgent)
+    monkeypatch.setattr(benchmark, "RecommendationAgent", RecommendationOkAgent)
+    monkeypatch.setattr(benchmark, "GreetingStoryAgent", GreetingOkAgent)
+    monkeypatch.setattr(benchmark, "DeliveryPlannerAgent", DeliveryOkAgent)
+    case = BenchmarkCase(
+        case_id="custom-harness-case",
+        custom_profile={
+            "giver_name": "A",
+            "recipient_name": "B",
+            "relationship_type": "friend",
+            "closeness_score": 3,
+            "occasion_name": "Birthday",
+            "occasion_date": "2026-12-01",
+            "budget_hint": "USD 20-40",
+            "preferences": ["tea"],
+            "memories": ["They drink tea together."],
+        },
+        expected={"preferences": ["tea"], "occasion_name": "Birthday", "closeness_score": 3},
+    )
+
+    config = HarnessConfig(harness_id="gmgi_candidate_a", harness_version=2, stopping_policy="stop_before_delivery")
+    report = run_case(case, output_dir="experiments/evals/test-benchmark", include_creative=False, agency_slider=0.5, seed=1, harness_config=config)
+
+    assert report["harness_id"] == "gmgi_candidate_a"
+    assert report["harness_version"] == 2
+    assert report["run_trace"]["harness_config"]["identity"] == config.identity
+    assert "delivery_planner" not in {invocation["stage_name"] for invocation in report["run_trace"]["invocations"]}
+    assert any(trace["stage"] == "delivery_planner" and trace["reason"] == "stopping_policy_stop_before_delivery" for trace in report["agent_traces"])
+
+
+def test_compare_harness_runs_reports_trajectory_difference(monkeypatch) -> None:
+    test_benchmark_case_accepts_custom_harness_config(monkeypatch)
+
+    case = BenchmarkCase(
+        case_id="comparison-case",
+        custom_profile={
+            "giver_name": "A",
+            "recipient_name": "B",
+            "relationship_type": "friend",
+            "closeness_score": 3,
+            "occasion_name": "Birthday",
+            "occasion_date": "2026-12-01",
+            "budget_hint": "USD 20-40",
+            "preferences": ["tea"],
+            "memories": ["They drink tea together."],
+        },
+        expected={"preferences": ["tea"], "occasion_name": "Birthday", "closeness_score": 3},
+    )
+    comparison = compare_harness_runs(
+        case,
+        harness_a=HarnessConfig(harness_id="fixed_harness"),
+        harness_b=HarnessConfig(harness_id="dynamic_stop", orchestration_mode="dynamic", routing_mode="dynamic", stopping_policy="stop_before_delivery"),
+        output_dir="experiments/evals/test-harness-comparison",
+        include_creative=False,
+        seed=1,
+    )
+
+    assert comparison["case_id"] == "comparison-case"
+    assert comparison["harness_a"]["harness_id"] == "fixed_harness"
+    assert comparison["harness_b"]["harness_id"] == "dynamic_stop"
+    assert comparison["trajectory_changed"] is True

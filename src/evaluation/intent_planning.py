@@ -28,17 +28,8 @@ class ExperimentCase:
     expected_plan: Mapping[str, Any] | None = None
 
 
-class _EvalGANConfig:
-    context_dim = 8
-
-
-class _EvalGAN:
-    config = _EvalGANConfig()
-
-
 class _EvalCreativeAgent:
     stage = "creative_generation"
-    gan = _EvalGAN()
 
     def run(self, agent_input: Mapping[str, Any]) -> dict[str, Any]:
         config = agent_input["stage_config"]
@@ -54,7 +45,7 @@ class _EvalCreativeAgent:
                 "seed": int(config.get("seed", 2026)),
             },
             "confidence": None,
-            "rationale": "Evaluation placeholder avoids GPU/checkpoint dependency for overall workflow metrics.",
+            "rationale": "Evaluation placeholder avoids image generation dependency for overall workflow metrics.",
         }
 
 

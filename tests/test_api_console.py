@@ -9,19 +9,11 @@ from fastapi.testclient import TestClient
 
 from src.agents.orchestrator import AgentInput, AgentOutput
 from src.api import AgencyConsoleService, create_app
-
-
-class _FakeGANConfig:
-    context_dim = 8
-
-
-class _FakeGAN:
-    config = _FakeGANConfig()
+from src.harness import HarnessConfig
 
 
 class _FakeCreativeAgent:
     stage = "creative_generation"
-    gan = _FakeGAN()
 
     def run(self, agent_input: AgentInput) -> AgentOutput:
         config = agent_input["stage_config"]
@@ -51,6 +43,7 @@ def _client() -> TestClient:
         generated_dir=root / "generated",
         bandit_log_path=root / "bandit_log.jsonl",
         bandit_state_path=root / "bandit_state.json",
+        experience_store_path=root / "experience_store.jsonl",
     )
     service._creative_agent = _FakeCreativeAgent()  # type: ignore[assignment]
     return TestClient(create_app(service))
@@ -60,6 +53,8 @@ def test_agency_console_session_stage_actions_ledger_and_feedback() -> None:
     client = _client()
     created = client.post("/sessions", json={"persona_id": "long-distance-partners", "agency_slider": 0.25}).json()
     session_id = created["session_id"]
+    assert created["run_id"].startswith("run-")
+    assert created["harness"]["harness_id"] == "gmgi_default"
 
     proposed = client.post(f"/sessions/{session_id}/stages/recipient_profiling/propose", json={}).json()
     entry = proposed["stage_log"][-1]
@@ -74,6 +69,11 @@ def test_agency_console_session_stage_actions_ledger_and_feedback() -> None:
 
     client.post(f"/sessions/{session_id}/stages/relationship_analysis/propose", json={})
     client.post(f"/sessions/{session_id}/stages/relationship_analysis/accept")
+
+    client.post(f"/sessions/{session_id}/stages/gift_intent_reasoning/propose", json={})
+    client.post(f"/sessions/{session_id}/stages/gift_intent_reasoning/accept")
+    client.post(f"/sessions/{session_id}/stages/multi_agent_planning/propose", json={})
+    client.post(f"/sessions/{session_id}/stages/multi_agent_planning/accept")
 
     client.post(f"/sessions/{session_id}/stages/recommendation/propose", json={})
     delegated = client.post(f"/sessions/{session_id}/stages/recommendation/delegate").json()
@@ -101,6 +101,81 @@ def test_agency_console_session_stage_actions_ledger_and_feedback() -> None:
     ).json()
     assert 0.0 <= feedback["reward"] <= 1.0
     assert feedback["action"]["agency_bucket"] == "low"
+
+
+def test_session_trace_endpoint_exposes_raw_agent_input_and_harness_identity() -> None:
+    client = _client()
+    session_id = client.post("/sessions", json={"persona_id": "long-distance-partners"}).json()["session_id"]
+    client.post(f"/sessions/{session_id}/stages/recipient_profiling/propose", json={})
+
+    trace = client.get(f"/sessions/{session_id}/trace").json()
+    assert trace["run_id"].startswith("run-")
+    assert trace["case_id"] == "long-distance-partners"
+    assert trace["harness_config"]["harness_id"] == "gmgi_default"
+    assert trace["harness_config"]["config_hash"]
+    assert len(trace["invocations"]) == 1
+
+    invocation = trace["invocations"][0]
+    assert invocation["stage_name"] == "recipient_profiling"
+    assert invocation["agent_name"] == "RecipientProfilingAgent"
+    assert invocation["raw_agent_input"]["session"]["session_id"] == session_id
+    assert "stage_config" in invocation["raw_agent_input"]
+    assert invocation["routing_decision"]["decision"] == "recipient_profiling"
+    assert invocation["planner_decision"]["decision"] == "advisory_only"
+    assert invocation["verifier_decision"]["decision"] == "not_available"
+
+
+def test_controller_schema_gate_updates_trace_verifier_decision() -> None:
+    os.environ["GMGI_USE_DEMO_AGENT_RESPONSES"] = "1"
+    os.environ["GMGI_ALLOW_AGENT_FALLBACK"] = "1"
+    os.environ.pop("GMGI_FORCE_OLLAMA_AGENTS", None)
+    root = Path("experiments/test-api")
+    service = AgencyConsoleService(
+        generated_dir=root / "generated",
+        bandit_log_path=root / "bandit_log.jsonl",
+        bandit_state_path=root / "bandit_state.json",
+        harness_config=HarnessConfig(harness_id="gmgi_schema_gate", verification_policy="controller_schema_gate"),
+    )
+    client = TestClient(create_app(service))
+    session_id = client.post("/sessions", json={"persona_id": "long-distance-partners"}).json()["session_id"]
+    client.post(f"/sessions/{session_id}/stages/recipient_profiling/propose", json={})
+
+    trace = client.get(f"/sessions/{session_id}/trace").json()
+    invocation = trace["invocations"][0]
+    assert trace["harness_config"]["harness_id"] == "gmgi_schema_gate"
+    assert invocation["verifier_decision"]["decision"] == "passed"
+    assert invocation["validation_result"]["policy"] == "controller_schema_gate"
+
+
+def test_stop_before_delivery_harness_changes_service_trajectory() -> None:
+    os.environ["GMGI_USE_DEMO_AGENT_RESPONSES"] = "1"
+    root = Path("experiments/test-api")
+    service = AgencyConsoleService(
+        generated_dir=root / "generated",
+        bandit_log_path=root / "bandit_log.jsonl",
+        bandit_state_path=root / "bandit_state.json",
+        harness_config=HarnessConfig(harness_id="gmgi_stop_before_delivery", stopping_policy="stop_before_delivery"),
+    )
+    service._creative_agent = _FakeCreativeAgent()  # type: ignore[assignment]
+    client = TestClient(create_app(service))
+    session_id = client.post("/sessions", json={"persona_id": "long-distance-partners"}).json()["session_id"]
+
+    for stage in (
+        "recipient_profiling",
+        "relationship_analysis",
+        "gift_intent_reasoning",
+        "multi_agent_planning",
+        "recommendation",
+        "creative_generation",
+        "greeting_story",
+    ):
+        client.post(f"/sessions/{session_id}/stages/{stage}/propose", json={})
+        client.post(f"/sessions/{session_id}/stages/{stage}/accept")
+
+    session = client.get(f"/sessions/{session_id}").json()
+    assert session["next_stage"] is None
+    assert "delivery_planner" not in {entry["stage"] for entry in session["stage_log"]}
+    assert session["harness"]["harness_id"] == "gmgi_stop_before_delivery"
 
 
 def test_regenerate_keeps_stage_pending_with_new_proposal() -> None:
@@ -144,11 +219,11 @@ def test_live_persona_default_and_custom_session_creation() -> None:
     assert created["session_id"].startswith("live-")
     assert created["next_stage"] == "recipient_profiling"
 
-def test_live_occasion_names_are_normalized_for_gan() -> None:
+def test_live_occasion_names_are_normalized_for_visual_generation() -> None:
     service = AgencyConsoleService()
-    assert service._gan_occasion("Birthday dinner") == "birthday"
-    assert service._gan_occasion("new home celebration") == "housewarming"
-    assert service._gan_occasion("custom ritual") == "other"
+    assert service._visual_occasion("Birthday dinner") == "birthday"
+    assert service._visual_occasion("new home celebration") == "housewarming"
+    assert service._visual_occasion("custom ritual") == "other"
 
 
 def test_stage_agent_failures_return_structured_error_detail(monkeypatch) -> None:
@@ -158,6 +233,7 @@ def test_stage_agent_failures_return_structured_error_detail(monkeypatch) -> Non
         generated_dir=root / "generated",
         bandit_log_path=root / "bandit_log.jsonl",
         bandit_state_path=root / "bandit_state.json",
+        experience_store_path=root / "experience_store.jsonl",
     )
     client = TestClient(create_app(service))
     session_id = client.post("/sessions", json={"persona_id": "long-distance-partners"}).json()["session_id"]

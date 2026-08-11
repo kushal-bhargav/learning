@@ -1,0 +1,74 @@
+{
+  "case_id": "comparison-case",
+  "harness_a": {
+    "run_id": "run-f8a914165478",
+    "harness_id": "fixed_harness",
+    "harness_version": 1,
+    "harness_config_hash": "0d787671874ed8b3",
+    "final_status": "success",
+    "trajectory": [
+      "recipient_profiling",
+      "relationship_analysis",
+      "gift_intent_reasoning",
+      "multi_agent_planning",
+      "recommendation",
+      "greeting_story",
+      "delivery_planner"
+    ],
+    "verifier_outcomes": [
+      {
+        "stage": "recipient_profiling",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      },
+      {
+        "stage": "relationship_analysis",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      },
+      {
+        "stage": "gift_intent_reasoning",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      },
+      {
+        "stage": "multi_agent_planning",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      },
+      {
+        "stage": "recommendation",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      },
+      {
+        "stage": "greeting_story",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      },
+      {
+        "stage": "delivery_planner",
+        "decision": "not_available",
+        "policy": "schema_validation_with_offline_evals"
+      }
+    ],
+    "retry_count": 0,
+    "failure_count": 0,
+    "quality_score": null
+  },
+  "harness_b": {
+    "run_id": "run-cd4c0e7f7577",
+    "harness_id": "dynamic_stop",
+    "harness_version": 1,
+    "harness_config_hash": "7aa17738a2997639",
+    "final_status": "success",
+    "trajectory": [],
+    "verifier_outcomes": [],
+    "retry_count": 0,
+    "failure_count": 0,
+    "quality_score": null
+  },
+  "trajectory_changed": true,
+  "verifier_outcomes_changed": true,
+  "quality_delta": 0.0
+}

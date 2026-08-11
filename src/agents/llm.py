@@ -74,7 +74,11 @@ class HTTPStructuredLLM:
             ],
             "stream": False,
             "format": schema,
-            "options": {"temperature": temperature},
+            "options": {
+                "temperature": temperature,
+                "num_predict": int(os.getenv("GMGI_OLLAMA_NUM_PREDICT", "768")),
+                "num_ctx": int(os.getenv("GMGI_OLLAMA_NUM_CTX", "4096")),
+            },
         }
         response = self._request(f"{host}/api/chat", payload)
         return self._parse_json(response["message"]["content"])
@@ -214,5 +218,6 @@ def select_provider(explicit: str | LLMProvider | None = None) -> LLMProvider:
 
 
 def create_llm(provider: str | LLMProvider | None = None) -> HTTPStructuredLLM:
-    return HTTPStructuredLLM(select_provider(provider))
+    timeout = float(os.getenv("GMGI_OLLAMA_TIMEOUT_SECONDS", "120"))
+    return HTTPStructuredLLM(select_provider(provider), timeout_seconds=timeout)
 

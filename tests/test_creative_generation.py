@@ -1,6 +1,4 @@
 ﻿from pathlib import Path
-from typing import Any
-
 from PIL import Image
 
 from src.agents.creative_generation import CreativeGenerationAgent
@@ -12,36 +10,37 @@ class FakeRetriever:
         return base_prompt + "\nretrieved creative example"
 
 
-class FakeGAN:
-    def __init__(self) -> None:
-        self.kwargs: dict[str, Any] = {}
-
-    def generate(self, **kwargs: Any) -> Image.Image:
-        self.kwargs = kwargs
-        return Image.new("RGB", (16, 16), "gold")
-
-
-def test_creative_generation_wraps_memory_gan_and_saves_artifact() -> None:
+def test_creative_generation_uses_diffusers_and_saves_artifact(monkeypatch) -> None:
     session = GiftSession(
         session_id="session-test",
         giver_id="person-maya",
         recipient_id="person-jordan",
         occasion_id="occasion-jordan-birthday-2026",
     )
-    gan = FakeGAN()
-    result = CreativeGenerationAgent(gan).run({
+    captured: dict[str, object] = {}
+
+    def fake_generate(self, config, seed, *, prompt=None, negative_prompt=None):
+        captured.update({"config": config, "seed": seed, "prompt": prompt, "negative_prompt": negative_prompt})
+        return Image.new("RGB", (256, 256), "gold")
+
+    monkeypatch.setattr(CreativeGenerationAgent, "_generate_with_diffusers", fake_generate)
+    monkeypatch.setattr(CreativeGenerationAgent, "_critique_with_clip", lambda self, image, prompt: None)
+
+    output_dir = Path("experiments/tmp-tests/creative-generation")
+    result = CreativeGenerationAgent().run({
         "session": session,
         "stage_config": {
-            "context_embedding": [0.0] * 8,
+            "context_embedding": [0.0] * 512,
             "relationship_type": "partner",
             "emotion_tag": "joy",
             "occasion": "birthday",
             "agency_slider": 0.5,
-            "human_style_ref": [1.0] * 8,
+            "human_style_ref": [1.0] * 512,
             "seed": 7,
-            "output_dir": "experiments/test-generated",
+            "output_dir": output_dir.as_posix(),
             "filename": "creative-agent-test.png",
             "context_fingerprint": "partner|casual|high|test",
+            "generation_backend": "diffusers",
         },
     })
     artifact = Path(result["output"]["artifact_path"])
@@ -52,19 +51,19 @@ def test_creative_generation_wraps_memory_gan_and_saves_artifact() -> None:
     assert result["output"]["critique_retries"] == 0
     assert result["output"]["prompt_version"] == "static"
     assert "visual_prompt_builder" in result["output"]["skills_used"]
-    assert "optional_memorygan_checkpoint_inference" in result["output"]["skills_used"]
+    assert "diffusers_image_generation" in result["output"]["skills_used"]
     assert result["output"]["skills_declared"] == [
         "visual_prompt_builder",
         "diffusers_image_generation",
-        "optional_memorygan_checkpoint_inference",
         "clip_critic",
     ]
-    assert gan.kwargs["seed"] == 7
+    assert captured["seed"] == 7
+    artifact.unlink(missing_ok=True)
 
 
 
 def test_creative_prompt_uses_retriever_for_diffusers_prompt() -> None:
-    agent = CreativeGenerationAgent(FakeGAN(), retriever=FakeRetriever())
+    agent = CreativeGenerationAgent(retriever=FakeRetriever())
     prompt = agent._diffusers_prompt({
         "relationship_type": "friend",
         "emotion_tag": "joy",

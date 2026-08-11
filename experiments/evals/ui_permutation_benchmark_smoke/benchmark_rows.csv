@@ -1,9 +1,0 @@
-agent_coverage,agent_execution_success,budget_constraint_preserved,case_id,channel_present,delivery_constraint_present,dependencies_executable,fallback_plan_present,gift_goal_specific,human_review_visible,intent_fields_complete,mode_present,no_real_logistics_integration_claim,occasion_match,planned_before_or_on_occasion,preference_recall,quality_score,simulated_delivery_only,stage,stage_order_valid,stage_present,status,stop_conditions_present
-"",0.0,"","ui_perm_001_parent-child_thank-you_c4_0_a0_5","","","","","","","","","","","","",0.0,"","recipient_profiling","","","ok",""
-"",0.0,"","ui_perm_001_parent-child_thank-you_c4_0_a0_5","","","","","","","","","","","","",0.0,"","relationship_analysis","","","ok",""
-"","",1.0,"ui_perm_001_parent-child_thank-you_c4_0_a0_5","",1.0,"","",0.0,"",1.0,"","",1.0,"",1.0,0.875,"","gift_intent_reasoning","","","ok",""
-1.0,"","","ui_perm_001_parent-child_thank-you_c4_0_a0_5","","",1.0,1.0,"",1.0,"","","","","","",1.0,"","multi_agent_planning",1.0,"","ok",1.0
-"",0.0,"","ui_perm_001_parent-child_thank-you_c4_0_a0_5","","","","","","","","","","","","",0.0,"","recommendation","","","ok",""
-"","","","ui_perm_001_parent-child_thank-you_c4_0_a0_5","","","","","","","","","","","","",0.0,"","creative_generation","",0.0,"missing",""
-"",0.0,"","ui_perm_001_parent-child_thank-you_c4_0_a0_5","","","","","","","","","","","","",0.0,"","greeting_story","","","ok",""
-"","","","ui_perm_001_parent-child_thank-you_c4_0_a0_5",1.0,"","","","","","",1.0,1.0,"",1.0,"",1.0,1.0,"delivery_planner","","","ok",""

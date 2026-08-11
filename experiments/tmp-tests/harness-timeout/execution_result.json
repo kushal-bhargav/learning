@@ -1,0 +1,294 @@
+{
+  "experiment_id": "timeout-test",
+  "case_id": "timeout-case",
+  "candidate_id": "gmgi_default",
+  "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e",
+  "candidate": {
+    "candidate_id": "gmgi_default",
+    "version": 1,
+    "name": "Fixed Default",
+    "description": "Current fixed-stage GMGI behavior.",
+    "config": {
+      "harness_id": "gmgi_default",
+      "harness_version": 1,
+      "description": "Default fixed-stage GMGI workflow with instrumentation.",
+      "orchestration_mode": "fixed_stage",
+      "stage_execution_mode": "service_run_stage",
+      "stage_order": [
+        "recipient_profiling",
+        "relationship_analysis",
+        "gift_intent_reasoning",
+        "multi_agent_planning",
+        "recommendation",
+        "creative_generation",
+        "greeting_story",
+        "delivery_planner"
+      ],
+      "planner_mode": "advisory",
+      "routing_mode": "static",
+      "memory_policy": "fixture_graph_plus_experience_retrieval",
+      "context_policy": "stage_specific_static_context",
+      "tool_policy": "agent_local_tools",
+      "verification_policy": "schema_validation_with_offline_evals",
+      "retry_policy": "agent_local_retries",
+      "fallback_policy": "agent_local_fallbacks",
+      "stopping_policy": "fixed_stage_completion_or_human_gate",
+      "budget_policy": "local_retry_and_eval_timeout_only",
+      "model_policy": "provider_env_and_agent_config",
+      "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+      "max_controller_steps": 64,
+      "max_agent_invocations": 64,
+      "max_retries_per_action": 1,
+      "max_total_retries": 8,
+      "config_hash": "b3f074b0af45a34a",
+      "identity": "gmgi_default:v1:b3f074b0af45a34a"
+    },
+    "created_at": "2026-08-11T06:13:19.845741+00:00",
+    "created_by": "gmgi_phase_4_registry",
+    "compatibility": {
+      "runtime": "service_run_stage",
+      "default_behavior": true
+    },
+    "enabled": true,
+    "candidate_hash": "cf2f1b7796da457e",
+    "identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e"
+  },
+  "harness_config": {
+    "harness_id": "gmgi_default",
+    "harness_version": 1,
+    "description": "Default fixed-stage GMGI workflow with instrumentation.",
+    "orchestration_mode": "fixed_stage",
+    "stage_execution_mode": "service_run_stage",
+    "stage_order": [
+      "recipient_profiling",
+      "relationship_analysis",
+      "gift_intent_reasoning",
+      "multi_agent_planning",
+      "recommendation",
+      "creative_generation",
+      "greeting_story",
+      "delivery_planner"
+    ],
+    "planner_mode": "advisory",
+    "routing_mode": "static",
+    "memory_policy": "fixture_graph_plus_experience_retrieval",
+    "context_policy": "stage_specific_static_context",
+    "tool_policy": "agent_local_tools",
+    "verification_policy": "schema_validation_with_offline_evals",
+    "retry_policy": "agent_local_retries",
+    "fallback_policy": "agent_local_fallbacks",
+    "stopping_policy": "fixed_stage_completion_or_human_gate",
+    "budget_policy": "local_retry_and_eval_timeout_only",
+    "model_policy": "provider_env_and_agent_config",
+    "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+    "max_controller_steps": 64,
+    "max_agent_invocations": 64,
+    "max_retries_per_action": 1,
+    "max_total_retries": 8,
+    "config_hash": "b3f074b0af45a34a",
+    "identity": "gmgi_default:v1:b3f074b0af45a34a"
+  },
+  "run_id": "timeout-gmgi_default-timeout-case",
+  "trace": {
+    "run_id": "timeout-gmgi_default-timeout-case",
+    "case_id": "timeout-case",
+    "harness_config": {
+      "harness_id": "gmgi_default",
+      "harness_version": 1,
+      "description": "Default fixed-stage GMGI workflow with instrumentation.",
+      "orchestration_mode": "fixed_stage",
+      "stage_execution_mode": "service_run_stage",
+      "stage_order": [
+        "recipient_profiling",
+        "relationship_analysis",
+        "gift_intent_reasoning",
+        "multi_agent_planning",
+        "recommendation",
+        "creative_generation",
+        "greeting_story",
+        "delivery_planner"
+      ],
+      "planner_mode": "advisory",
+      "routing_mode": "static",
+      "memory_policy": "fixture_graph_plus_experience_retrieval",
+      "context_policy": "stage_specific_static_context",
+      "tool_policy": "agent_local_tools",
+      "verification_policy": "schema_validation_with_offline_evals",
+      "retry_policy": "agent_local_retries",
+      "fallback_policy": "agent_local_fallbacks",
+      "stopping_policy": "fixed_stage_completion_or_human_gate",
+      "budget_policy": "local_retry_and_eval_timeout_only",
+      "model_policy": "provider_env_and_agent_config",
+      "human_oversight_policy": "proposal_review_accept_edit_regenerate_delegate",
+      "max_controller_steps": 64,
+      "max_agent_invocations": 64,
+      "max_retries_per_action": 1,
+      "max_total_retries": 8,
+      "config_hash": "b3f074b0af45a34a",
+      "identity": "gmgi_default:v1:b3f074b0af45a34a"
+    },
+    "start_time": "2026-08-11T06:13:19.859528+00:00",
+    "end_time": "2026-08-11T06:13:19.859528+00:00",
+    "total_latency_seconds": null,
+    "final_status": "error",
+    "termination_reason": "experiment_timeout",
+    "events": [
+      {
+        "event_type": "execution_started",
+        "timestamp": "2026-08-11T06:13:19.845741+00:00",
+        "component": "harness_comparison",
+        "status": null,
+        "details": {
+          "repetition": 1
+        }
+      },
+      {
+        "event_type": "candidate_run_started",
+        "timestamp": "2026-08-11T06:13:19.847013+00:00",
+        "component": "gmgi_default",
+        "status": null,
+        "details": {}
+      },
+      {
+        "event_type": "run_timeout",
+        "timestamp": "2026-08-11T06:13:19.859528+00:00",
+        "component": "harness_comparison",
+        "status": "timeout",
+        "details": {
+          "timeout_stage": null,
+          "timeout_component": "harness_comparison",
+          "timeout_duration": 0.01,
+          "timeout_type": "experiment_timeout"
+        }
+      },
+      {
+        "event_type": "execution_started",
+        "timestamp": "2026-08-11T06:13:19.845741+00:00",
+        "component": "harness_comparison",
+        "status": null,
+        "details": {
+          "repetition": 1
+        }
+      },
+      {
+        "event_type": "candidate_run_started",
+        "timestamp": "2026-08-11T06:13:19.847013+00:00",
+        "component": "gmgi_default",
+        "status": null,
+        "details": {}
+      },
+      {
+        "event_type": "run_timeout",
+        "timestamp": "2026-08-11T06:13:19.859528+00:00",
+        "component": "harness_comparison",
+        "status": "timeout",
+        "details": {
+          "timeout_stage": null,
+          "timeout_component": "harness_comparison",
+          "timeout_duration": 0.01,
+          "timeout_type": "experiment_timeout"
+        }
+      }
+    ],
+    "invocations": [],
+    "candidate_id": "gmgi_default",
+    "candidate_identity": "gmgi_default:v1:b3f074b0af45a34a:cf2f1b7796da457e"
+  },
+  "evaluation": {
+    "overall_quality": null,
+    "stage_reports": {},
+    "schema_conformance": null,
+    "constraint_satisfaction": null,
+    "DAG_validity": null,
+    "provenance": null,
+    "faithfulness": null,
+    "purpose_alignment": null,
+    "creative_quality": null,
+    "human_behavior": null,
+    "unavailable_metrics": [
+      "faithfulness",
+      "purpose_alignment",
+      "human_behavior"
+    ]
+  },
+  "timing": {
+    "start_time": "2026-08-11T06:13:19.859528+00:00",
+    "end_time": "2026-08-11T06:13:19.859528+00:00",
+    "total_wall_clock_latency_seconds": null,
+    "sum_invocation_latency_seconds": 0,
+    "sum_tool_latency_seconds": 0,
+    "model_latency_status": "unavailable",
+    "routing_decision_latency_status": "unavailable",
+    "planner_latency_status": "not_invoked",
+    "verification_latency_status": "not_invoked",
+    "execution_wrapper_latency_seconds": 0.013421299998299219
+  },
+  "resource_usage": {
+    "agent_invocation_count": 0,
+    "tool_call_count": 0,
+    "retry_count": 0,
+    "fallback_count": 0,
+    "verification_count": 0,
+    "routing_decision_count": 0,
+    "planner_invocation_count": 0,
+    "failed_invocation_count": 0,
+    "run_prompt_tokens": null,
+    "run_completion_tokens": null,
+    "run_total_tokens": null,
+    "token_usage_status": "unavailable",
+    "model_cost": null,
+    "tool_cost": null,
+    "verifier_cost": null,
+    "total_cost": null,
+    "cost_status": "unknown"
+  },
+  "randomness": {
+    "experiment_seed": 1,
+    "repetition": 1,
+    "agency_slider": 0.5,
+    "include_creative": false,
+    "LLM_sampling": "stochastic_unless_temperature_zero_or_provider_forces_determinism",
+    "image_generation": "stochastic_when_include_creative_true",
+    "tool_results": "deterministic_for_local_fixture_tools",
+    "retrieval": "deterministic_for_same_experience_store",
+    "bandit": "state_dependent_if_shared_state_enabled",
+    "stochastic_model_generation": true
+  },
+  "final_status": "TIMEOUT",
+  "termination_reason": "experiment_timeout",
+  "failure_type": "infrastructure",
+  "failure_categories": [
+    "experiment_timeout",
+    "infrastructure_failure"
+  ],
+  "progress_events": [
+    {
+      "event_type": "execution_started",
+      "timestamp": "2026-08-11T06:13:19.845741+00:00",
+      "component": "harness_comparison",
+      "status": null,
+      "details": {
+        "repetition": 1
+      }
+    },
+    {
+      "event_type": "candidate_run_started",
+      "timestamp": "2026-08-11T06:13:19.847013+00:00",
+      "component": "gmgi_default",
+      "status": null,
+      "details": {}
+    },
+    {
+      "event_type": "run_timeout",
+      "timestamp": "2026-08-11T06:13:19.859528+00:00",
+      "component": "harness_comparison",
+      "status": "timeout",
+      "details": {
+        "timeout_stage": null,
+        "timeout_component": "harness_comparison",
+        "timeout_duration": 0.01,
+        "timeout_type": "experiment_timeout"
+      }
+    }
+  ]
+}

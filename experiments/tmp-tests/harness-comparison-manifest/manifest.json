@@ -1,0 +1,24 @@
+{
+  "experiment_id": "manifest-test",
+  "cases": [
+    "case-one"
+  ],
+  "candidates": [
+    "gmgi_default"
+  ],
+  "case_file": null,
+  "provider": "ollama",
+  "model": null,
+  "model_parameters": {},
+  "seed": 123,
+  "state_isolation": "isolated",
+  "evaluation_version": "gmgi_phase_5_harness_comparison_v1",
+  "include_creative": false,
+  "agency_slider": 0.5,
+  "stage_timeout_seconds": null,
+  "execution_timeout_seconds": null,
+  "repetitions": 1,
+  "randomized_order": false,
+  "resume": true,
+  "report_path": null
+}

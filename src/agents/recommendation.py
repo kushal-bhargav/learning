@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 from typing import Any
 
 from jsonschema import ValidationError, validate
@@ -9,6 +10,7 @@ from jsonschema import ValidationError, validate
 from .base import StructuredAgent
 from .orchestrator import AgentInput, AgentOutput
 from .skills import add_skill_metadata
+from src.harness import ensure_tool_allowed, record_tool_call
 
 
 def _extract_json(value: Any) -> dict[str, Any]:
@@ -63,34 +65,52 @@ class RecommendationAgent(StructuredAgent):
         @tool
         def query_memory_graph(topic: str) -> str:
             """Return supplied recipient, relationship, occasion, preference, and budget context for a topic."""
-            lowered = topic.lower()
-            if "recipient" in lowered or "profile" in lowered:
-                return json.dumps(context.get("recipient_profile", {}), ensure_ascii=False)
-            if "relationship" in lowered or "tone" in lowered:
-                return json.dumps(context.get("relationship_guidance", {}), ensure_ascii=False)
-            if "preference" in lowered or "interest" in lowered:
-                return json.dumps(context.get("preferences", []), ensure_ascii=False)
-            return json.dumps(context, ensure_ascii=False)
+            started = time.perf_counter()
+            ensure_tool_allowed("query_memory_graph")
+            try:
+                lowered = topic.lower()
+                if "recipient" in lowered or "profile" in lowered:
+                    result = json.dumps(context.get("recipient_profile", {}), ensure_ascii=False)
+                elif "relationship" in lowered or "tone" in lowered:
+                    result = json.dumps(context.get("relationship_guidance", {}), ensure_ascii=False)
+                elif "preference" in lowered or "interest" in lowered:
+                    result = json.dumps(context.get("preferences", []), ensure_ascii=False)
+                else:
+                    result = json.dumps(context, ensure_ascii=False)
+                record_tool_call("query_memory_graph", arguments={"topic": topic}, result=result, latency_seconds=time.perf_counter() - started)
+                return result
+            except Exception as exc:
+                record_tool_call("query_memory_graph", arguments={"topic": topic}, latency_seconds=time.perf_counter() - started, error=exc)
+                raise
 
         @tool
         def bandit_feedback_hint(category: str, agency_bucket: str = "mid") -> str:
             """Return LinUCB feedback scores for compatible recommendation actions when bandit state is available."""
-            if self.bandit is not None and stage_config.get("bandit_context") is not None:
-                scores = self.bandit.scores(stage_config["bandit_context"])
-                payload = [
-                    {"action": action.__dict__, "ucb_score": score}
-                    for action, score in sorted(scores.items(), key=lambda item: item[1], reverse=True)
-                    if action.recommendation_category == category or action.agency_bucket == agency_bucket
-                ]
-                return json.dumps({"source": "linucb", "scores": payload[:5]}, ensure_ascii=False)
-            return json.dumps(
-                {
-                    "category": category,
-                    "agency_bucket": agency_bucket,
-                    "hint": "No live bandit state is available yet; prefer evidence-backed personalized/generated concepts.",
-                },
-                ensure_ascii=False,
-            )
+            started = time.perf_counter()
+            ensure_tool_allowed("bandit_feedback_hint")
+            try:
+                if self.bandit is not None and stage_config.get("bandit_context") is not None:
+                    scores = self.bandit.scores(stage_config["bandit_context"])
+                    payload = [
+                        {"action": action.__dict__, "ucb_score": score}
+                        for action, score in sorted(scores.items(), key=lambda item: item[1], reverse=True)
+                        if action.recommendation_category == category or action.agency_bucket == agency_bucket
+                    ]
+                    result = json.dumps({"source": "linucb", "scores": payload[:5]}, ensure_ascii=False)
+                else:
+                    result = json.dumps(
+                        {
+                            "category": category,
+                            "agency_bucket": agency_bucket,
+                            "hint": "No live bandit state is available yet; prefer evidence-backed personalized/generated concepts.",
+                        },
+                        ensure_ascii=False,
+                    )
+                record_tool_call("bandit_feedback_hint", arguments={"category": category, "agency_bucket": agency_bucket}, result=result, latency_seconds=time.perf_counter() - started)
+                return result
+            except Exception as exc:
+                record_tool_call("bandit_feedback_hint", arguments={"category": category, "agency_bucket": agency_bucket}, latency_seconds=time.perf_counter() - started, error=exc)
+                raise
 
         model_name = str(stage_config.get("model") or os.getenv("GMGI_RECOMMENDATION_MODEL") or os.getenv("GMGI_OLLAMA_MODEL") or self.config["models"]["ollama"])
         model = LiteLLMModel(
@@ -98,16 +118,19 @@ class RecommendationAgent(StructuredAgent):
             api_base=os.getenv("GMGI_OLLAMA_HOST", "http://localhost:11434"),
             api_key=os.getenv("OLLAMA_API_KEY", "ollama"),
             num_ctx=int(os.getenv("GMGI_OLLAMA_NUM_CTX", "8192")),
+            timeout=float(os.getenv("GMGI_OLLAMA_TIMEOUT_SECONDS", "30")),
         )
+        max_steps = int(os.getenv("GMGI_RECOMMENDATION_MAX_STEPS", str(stage_config.get("max_steps", 3))))
         agent = ToolCallingAgent(
             tools=[query_memory_graph, bandit_feedback_hint],
             model=model,
-            max_steps=int(stage_config.get("max_steps", 6)),
+            max_steps=max_steps,
         )
         prompt = (
             f"{self._system_prompt(agent_input)}\n\n"
             f"Rank exactly three gift concepts for this JSON context:\n{context_json}\n\n"
-            "Use the tools for evidence and feedback hints when helpful. Return only valid JSON matching this schema: "
+            "Use each tool at most once, only if it changes the answer. Keep concepts concise. "
+            "Return only valid JSON matching this schema: "
             f"{json.dumps(self.config['output_schema'], ensure_ascii=False)}"
         )
         payload = _extract_json(agent.run(prompt))
